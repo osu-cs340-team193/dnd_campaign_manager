@@ -16,6 +16,7 @@ export default function NavLinks()
       {linkInfos.map((linkInfo) => 
         <NavLink 
           linkInfo={linkInfo} 
+          key={linkInfo.href}
         />
       )}
     </>
