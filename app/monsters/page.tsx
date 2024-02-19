@@ -1,5 +1,7 @@
 import { fetchMonsters } from "@/app/lib/data";
 import Link from "next/link";
+import { deleteMonster } from "../lib/actions";
+import { DeleteMonster } from "../ui/monsters/buttons";
 
 export default async function Page()
 { 
@@ -20,6 +22,7 @@ export default async function Page()
           >
             Edit
           </Link>
+          <DeleteMonster id={monster.id}/>
           <p>
             {monster.monster_name} | {monster.armor_class} | {monster.hit_points} | {monster.monster_type}
           </p>

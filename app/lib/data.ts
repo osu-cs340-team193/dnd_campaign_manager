@@ -1,5 +1,4 @@
 import mysql, { Connection, PoolOptions, RowDataPacket } from 'mysql2/promise';
-import fs from 'fs';
 
 import { unstable_noStore as noStore } from 'next/cache';
 
@@ -11,10 +10,6 @@ const access: PoolOptions = {
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
-  //ssl: {
-  //  rejectUnauthorized: true,
-  //  ca: fs.readFileSync("./ca.pem").toString(),
-  //},
   multipleStatements: true,
   connectionLimit: 10,
 };

@@ -1,6 +1,13 @@
+import CreateMonsterForm from "@/app/ui/monsters/create-form";
+
 export default function Page()
 {
   return (
-    <div>New Monster</div>
+    <div>
+      <div>
+        New Monster
+      </div>
+      <CreateMonsterForm />
+    </div>
   );
 }

@@ -1,4 +1,5 @@
 import { fetchMonsterById } from "@/app/lib/data";
+import EditMonsterForm from "@/app/ui/monsters/edit-form";
 
 export default async function Page({ params }: { params: { id: number }})
 {
@@ -8,12 +9,10 @@ export default async function Page({ params }: { params: { id: number }})
 
   return (
     <div>
-      <h1>
-        Monster Page # {params.id}
+      <h1 className="my-[20px]">
+        Edit Monster
       </h1>
-      <p>
-        {monster?.monster_name} | {monster?.armor_class} | {monster?.hit_points} | {monster?.monster_type}
-      </p>
+      <EditMonsterForm monster={monster} />
     </div>
   );
 }
