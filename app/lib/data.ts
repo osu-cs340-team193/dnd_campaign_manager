@@ -2,7 +2,7 @@ import mysql, { Connection, PoolOptions, RowDataPacket } from 'mysql2/promise';
 
 import { unstable_noStore as noStore } from 'next/cache';
 
-import { Monster } from './definitions';
+import { Monster } from '@/app/lib/monsters-entity';
 
 const access: PoolOptions = {
   host: process.env.MYSQL_HOST, 
