@@ -5,16 +5,12 @@ import { unstable_noStore as noStore } from 'next/cache';
 
 import { Monster } from './definitions';
 
-import * as dotenv from 'dotenv';
-
-const config = dotenv.config({ path: '../.env' });
-
 const access: PoolOptions = {
-  host: config.parsed?.MYSQL_HOST, 
-  port: parseInt(config.parsed?.MYSQL_PORT ?? "3306"),
-  user: config.parsed?.MYSQL_USER,
-  password: config.parsed?.MYSQL_PASSWORD,
-  database: config.parsed?.MYSQL_DATABASE,
+  host: process.env.MYSQL_HOST, 
+  port: parseInt(process.env.MYSQL_PORT ?? "3306"),
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
   //ssl: {
   //  rejectUnauthorized: true,
   //  ca: fs.readFileSync("./ca.pem").toString(),
