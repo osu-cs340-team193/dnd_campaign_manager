@@ -1,6 +1,31 @@
-export default function Page()
+import { fetchMonsters } from "@/app/lib/data";
+import Link from "next/link";
+
+export default async function Page()
 { 
+  const monsters = await fetchMonsters();
+
   return (
-    <div>Monster</div>
+    <>
+      <Link
+        href={"/monsters/create"}
+      >
+        New
+      </Link>
+      <div>
+        {monsters?.map((monster) =>
+        <div>
+          <Link
+            href={`/monsters/${monster.id}/edit`}
+          >
+            Edit
+          </Link>
+          <p>
+            {monster.monster_name} | {monster.armor_class} | {monster.hit_points} | {monster.monster_type}
+          </p>
+        </div>
+        )}
+      </div>
+    </>
   );
 }

@@ -2,7 +2,7 @@
 // See: https://nextjs.org/learn/dashboard-app/getting-started
 
 // Monster's table
-const monsters = [
+export const monsters = [
   {
     monster_name: "Swarm of Bats",
     armor_class: 12,
