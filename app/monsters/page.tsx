@@ -14,7 +14,7 @@ export default async function Page()
       </Link>
       <div>
         {monsters?.map((monster) =>
-        <div>
+        <div key={monster.id}>
           <Link
             href={`/monsters/${monster.id}/edit`}
           >
