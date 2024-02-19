@@ -22,7 +22,7 @@ export default async function Page()
           >
             Edit
           </Link>
-          <DeleteMonster id={monster.id}/>
+          <DeleteMonster id={monster.id ?? -1}/>
           <p>
             {monster.monster_name} | {monster.armor_class} | {monster.hit_points} | {monster.monster_type}
           </p>

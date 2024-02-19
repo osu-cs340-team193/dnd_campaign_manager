@@ -2,7 +2,6 @@
 
 import { updateMonster, MonsterFormState, createMonster } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
-import { MonsterForm } from "@/app/lib/definitions";
 import Link from "next/link";
 
 export default function CreateMonsterForm()

@@ -2,13 +2,13 @@
 
 import { updateMonster, MonsterFormState } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
-import { MonsterForm } from "@/app/lib/definitions";
+import { Monster } from "@/app/lib/monsters-entity";
 import Link from "next/link";
 
-export default function EditMonsterForm({ monster }: {monster: MonsterForm })
+export default function EditMonsterForm({ monster }: {monster: Monster })
 {
   const initialState = { message: null, errors: {}};
-  const updateMonsterWithId = updateMonster.bind(null, monster.id);
+  const updateMonsterWithId = updateMonster.bind(null, monster.id ?? -1);
   // TS does not like. Throws error for some reason.
   //@ts-ignore
   const [state, dispatch] = useFormState(updateMonsterWithId, initialState);
