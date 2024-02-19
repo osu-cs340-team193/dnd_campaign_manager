@@ -15,10 +15,10 @@ const access: PoolOptions = {
   user: config.parsed?.MYSQL_USER,
   password: config.parsed?.MYSQL_PASSWORD,
   database: config.parsed?.MYSQL_DATABASE,
-  ssl: {
-    rejectUnauthorized: true,
-    ca: fs.readFileSync("./ca.pem").toString(),
-  },
+  //ssl: {
+  //  rejectUnauthorized: true,
+  //  ca: fs.readFileSync("./ca.pem").toString(),
+  //},
   multipleStatements: true,
   connectionLimit: 10,
 };
