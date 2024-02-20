@@ -1,7 +1,6 @@
-import { fetchMonsters } from "@/app/lib/data";
 import Link from "next/link";
-import { deleteMonster } from "../lib/actions";
-import { DeleteMonster } from "../ui/monsters/buttons";
+import { fetchMonsters } from "@/app/lib/data";
+import { DeleteMonster } from "@/app/ui/monsters/buttons";
 
 export default async function Page()
 { 

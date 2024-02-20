@@ -1,20 +1,18 @@
-import mysql, { Connection, PoolOptions, RowDataPacket } from 'mysql2/promise';
+import { PoolConnection } from 'mysql2/promise';
 
 import { unstable_noStore as noStore } from 'next/cache';
 
-import { Monster } from '@/app/lib/monsters-entity';
+import { Monster, MonstersEntity } from '@/app/lib/monsters-entity';
 
-const access: PoolOptions = {
-  host: process.env.MYSQL_HOST, 
-  port: parseInt(process.env.MYSQL_PORT ?? "3306"),
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
-  multipleStatements: true,
-  connectionLimit: 10,
-};
+import { 
+  EntityAttributeFilter, 
+} from '@/app/lib/entity';
 
-const client: Connection = mysql.createPool(access);
+import {
+  equalTo 
+} from '@/app/lib/query';
+
+import mysql from '@/app/lib/db';
 
 export async function fetchMonsters() : Promise<Monster[]>
 {
@@ -24,10 +22,11 @@ export async function fetchMonsters() : Promise<Monster[]>
 
   try 
   {
-    // See: https://stackoverflow.com/a/70741686
-    const [data] = await client.query<Monster[] & RowDataPacket[]>(
-      `SELECT * FROM monsters`
-    );
+    const connection: PoolConnection = await mysql.createConnection();
+
+    const data = await MonstersEntity.selectAll(connection);
+
+    mysql.releaseConnection(connection);
 
     return data;
   }
@@ -42,12 +41,20 @@ export async function fetchMonsterById(id: number) : Promise<Monster>
 {
   noStore();
 
+  const idFilter: EntityAttributeFilter =
+  {
+    attr: MonstersEntity.id,
+    op: equalTo,
+    value: id 
+  };
+
   try
   {
-    const [data] = await client.query<Monster[] & RowDataPacket[]>(
-      `SELECT * FROM monsters
-       WHERE id = ${id}`
-    );
+    const connection: PoolConnection = await mysql.createConnection();
+
+    const data = await MonstersEntity.selectAll(connection, [idFilter]);
+
+    mysql.releaseConnection(connection);
 
     return data[0];
   }

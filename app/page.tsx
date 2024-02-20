@@ -1,5 +1,3 @@
-import AppLogo from "@/app/ui/app-logo";
-
 export default function Page()
 {
   return (
