@@ -1,9 +1,15 @@
 "use client";
 
-import { updateMonster, MonsterFormState } from "@/app/lib/actions";
+import { updateMonster } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
 import { Monster } from "@/app/lib/monsters-entity";
 import Link from "next/link";
+import Label from "@/app/ui/extensions/label";
+import Input from "@/app/ui/extensions/input";
+import Button from "@/app/ui/extensions/button";
+import Select from '@/app/ui/extensions/select';
+import Option from '@/app/ui/extensions/option';
+import Form from '@/app/ui/extensions/form';
 
 export default function EditMonsterForm({ monster }: {monster: Monster })
 {
@@ -14,38 +20,38 @@ export default function EditMonsterForm({ monster }: {monster: Monster })
   const [state, dispatch] = useFormState(updateMonsterWithId, initialState);
 
   return (
-    <form action={dispatch}>
-      <label htmlFor="monster_name" className="mr-[5px]">
+    <Form action={dispatch}>
+      <Label htmlFor="monster_name" className="mr-[5px]">
         Monster Name:
-      </label>
-      <input id="monster_name" name="monster_name" type="text" className="border" defaultValue={monster.monster_name}/>
-      <label htmlFor="armor_class" className="mr-[5px]">
+      </Label>
+      <Input id="monster_name" name="monster_name" type="text" className="border" defaultValue={monster.monster_name}/>
+      <Label htmlFor="armor_class" className="mr-[5px]">
         Armor Class:
-      </label>
-      <input id="armor_class" name="armor_class" type="number" className="border" defaultValue={monster.armor_class}/>
-      <label htmlFor="hit_points" className="mr-[5px]">
+      </Label>
+      <Input id="armor_class" name="armor_class" type="number" className="border" defaultValue={monster.armor_class}/>
+      <Label htmlFor="hit_points" className="mr-[5px]">
         Hit Points:
-      </label>
-      <input id="hit_points" name="hit_points" type="number" className="border" defaultValue={monster.hit_points}/>
-      <label htmlFor="monster_type" className="mr-[5px]">
+      </Label>
+      <Input id="hit_points" name="hit_points" type="number" className="border" defaultValue={monster.hit_points}/>
+      <Label htmlFor="monster_type" className="mr-[5px]">
         Monster Type
-      </label>
-      <select id="monster_type" name="monster_type" defaultValue={monster.monster_type}>
-        <option value="" disabled>
+      </Label>
+      <Select id="monster_type" name="monster_type" defaultValue={monster.monster_type}>
+        <Option value="" disabled>
           Select a monster type
-        </option>
-        <option value="Diminutive Animal">
+        </Option>
+        <Option value="Diminutive Animal">
           Diminutive Animal
-        </option>
-      </select>
+        </Option>
+      </Select>
       <div>
         <Link href="/monsters">
           Cancel
         </Link>
-        <button type="submit" className="flex h-10 items-center">
+        <Button type="submit" className="flex h-10 items-center">
           Submit
-        </button>
+        </Button>
       </div>
-    </form>
+    </Form>
   );
 }

@@ -2,6 +2,9 @@
 
 import { deleteMonster } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
+import Button from "@/app/ui/extensions/button";
+import Form from "@/app/ui/extensions/form";
+import Text from "@/app/ui/extensions/text";
 
 export function DeleteMonster({ id }: { id: number })
 {
@@ -11,10 +14,12 @@ export function DeleteMonster({ id }: { id: number })
   const [state, dispatch] = useFormState(deleteMonsterWithId);
 
   return (
-    <form action={dispatch}>
-      <button>
-        Delete
-      </button>
-    </form>
+    <Form action={dispatch}>
+      <Button
+        className='flex align-middle font-bold bg-blue-400'
+      >
+        <Text>Delete</Text>
+      </Button>
+    </Form>
   );
 }
