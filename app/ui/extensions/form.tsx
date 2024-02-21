@@ -4,7 +4,7 @@
 // Interface that extends button properties to allow for passing them in.
 interface FormProps extends React.FormHTMLAttributes<HTMLFormElement>
 {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function Form({ children, className, ...rest } : FormProps)

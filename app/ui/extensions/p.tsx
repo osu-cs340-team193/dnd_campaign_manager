@@ -1,20 +1,18 @@
-'use client';
-
 // Idea borrowed from: nextjs tutorial, button.tsx
 // Interface that extends button properties to allow for passing them in.
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
+interface ParagraphProps extends React.ComponentPropsWithoutRef<'p'>
 {
   children?: React.ReactNode;
 }
 
-export default function Button({ children, className, ...rest } : ButtonProps)
+export default function Paragraph({ children, className, ...rest } : ParagraphProps)
 {
   return (
-    <button 
+    <p
       {...rest}
       className={className}
     >
       {children}
-    </button>
+    </p>
   );
 }

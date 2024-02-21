@@ -4,7 +4,7 @@
 // Interface that extends button properties to allow for passing them in.
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement>
 {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export default function Select({ children, className, ...rest } : SelectProps)

@@ -1,20 +1,18 @@
-'use client';
-
 // Idea borrowed from: nextjs tutorial, button.tsx
 // Interface that extends button properties to allow for passing them in.
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
+interface TableHeaderProps extends React.ThHTMLAttributes<HTMLTableCellElement>
 {
   children?: React.ReactNode;
 }
 
-export default function Button({ children, className, ...rest } : ButtonProps)
+export default function TableHeader({ children, className, ...rest } : TableHeaderProps)
 {
   return (
-    <button 
+    <th
       {...rest}
       className={className}
     >
       {children}
-    </button>
+    </th>
   );
 }

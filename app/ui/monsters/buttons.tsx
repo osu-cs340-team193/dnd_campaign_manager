@@ -4,7 +4,7 @@ import { deleteMonster } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
 import Button from "@/app/ui/extensions/button";
 import Form from "@/app/ui/extensions/form";
-import Text from "@/app/ui/extensions/text";
+import Paragraph from "@/app/ui/extensions/p";
 
 export function DeleteMonster({ id }: { id: number })
 {
@@ -18,7 +18,7 @@ export function DeleteMonster({ id }: { id: number })
       <Button
         className='flex align-middle font-bold bg-blue-400'
       >
-        <Text>Delete</Text>
+        <Paragraph>Delete</Paragraph>
       </Button>
     </Form>
   );
