@@ -2,19 +2,19 @@
 
 // Idea borrowed from: nextjs tutorial, button.tsx
 // Interface that extends button properties to allow for passing them in.
-interface OptionProps extends React.OptionHTMLAttributes<HTMLOptionElement>
+interface DatalistProps extends React.HTMLAttributes<HTMLDataListElement>
 {
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }
 
-export default function Option({ children, className, ...rest } : OptionProps)
+export default function Datalist({ children, className, ...rest } : DatalistProps)
 {
   return (
-    <option
+    <datalist
       {...rest}
       className={className}
     >
       {children}
-    </option>
+    </datalist>
   );
 }

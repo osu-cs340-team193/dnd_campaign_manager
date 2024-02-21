@@ -8,8 +8,10 @@ export default async function Page({ params }: { params: { id: number }})
   console.log(monster);
 
   return (
-    <div>
-      <h1 className="my-[20px]">
+    <div
+      className=''
+    >
+      <h1 className="my-[15px] text-center text-lg">
         Edit Monster
       </h1>
       <EditMonsterForm monster={monster} />

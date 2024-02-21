@@ -24,7 +24,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <div className="flex-none self-center">
               <AppLogo />
             </div>
-            <div className="h-screen">
+            <div className='flex h-screen justify-center'>
               {children}
             </div>
           </main>
