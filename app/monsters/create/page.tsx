@@ -1,13 +1,18 @@
+import { fetchMonsterTypes } from "@/app/lib/data";
 import CreateMonsterForm from "@/app/ui/monsters/create-form";
 
-export default function Page()
+export default async function Page()
 {
+  const monsterTypes = await fetchMonsterTypes();
+
   return (
     <div>
       <div>
         New Monster
       </div>
-      <CreateMonsterForm />
+      <CreateMonsterForm 
+        monsterTypes={monsterTypes}
+      />
     </div>
   );
 }
