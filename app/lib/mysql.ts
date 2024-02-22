@@ -24,6 +24,8 @@ export class MySQLConnection
   {
     if (!this?.pool)
     {
+      console.log('Pool not initialized. Initializing again...');
+
       this.pool = createPool(this.credentials);
     }
   }
