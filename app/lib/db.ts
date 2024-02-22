@@ -3,6 +3,7 @@ import fs from 'fs';
 import * as dotenv from 'dotenv';
 import { PoolOptions } from 'mysql2';
 import { MySQLConnection } from '@/app/lib/mysql-connection';
+import { MySQLConnection } from '@/app/lib/mysql';
 
 // Read connection secrets from local env file. Must be at root of project directory.
 const config = dotenv.config({ path: '@/.env' });
@@ -17,6 +18,7 @@ const access: PoolOptions = {
   user: config.parsed?.MYSQL_USER,
   password: config.parsed?.MYSQL_PASSWORD,
   database: config.parsed?.MYSQL_DATABASE,
+  connectionLimit: 10,
   //ssl: {
   //  rejectUnauthorized: true,
   //  ca: fs.readFileSync("./ca.pem").toString(),
