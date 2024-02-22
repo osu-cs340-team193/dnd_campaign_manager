@@ -178,3 +178,8 @@ export type Monster =
   hit_points: number;
   monster_type: string;
 };
+
+export interface IMonsterType extends RowDataPacket
+{
+  monster_type: string;
+}

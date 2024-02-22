@@ -6,30 +6,84 @@ import TableHeader from '@/app/ui/extensions/th';
 import TableBody from '@/app/ui/extensions/tbody';
 import TableData from '@/app/ui/extensions/td';
 
+import { Monster } from '@/app/lib/monsters-entity';
+import { DeleteMonster, UpdateMonster } from './buttons';
+
 export default async function MonstersTable()
 {
   const monsters = await fetchMonsters();
 
   return (
     <Table
+      className='table-auto border-separate border-4 border-double border-green-800 border-spacing-[5px]'
     >
       <TableHead
       >
         <TableRow
         >
           <TableHeader
+            className='border-2 border-green-600 px-[10px] py-[5px]'
           >
+            Monster Name
+          </TableHeader>
+          <TableHeader
+            className='border-2 border-green-600 px-[10px] py-[5px]'
+          >
+            Armor Class
+          </TableHeader>
+          <TableHeader
+            className='border-2 border-green-600 px-[10px] py-[5px]'
+          >
+            Hit Points
+          </TableHeader>
+          <TableHeader
+            className='border-2 border-green-600 px-[10px] py-[5px]'
+          >
+            Monster Type
           </TableHeader>
         </TableRow>
       </TableHead>
       <TableBody
       >
-        <TableRow
-        >
-          <TableData
-          >
-          </TableData>
-        </TableRow>
+        {
+          monsters?.map((monster) => 
+          (
+            <TableRow
+              key={monster.id}
+            >
+              <TableData
+                className='border border-green-600 px-[10px] py-[5px]'
+              >
+                {monster.monster_name}
+              </TableData>
+              <TableData
+                className='border border-green-600 px-[10px] py-[5px]'
+              >
+                {monster.armor_class}
+              </TableData>
+              <TableData
+                className='border border-green-600 px-[10px] py-[5px]'
+              >
+                {monster.hit_points}
+              </TableData>
+              <TableData
+                className='border border-green-600 px-[10px] py-[5px]'
+              >
+                {monster.monster_type}
+              </TableData>
+              <TableData
+                className='px-[10px] py-[5px]'
+              >
+                <div
+                  className='flex'
+                >
+                  <UpdateMonster id={monster.id ?? -1} />
+                  <DeleteMonster id={monster.id ?? -1} />
+                </div>
+              </TableData>
+            </TableRow>
+          ))
+        }
       </TableBody>
     </Table>
   );

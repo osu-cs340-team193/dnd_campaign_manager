@@ -2,7 +2,7 @@
 
 import { updateMonster } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
-import { Monster } from "@/app/lib/monsters-entity";
+import { IMonsterType, Monster } from "@/app/lib/monsters-entity";
 import Link from "next/link";
 import Label from "@/app/ui/extensions/label";
 import Input from "@/app/ui/extensions/input";
@@ -12,10 +12,10 @@ import Option from '@/app/ui/extensions/option';
 import Form from '@/app/ui/extensions/form';
 import Datalist from "@/app/ui/extensions/datalist";
 
-export default function EditMonsterForm({ monster }: {monster: Monster })
+export default function EditMonsterForm({ monster, monsterTypes }: { monster: Monster, monsterTypes: IMonsterType[] })
 {
   const initialState = { message: null, errors: {}};
-  const updateMonsterWithId = updateMonster.bind(null, monster.id ?? -1);
+  const updateMonsterWithId = updateMonster.bind(null, monster?.id ?? -1);
   // TS does not like. Throws error for some reason.
   //@ts-ignore
   const [state, dispatch] = useFormState(updateMonsterWithId, initialState);
@@ -24,6 +24,7 @@ export default function EditMonsterForm({ monster }: {monster: Monster })
     <Form 
       action={dispatch} 
       className='flex flex-col min-w-[500px] border-dashed border-[2px] p-[10px]'
+      aria-describedby='monsterFormError'
     >
       <div
         className='flex flex-row items-center my-2'
@@ -31,6 +32,7 @@ export default function EditMonsterForm({ monster }: {monster: Monster })
         <Label 
           htmlFor="monster_name" 
           className='mx-[10px] p-[5px] text-purple-900 align-middle flex-1'
+          aria-describedby='monsterNameError'
         >
           Monster Name
         </Label>
@@ -39,8 +41,26 @@ export default function EditMonsterForm({ monster }: {monster: Monster })
           name="monster_name" 
           type="text" 
           className='p-[2px] border-double border-[5px] text-sm flex-grow' 
-          defaultValue={monster.monster_name}
+          defaultValue={monster?.monster_name}
         />
+      </div>
+      <div
+        id='monsterNameError'
+        aria-live='polite'
+        aria-atomic='true'
+      >
+        {
+          state.errors?.monster_name  && 
+          state.errors.monster_name.map((error: string) => 
+          (
+            <p
+              className='mt-2 text-sm text-red-500'
+              key={error}
+            >
+              {error}
+            </p>
+          ))
+        }
       </div>
       <div
         className='flex flex-row items-center my-2'
@@ -48,6 +68,7 @@ export default function EditMonsterForm({ monster }: {monster: Monster })
         <Label 
           htmlFor="armor_class" 
           className='mx-[10px] p-[5px] text-purple-900 align-middle flex-1'
+          aria-describedby='armorClassError'
         >
           Armor Class
         </Label>
@@ -56,8 +77,26 @@ export default function EditMonsterForm({ monster }: {monster: Monster })
           name="armor_class" 
           type="number" 
           className='p-[2px] border-double border-[5px] text-sm w-[100px]' 
-          defaultValue={monster.armor_class}
+          defaultValue={monster?.armor_class}
         />
+      </div>
+      <div
+        id='armorClassError'
+        aria-live='polite'
+        aria-atomic='true'
+      >
+        {
+          state.errors?.armor_class && 
+          state.errors.armor_class.map((error: string) => 
+          (
+            <p
+              className='mt-2 text-sm text-red-500'
+              key={error}
+            >
+              {error}
+            </p>
+          ))
+        }
       </div>
       <div
         className='flex flex-row items-center my-2'
@@ -65,6 +104,7 @@ export default function EditMonsterForm({ monster }: {monster: Monster })
         <Label 
           htmlFor="hit_points" 
           className='mx-[10px] p-[5px] text-purple-900 align-middle flex-1'
+          aria-describedby='hitPointsError'
         >
           Hit Points
         </Label>
@@ -73,45 +113,34 @@ export default function EditMonsterForm({ monster }: {monster: Monster })
           name="hit_points" 
           type="number" 
           className='p-[2px] border-double border-[5px] text-sm w-[100px]' 
-          defaultValue={monster.hit_points}
+          defaultValue={monster?.hit_points}
         />
       </div>
-      {/*
       <div
-        className='flex flex-row items-center my-2'
+        id='hitPointsError'
+        aria-live='polite'
+        aria-atomic='true'
       >
-        <Label 
-          htmlFor="monster_type" 
-          className='mx-[10px] p-[5px] text-purple-900 align-middle flex-1'
-        >
-          Monster Type
-        </Label>
-        <Select 
-          id="monster_type" 
-          name="monster_type" 
-          className='p-[2px] border-double border-[5px] text-sm w-[200px]' 
-          defaultValue={monster.monster_type}
-        >
-          <Option 
-            value="" 
-            disabled
-          >
-            Select a monster type
-          </Option>
-          <Option 
-            value="Diminutive Animal"
-          >
-            Diminutive Animal
-          </Option>
-        </Select>
+        {
+          state.errors?.hit_points && 
+          state.errors.hit_points.map((error: string) => 
+          (
+            <p
+              className='mt-2 text-sm text-red-500'
+              key={error}
+            >
+              {error}
+            </p>
+          ))
+        }
       </div>
-      */}
       <div
         className='flex flex-row items-center my-2'
       >
         <Label 
           htmlFor="monster_type" 
           className='mx-[10px] p-[5px] text-purple-900 align-middle flex-1'
+          aria-describedby='monsterTypeError'
         >
           Monster Type
         </Label>
@@ -121,18 +150,56 @@ export default function EditMonsterForm({ monster }: {monster: Monster })
           name='monster_type'
           type='text'
           className='p-[2px] border-double border-[5px] text-sm w-[200px]' 
+          defaultValue={monster?.monster_type}
         />
         <Datalist
           id='monsterType'
           className='p-[2px] border-double border-[5px] text-sm w-[200px]' 
         >
-          <Option
-            value="Diminutive Animal"
-          />
-          <Option
-            value="Fey"
-          />
+          {
+            monsterTypes?.map((monsterType) =>
+            (
+              <Option
+                value={monsterType.monster_type}
+                key={monsterType.monster_type}
+              />
+            ))
+          }
         </Datalist>
+      </div>
+      <div
+        id='monsterTypeError'
+        aria-live='polite'
+        aria-atomic='true'
+      >
+        {
+          state.errors?.monster_type && 
+          state.errors.monster_type.map((error: string) => 
+          (
+            <p
+              className='mt-2 text-sm text-red-500'
+              key={error}
+            >
+              {error}
+            </p>
+          ))
+        }
+      </div>
+      <div
+        id='monsterFormError'
+        aria-live='polite'
+        aria-atomic='true'
+      >
+        {
+          state.message?
+          (
+            <p
+              className='mt-2 text-sm text-red-500'
+            >
+              {state.message}
+            </p>
+          ) : null
+        }
       </div>
       <div
         className='flex flex-row items-center my-5 justify-start'

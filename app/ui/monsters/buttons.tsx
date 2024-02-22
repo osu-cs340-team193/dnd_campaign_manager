@@ -1,10 +1,28 @@
-"use client";
+'use client';
 
 import { deleteMonster } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
 import Button from "@/app/ui/extensions/button";
 import Form from "@/app/ui/extensions/form";
 import Paragraph from "@/app/ui/extensions/p";
+import Link from "next/link";
+
+import { GrEdit } from 'react-icons/gr';
+import { RiDeleteBinLine } from "react-icons/ri";
+
+export function UpdateMonster({ id } : { id: number })
+{
+  return (
+    <Link
+      href={`/monsters/${id}/edit`}
+      className='px-[10px]'
+    >
+      <GrEdit 
+        className='text-2xl'
+      />
+    </Link>
+  );
+}
 
 export function DeleteMonster({ id }: { id: number })
 {
@@ -14,11 +32,16 @@ export function DeleteMonster({ id }: { id: number })
   const [state, dispatch] = useFormState(deleteMonsterWithId);
 
   return (
-    <Form action={dispatch}>
+    <Form 
+      action={dispatch}
+      className='px-[10px]'
+    >
       <Button
-        className='flex align-middle font-bold bg-blue-400'
+        className=''
       >
-        <Paragraph>Delete</Paragraph>
+        <RiDeleteBinLine
+          className='text-2xl'
+        />
       </Button>
     </Form>
   );

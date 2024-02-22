@@ -1,33 +1,22 @@
 import Link from "next/link";
-import { fetchMonsters } from "@/app/lib/data";
-import { DeleteMonster } from "@/app/ui/monsters/buttons";
+import MonstersTable from '@/app/ui/monsters/table';
+
+import { IoIosAddCircleOutline } from 'react-icons/io';
 
 export default async function Page()
 { 
-  const monsters = await fetchMonsters();
-
   return (
-    <>
+    <div
+      className='mt-[40px] flex-column'
+    >
+      <MonstersTable />
       <Link
         href={"/monsters/create"}
       >
-        New
+        <IoIosAddCircleOutline
+          className='border-2 border-blue-800 mt-[20px] w-[100px] h-[30px] bg-green-200'
+        />
       </Link>
-      <div>
-        {monsters?.map((monster) =>
-        <div key={monster.id}>
-          <Link
-            href={`/monsters/${monster.id}/edit`}
-          >
-            Edit
-          </Link>
-          <DeleteMonster id={monster.id ?? -1}/>
-          <p>
-            {monster.monster_name} | {monster.armor_class} | {monster.hit_points} | {monster.monster_type}
-          </p>
-        </div>
-        )}
-      </div>
-    </>
+    </div>
   );
 }

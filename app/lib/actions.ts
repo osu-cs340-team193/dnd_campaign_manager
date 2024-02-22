@@ -17,20 +17,46 @@ import {
 
 import mysql from '@/app/lib/db';
 
+// Regex refine: https://stackoverflow.com/a/75516346
+// chars regex: https://stackoverflow.com/a/12778207
 const MonsterFormSchema = z.object({
   id: z.number(),
-  monster_name: z.string({
-    required_error: "Please enter a monster name",
-  }),
-  armor_class: z.coerce.number().gt(0, {
-    message: "Please enter an armor class greater than 0."
-  }),
-  hit_points: z.coerce.number().gt(0, {
-    message: "Please enter a hit point value greater than 0."
-  }),
-  monster_type: z.string({
-    required_error: "Please select a monster type."
-  }),
+
+  monster_name: z
+    .string({
+      required_error: 'Please enter a monster name',
+    })
+    .trim()
+    .min(2, {
+      message: 'Monster name should be at least 2 characters long'
+    }),
+
+  armor_class: z
+    .coerce
+    .number()
+    .gt(0, {
+      message: 'Please enter an armor class greater than 0.'
+    }),
+
+  hit_points: z
+    .coerce
+    .number()
+    .gt(0, {
+      message: 'Please enter a hit point value greater than 0.'
+    }),
+
+  monster_type: z
+    .string({
+      required_error: 'Please select a monster type.'
+    })
+    .trim()
+    .min(2, {
+      message: 'Monster type should be at least 2 characters long'
+    })
+    .refine((value) => 
+      /^[a-zA-Z\s]*$/.test(value), {
+        message: 'Monster type should contain only characters and whitespace' 
+    })
 });
 
 const CreateMonster = MonsterFormSchema.omit({ id: true });

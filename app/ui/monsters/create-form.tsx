@@ -4,6 +4,13 @@ import { createMonster } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
 import Link from "next/link";
 
+import Label from "@/app/ui/extensions/label";
+import Input from "@/app/ui/extensions/input";
+import Button from "@/app/ui/extensions/button";
+import Option from '@/app/ui/extensions/option';
+import Form from '@/app/ui/extensions/form';
+import Datalist from "@/app/ui/extensions/datalist";
+
 export default function CreateMonsterForm()
 {
   const initialState = { message: null, errors: {}};
@@ -12,38 +19,105 @@ export default function CreateMonsterForm()
   const [state, dispatch] = useFormState(createMonster, initialState);
 
   return (
-    <form action={dispatch}>
-      <label htmlFor="monster_name" className="mr-[5px]">
-        Monster Name:
-      </label>
-      <input id="monster_name" name="monster_name" type="text" className="border"/>
-      <label htmlFor="armor_class" className="mr-[5px]">
-        Armor Class:
-      </label>
-      <input id="armor_class" name="armor_class" type="number" className="border"/>
-      <label htmlFor="hit_points" className="mr-[5px]">
-        Hit Points:
-      </label>
-      <input id="hit_points" name="hit_points" type="number" className="border"/>
-      <label htmlFor="monster_type" className="mr-[5px]">
-        Monster Type
-      </label>
-      <select id="monster_type" name="monster_type">
-        <option value="" disabled>
-          Select a monster type
-        </option>
-        <option value="Diminutive Animal">
-          Diminutive Animal
-        </option>
-      </select>
-      <div>
-        <Link href="/monsters">
-          Cancel
-        </Link>
-        <button type="submit" className="flex h-10 items-center">
-          Submit
-        </button>
+    <Form 
+      action={dispatch} 
+      className='flex flex-col min-w-[500px] border-dashed border-[2px] p-[10px]'
+    >
+      <div
+        className='flex flex-row items-center my-2'
+      >
+        <Label 
+          htmlFor="monster_name" 
+          className='mx-[10px] p-[5px] text-purple-900 align-middle flex-1'
+        >
+          Monster Name
+        </Label>
+        <Input
+          id="monster_name" 
+          name="monster_name" 
+          type="text" 
+          className='p-[2px] border-double border-[5px] text-sm flex-grow' 
+        />
       </div>
-    </form>
+      <div
+        className='flex flex-row items-center my-2'
+      >
+        <Label 
+          htmlFor="armor_class" 
+          className='mx-[10px] p-[5px] text-purple-900 align-middle flex-1'
+        >
+          Armor Class
+        </Label>
+        <Input 
+          id="armor_class" 
+          name="armor_class" 
+          type="number" 
+          className='p-[2px] border-double border-[5px] text-sm w-[100px]' 
+        />
+      </div>
+      <div
+        className='flex flex-row items-center my-2'
+      >
+        <Label 
+          htmlFor="hit_points" 
+          className='mx-[10px] p-[5px] text-purple-900 align-middle flex-1'
+        >
+          Hit Points
+        </Label>
+        <Input 
+          id="hit_points" 
+          name="hit_points" 
+          type="number" 
+          className='p-[2px] border-double border-[5px] text-sm w-[100px]' 
+        />
+      </div>
+      <div
+        className='flex flex-row items-center my-2'
+      >
+        <Label 
+          htmlFor="monster_type" 
+          className='mx-[10px] p-[5px] text-purple-900 align-middle flex-1'
+        >
+          Monster Type
+        </Label>
+        <Input 
+          list='monsterType' 
+          id='monster_type'
+          name='monster_type'
+          type='text'
+          className='p-[2px] border-double border-[5px] text-sm w-[200px]' 
+        />
+        <Datalist
+          id='monsterType'
+          className='p-[2px] border-double border-[5px] text-sm w-[200px]' 
+        >
+          <Option
+            value="Diminutive Animal"
+          />
+          <Option
+            value="Fey"
+          />
+        </Datalist>
+      </div>
+      <div
+        className='flex flex-row items-center my-5 justify-start'
+      >
+        <Button 
+          type="submit" 
+          className='mx-[10px] w-[100px] border-solid border-[2px] bg-green-500 border-black text-white'
+        >
+          Submit
+        </Button>
+        <Button
+          className='mx-[10px] w-[100px] border-solid border-[2px] bg-red-500 border-black text-white'
+        >
+          <Link 
+            href="/monsters"
+          >
+            Cancel
+          </Link>
+        </Button>
+      </div>
+    </Form>
   );
 }
