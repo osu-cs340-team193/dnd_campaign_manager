@@ -3,7 +3,7 @@ import MonstersTable from '@/app/ui/monsters/table';
 
 import { IoIosAddCircleOutline } from 'react-icons/io';
 
-export default async function Page()
+export default function Page()
 { 
   return (
     <div
