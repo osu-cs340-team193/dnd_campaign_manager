@@ -105,3 +105,35 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 17. Test your app again. You should have additional routes for `app/ui/pageName/[id]/edit` and `app/ui/pageName/create`. The buttons on your pages should route to the correct page.
 18. Run the build command from earlier to test for any errors. 
 19. If all is good, push to GitHub and look for a green checkmark beside your commit. If it's red, something went wrong and the site will revert to the most recent working version instead.
+
+## References
+
+* Learn Next.js
+
+  // Citation for the following function:
+  // Date: 02/18/2024
+  // Adapted from: Learn Next.js
+  // 
+
+
+  https://nextjs.org/learn/dashboard-app
+
+  https://github.com/vercel/next-learn
+
+* SVGR
+
+  https://react-svgr.com/playground/?typescript=true
+
+* MySQL
+
+  https://sidorares.github.io/node-mysql2/docs/documentation
+
+* ReGeX Form Validation
+
+  https://stackoverflow.com/a/12778207
+
+  https://stackoverflow.com/a/75516346
+
+* MySQL Utilitys
+
+  https://dev.to/larswaechter/using-mysql-in-nodejs-with-typescript-ida

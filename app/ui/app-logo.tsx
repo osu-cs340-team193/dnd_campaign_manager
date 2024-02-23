@@ -1,7 +1,7 @@
 // Application logo component.
 // See: https://nextjs.org/learn/dashboard-app/optimizing-fonts-images
 
-import DndIcon from "@/app/ui/dnd-icon";
+import DndIcon from "@/app/ui/icons/dnd-icon";
 
 export default function AppLogo()
 {

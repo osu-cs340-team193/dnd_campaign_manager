@@ -4,14 +4,14 @@ import {
   EntityAttribute,
   EntityAttributeFilter,
   EntityAttributeValuePair,
-} from "@/app/lib/entity";
-import { Query } from '@/app/lib/query';
+} from "@/app/lib/entities/entity";
+import { Query } from '@/app/lib/database/query';
 
 export class MonstersEntity extends Entity
 {
-  static tableName: string = 'monsters';
+  static tableName: string = 'Monsters';
 
-  static id: EntityAttribute = 'id';
+  static monster_id: EntityAttribute = 'monster_id';
   static monster_name: EntityAttribute = 'monster_name';
   static armor_class: EntityAttribute = 'armor_class';
   static hit_points: EntityAttribute = 'hit_points';
@@ -33,7 +33,7 @@ export class MonstersEntity extends Entity
   {
     const query: string = `
       CREATE TABLE IF NOT EXISTS ${this.tableName} (
-        ${this.id} int(11) NOT NULL AUTO_INCREMENT UNIQUE,
+        ${this.monster_id} int(11) NOT NULL AUTO_INCREMENT UNIQUE,
         ${this.monster_name} varchar(255) NOT NULL,
         ${this.armor_class} int NOT NULL,
         ${this.hit_points} int NOT NULL,
@@ -162,7 +162,7 @@ export class MonstersEntity extends Entity
 // https://dev.to/larswaechter/using-mysql-in-nodejs-with-typescript-ida
 export interface IMonster extends RowDataPacket
 {
-  id?: number;
+  monster_id?: number;
   monster_name: string;
   armor_class: number;
   hit_points: number;
@@ -172,7 +172,7 @@ export interface IMonster extends RowDataPacket
 // Monster type.
 export type Monster = 
 {
-  id?: number;
+  monster_id?: number;
   monster_name: string;
   armor_class: number;
   hit_points: number;

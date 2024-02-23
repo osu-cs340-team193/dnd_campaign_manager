@@ -1,6 +1,6 @@
 "use client";
 
-import { createMonster } from "@/app/lib/actions";
+import { createMonster } from "@/app/lib/actions/monster";
 import { useFormState } from "react-dom";
 import Link from "next/link";
 
@@ -10,7 +10,7 @@ import Button from "@/app/ui/extensions/button";
 import Option from '@/app/ui/extensions/option';
 import Form from '@/app/ui/extensions/form';
 import Datalist from "@/app/ui/extensions/datalist";
-import { IMonsterType } from "@/app/lib/monsters-entity";
+import { IMonsterType } from "@/app/lib/entities/monsters-entity";
 
 export default function CreateMonsterForm({ monsterTypes } : { monsterTypes : IMonsterType[] })
 {

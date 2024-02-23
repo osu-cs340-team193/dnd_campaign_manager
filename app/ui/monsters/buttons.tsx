@@ -1,6 +1,6 @@
 'use client';
 
-import { deleteMonster } from "@/app/lib/actions";
+import { deleteMonster } from "@/app/lib/actions/monster";
 import { useFormState } from "react-dom";
 import Button from "@/app/ui/extensions/button";
 import Form from "@/app/ui/extensions/form";

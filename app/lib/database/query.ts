@@ -3,7 +3,7 @@ import {
   EntityAttribute,
   EntityAttributeFilter,
   EntityAttributeValuePair,
-} from "@/app/lib/entity";
+} from "@/app/lib/entities/entity";
 
 export const lessThan: ComparisonOp = '<';
 export const lessThanEqual: ComparisonOp = '<=';

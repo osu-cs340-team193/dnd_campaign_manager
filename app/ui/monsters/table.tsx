@@ -1,4 +1,4 @@
-import { fetchMonsters } from '@/app/lib/data';
+import { fetchMonsters } from '@/app/lib/data/monster';
 import Table from '@/app/ui/extensions/table';
 import TableHead from '@/app/ui/extensions/thead';
 import TableRow from '@/app/ui/extensions/tr';
@@ -6,7 +6,7 @@ import TableHeader from '@/app/ui/extensions/th';
 import TableBody from '@/app/ui/extensions/tbody';
 import TableData from '@/app/ui/extensions/td';
 
-import { Monster } from '@/app/lib/monsters-entity';
+import { Monster } from '@/app/lib/entities/monsters-entity';
 import { DeleteMonster, UpdateMonster } from './buttons';
 
 export default async function MonstersTable()
@@ -49,7 +49,7 @@ export default async function MonstersTable()
           monsters?.map((monster) => 
           (
             <TableRow
-              key={monster.id}
+              key={monster.monster_id}
             >
               <TableData
                 className='border border-green-600 px-[10px] py-[5px]'
@@ -77,8 +77,8 @@ export default async function MonstersTable()
                 <div
                   className='flex'
                 >
-                  <UpdateMonster id={monster.id ?? -1} />
-                  <DeleteMonster id={monster.id ?? -1} />
+                  <UpdateMonster id={monster.monster_id ?? -1} />
+                  <DeleteMonster id={monster.monster_id ?? -1} />
                 </div>
               </TableData>
             </TableRow>

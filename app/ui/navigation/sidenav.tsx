@@ -1,7 +1,7 @@
 // Side navigation component.
 // See: https://nextjs.org/learn/dashboard-app/creating-layouts-and-pages
 
-import AppLogo from "./app-logo";
+import AppLogo from "../app-logo";
 import NavLinks from "./nav-links";
 
 export default function SideNav()

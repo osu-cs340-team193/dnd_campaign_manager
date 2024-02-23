@@ -1,13 +1,13 @@
 import { PoolConnection } from 'mysql2/promise';
 
 // App's database connection state.
-import mysql from '@/app/lib/db';
+import mysql from '@/app/lib/database/db';
 
 // Import placeholder data to prepopulate databases.
-import { monsters } from '@/app/lib/placeholder-data.js';
+import { monsters } from '@/app/lib/database/placeholder-data.js';
 
 // Import helper classes for performing CRUD on database entities.
-import { MonstersEntity } from '@/app/lib/monsters-entity';
+import { MonstersEntity } from '@/app/lib/entities/monsters-entity';
 
 async function main()
 {

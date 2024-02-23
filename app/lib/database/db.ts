@@ -2,7 +2,7 @@
 import fs from 'fs';
 import * as dotenv from 'dotenv';
 import { PoolOptions } from 'mysql2';
-import { MySQLConnection } from '@/app/lib/mysql';
+import { MySQLConnection } from '@/app/lib/database/mysql';
 
 // Read connection secrets from local env file. Must be at root of project directory.
 const config = dotenv.config({ path: '@/.env' });

@@ -1,8 +1,8 @@
 "use client";
 
-import { updateMonster } from "@/app/lib/actions";
+import { updateMonster } from "@/app/lib/actions/monster";
 import { useFormState } from "react-dom";
-import { IMonsterType, Monster } from "@/app/lib/monsters-entity";
+import { IMonsterType, Monster } from "@/app/lib/entities/monsters-entity";
 import Link from "next/link";
 import Label from "@/app/ui/extensions/label";
 import Input from "@/app/ui/extensions/input";
@@ -15,7 +15,7 @@ import Datalist from "@/app/ui/extensions/datalist";
 export default function EditMonsterForm({ monster, monsterTypes }: { monster: Monster, monsterTypes: IMonsterType[] })
 {
   const initialState = { message: null, errors: {}};
-  const updateMonsterWithId = updateMonster.bind(null, monster?.id ?? -1);
+  const updateMonsterWithId = updateMonster.bind(null, monster?.monster_id ?? -1);
   // TS does not like. Throws error for some reason.
   //@ts-ignore
   const [state, dispatch] = useFormState(updateMonsterWithId, initialState);

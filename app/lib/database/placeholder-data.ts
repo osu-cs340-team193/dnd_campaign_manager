@@ -1,7 +1,7 @@
 // Seed data 
 // See: https://nextjs.org/learn/dashboard-app/getting-started
 
-import { Monster } from "@/app/lib/monsters-entity";
+import { Monster } from "@/app/lib/entities/monsters-entity";
 
 // Monster's table
 export const monsters: Monster[] = [

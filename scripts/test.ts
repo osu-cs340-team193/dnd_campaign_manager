@@ -1,19 +1,19 @@
 import { PoolConnection } from 'mysql2/promise';
 
 // App's database connection state.
-import mysql from '@/app/lib/db';
+import mysql from '@/app/lib/database/db';
 
 // Import helper classes for performing CRUD on database entities.
-import { MonstersEntity } from '@/app/lib/monsters-entity';
+import { MonstersEntity } from '@/app/lib/entities/monsters-entity';
 
 // Helper definitions/types for dynamically creating queries.
-import { EntityAttributeFilter } from '@/app/lib/entity';
+import { EntityAttributeFilter } from '@/app/lib/entities/entity';
 
 import {
   greaterThan, 
   lessThanEqual, 
   equalTo 
-} from '@/app/lib/query';
+} from '@/app/lib/database/query';
 
 async function testQueries(connection: PoolConnection)
 {
@@ -34,12 +34,12 @@ async function testQueries(connection: PoolConnection)
   let result = await MonstersEntity.selectAll(connection, [hpFilter, acFilter], false, 2);
   console.log(result);
 
-  result = await MonstersEntity.select(connection, [MonstersEntity.monster_name, MonstersEntity.id]);
+  result = await MonstersEntity.select(connection, [MonstersEntity.monster_name, MonstersEntity.monster_id]);
   console.log(result);
 
   const idFilter: EntityAttributeFilter =
   {
-    attr: MonstersEntity.id,
+    attr: MonstersEntity.monster_id,
     op: equalTo,
     value: 1
   };
