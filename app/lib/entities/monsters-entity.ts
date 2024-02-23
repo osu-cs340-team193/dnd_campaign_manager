@@ -38,7 +38,7 @@ export class MonstersEntity extends Entity
         ${this.armor_class} int NOT NULL,
         ${this.hit_points} int NOT NULL,
         ${this.monster_type} varchar(255) NOT NULL,
-        PRIMARY KEY (id)
+        PRIMARY KEY (${this.monster_id})
       )
     `;
 

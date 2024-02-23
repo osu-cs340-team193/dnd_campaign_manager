@@ -11,12 +11,26 @@ const config = dotenv.config({ path: '@/.env' });
 // evaluated using the configparser. 
 // 2. The database host says it expects an ssl certificate, but it doesn't seem 
 // to be the case. If it is, uncomment the ssl config option below.
+/*
 const access: PoolOptions = {
   host: config.parsed?.MYSQL_HOST, 
   port: parseInt(config.parsed?.MYSQL_PORT ?? "3306"),
   user: config.parsed?.MYSQL_USER,
   password: config.parsed?.MYSQL_PASSWORD,
   database: config.parsed?.MYSQL_DATABASE,
+  connectionLimit: 10,
+  //ssl: {
+  //  rejectUnauthorized: true,
+  //  ca: fs.readFileSync("./ca.pem").toString(),
+  //},
+};
+*/
+const access: PoolOptions = {
+  host: process.env.MYSQL_HOST, 
+  port: parseInt(process.env.MYSQL_PORT ?? "3306"),
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
   connectionLimit: 10,
   //ssl: {
   //  rejectUnauthorized: true,
