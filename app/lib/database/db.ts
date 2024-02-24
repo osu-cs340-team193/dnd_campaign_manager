@@ -5,7 +5,7 @@ import { PoolOptions } from 'mysql2';
 import { MySQLConnection } from '@/app/lib/database/mysql';
 
 // Read connection secrets from local env file. Must be at root of project directory.
-const config = dotenv.config({ path: '@/.env' });
+//const config = dotenv.config({ path: '@/.env' });
 
 // 1. When seeding the database locally, the connection options need to be
 // evaluated using the configparser. 

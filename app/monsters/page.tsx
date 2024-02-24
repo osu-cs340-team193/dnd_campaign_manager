@@ -1,28 +1,38 @@
-import Link from 'next/link';
+import MonstersTable from '@/app/ui/monsters/monsters-table';
 
-import MonstersTable from '@/app/ui/monsters/table';
-
-import { IoIosAddCircleOutline } from 'react-icons/io';
+import { Container, Flex, Text } from '@mantine/core';
+import AddMonsterButton from '@/app/ui/monsters/add-monster-button';
+import { fetchMonsters } from '@/app/lib/data/monster-data';
 
 // Page displayed when routing to hostname/monsters
-export default function Page()
+export default async function Page()
 { 
+  const monsters = await fetchMonsters();
+
   return (
-    <div
-      className='mt-[40px] flex-column'
+    <Container
+      size='md'
+      px='lg'
     >
-      <MonstersTable />
-      <div
-        className=''
+      <Flex
+        direction='column'
+        gap='lg'
+        my='lg'
       >
-        <Link
-          href={'/monsters/create'}
+        <Container
         >
-          <IoIosAddCircleOutline
-            className='border-2 border-blue-800 mt-[20px] w-[100px] h-[30px] bg-green-200'
-          />
-        </Link>
-      </div>
-    </div>
+          <Text
+            size='xl'
+            c='teal'
+          >
+            Monsters
+          </Text>
+        </Container>
+        <MonstersTable
+          monsters={monsters}
+        />
+        <AddMonsterButton />
+      </Flex>
+    </Container>
   );
 }

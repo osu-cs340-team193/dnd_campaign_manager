@@ -251,8 +251,6 @@ export async function updateMonster(id: number, prevState: MonsterFormState, for
 // POST API endpoint when deleting an existing monster.
 export async function deleteMonster(id: number)
 {
-  console.info(id);
-
   let connection: PoolConnection | null = null;
 
   // Attempt to delete monster from backend.

@@ -1,19 +1,45 @@
+'use client';
+
 // Side navigation component.
 // See: https://nextjs.org/learn/dashboard-app/creating-layouts-and-pages
 
-import AppLogo from "../app-logo";
-import NavLinks from "./nav-links";
+import { Flex } from '@mantine/core';
+
+// Navigation links to app pages.
+// See: https://nextjs.org/learn/dashboard-app/creating-layouts-and-pages
+
+import { usePathname } from 'next/navigation';
+import { NavLinkInfo } from '@/app/ui/navigation/nav-link';
+import { NavLink } from '@mantine/core';
+
+const linkInfos: NavLinkInfo[] = [
+  { name: 'Home', href: '/' },
+  { name: 'Campaigns', href: '/campaigns' },
+  { name: 'Locations', href: '/locations' },
+  { name: 'Monsters', href: '/monsters' },
+  { name: 'Actions', href: '/actions' },
+  { name: 'Items', href: '/items' },
+];
 
 export default function SideNav()
 {
+  // Highlight active link.
+  // See: https://nextjs.org/learn/dashboard-app/navigating-between-pages
+  const pathname = usePathname(); 
+
   return (
-    <div className="flex flex-col bg-stone-300 h-screen">
-      <div className="flex-none mt-2 mx-5">
-        <AppLogo />
-      </div>
-      <div className="grow mt-10 mx-5">
-        <NavLinks />
-      </div>
-    </div>
+    <Flex
+      direction='column'
+      gap='xs'
+    >
+      {linkInfos.map((linkInfo) => 
+        <NavLink
+          key={linkInfo.href}
+          label={linkInfo.name}
+          href={linkInfo.href}
+          active={pathname === linkInfo.href}
+        />
+      )}
+    </Flex>
   );
 }

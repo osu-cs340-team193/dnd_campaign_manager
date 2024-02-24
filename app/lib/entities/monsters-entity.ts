@@ -3,7 +3,6 @@ import {
   Entity,
   EntityAttribute,
   EntityAttributeFilter,
-  EntityAttributeValuePair,
 } from "@/app/lib/entities/entity";
 import { Query } from '@/app/lib/database/query';
 

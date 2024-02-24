@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import "@/app/ui/globals.css";
+//import "@/app/ui/globals.css";
+import '@mantine/core/styles.css';
+
 import { inter } from "@/app/ui/fonts";
-import SideNav from "@/app/ui/navigation/sidenav";
-import AppLogo from "@/app/ui/app-logo";
+import Provider from '@/app/ui/extensions/provider';
+import { ColorSchemeScript } from '@mantine/core';
+import App from "@/app/ui/app";
 
 export const metadata: Metadata = {
   title: "DnD Campaign Manager",
@@ -13,22 +16,19 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 {
   return (
     <html lang="en">
+      <head>
+        <ColorSchemeScript />
+      </head>
       {/* 
         Use antialiasing to make font smoother. 
         See: https://nextjs.org/learn/dashboard-app/optimizing-fonts-images 
       */}
       <body className={`${inter.className} antialiased`}>
-        <div className="flex flex-row">
-          <SideNav />
-          <main className="grow h-2 flex flex-col m-5">
-            <div className="flex-none self-center">
-              <AppLogo />
-            </div>
-            <div className='flex h-screen justify-center'>
-              {children}
-            </div>
-          </main>
-        </div>
+        <Provider>
+          <App>
+            {children}
+          </App>
+        </Provider>
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
-import { fetchMonsterTypes } from '@/app/lib/data/monster';
-import CreateMonsterForm from '@/app/ui/monsters/create-form';
+import { fetchMonsterTypes } from '@/app/lib/data/monster-data';
+import CreateForm from '@/app/ui/monsters/monster-create-form';
 
 // Citation for the following function:
 // Date: 02/18/2024
@@ -18,10 +18,7 @@ export default async function Page()
 
   return (
     <div>
-      <div>
-        New Monster
-      </div>
-      <CreateMonsterForm 
+      <CreateForm 
         monsterTypes={monsterTypes}
       />
     </div>

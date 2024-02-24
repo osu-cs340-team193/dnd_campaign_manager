@@ -2,9 +2,9 @@ import
 { 
   fetchMonsterById, 
   fetchMonsterTypes 
-} from '@/app/lib/data/monster';
+} from '@/app/lib/data/monster-data';
 
-import EditMonsterForm from '@/app/ui/monsters/edit-form';
+import Form from '@/app/ui/monsters/monster-edit-form';
 
 // Citation for the following function:
 // Date: 02/18/2024
@@ -31,12 +31,7 @@ export default async function Page({ params }: { params: { id: number }})
     <div
       className=''
     >
-      <h1 
-        className="my-[15px] text-center text-lg"
-      >
-        Edit Monster
-      </h1>
-      <EditMonsterForm 
+      <Form 
         monster={monster} 
         monsterTypes={monsterTypes}
       />

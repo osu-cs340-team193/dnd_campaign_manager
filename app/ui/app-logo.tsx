@@ -2,19 +2,32 @@
 // See: https://nextjs.org/learn/dashboard-app/optimizing-fonts-images
 
 import DndIcon from "@/app/ui/icons/dnd-icon";
+import { Center, Container, Flex, Text, Title } from "@mantine/core";
 
 export default function AppLogo()
 {
   return (
-    <div className="flex flex-row">
-      <div className="pr-1">
-        <DndIcon props={{ height: 55 }}/>
-      </div>
-      <div className="self-center">
-        <p className="text-2xl font-bold text-rose-900">
-          Campaign Manager
-        </p>
-      </div>
-    </div>
+    <Container
+      size='md'
+      px='md'
+    >
+      <Flex
+        direction='row'
+        gap='xs'
+        justify='center'
+      >
+        <DndIcon 
+          props={{ height: 55 }}
+        />
+        <Center>
+          <Text
+            size='xl'
+            c='maroon'
+          >
+            Campaign Manager
+          </Text>
+        </Center>
+      </Flex>
+    </Container>
   );
 }
