@@ -19,6 +19,8 @@ const linkInfos: NavLinkInfo[] = [
   { name: 'Monsters', href: '/monsters' },
   { name: 'Actions', href: '/actions' },
   { name: 'Items', href: '/items' },
+  { name: 'LocationsMonsters', href: '/locations-monsters' },
+  { name: 'LocationsItems', href: '/locations-items' },
 ];
 
 export default function TopNav()

@@ -74,22 +74,24 @@ CREATE TABLE Actions (
 Create Locations_Items intersection table
 */ 
 CREATE TABLE Locations_Items (
-  lid int,
-  iid int,
-  PRIMARY KEY (lid, iid),
-  CONSTRAINT Locations_Items_fk_1 FOREIGN KEY (lid) REFERENCES Locations(location_id) ON DELETE CASCADE,
-  CONSTRAINT Locations_Items_fk_2 FOREIGN KEY (iid) REFERENCES Items(item_id) ON DELETE CASCADE
+  location_item_id int(11) NOT NULL AUTO_INCREMENT UNIQUE,
+  location_id int,
+  item_id int,
+  PRIMARY KEY (location_item_id),
+  CONSTRAINT Locations_Items_fk_1 FOREIGN KEY (location_id) REFERENCES Locations(location_id) ON DELETE CASCADE,
+  CONSTRAINT Locations_Items_fk_2 FOREIGN KEY (item_id) REFERENCES Items(item_id) ON DELETE CASCADE
 );
 
 /*
 Create Locations_Monsters intersection table
 */ 
 CREATE TABLE Locations_Monsters (
-  lid int,
-  mid int,
-  PRIMARY KEY (lid, mid),
-  CONSTRAINT Locations_Monsters_fk_1 FOREIGN KEY (lid) REFERENCES Locations(location_id) ON DELETE CASCADE,
-  CONSTRAINT Locations_Monsters_fk_2 FOREIGN KEY (mid) REFERENCES Monsters(monster_id) ON DELETE CASCADE
+  location_monster_id int(11) NOT NULL AUTO_INCREMENT UNIQUE,
+  location_id int,
+  monster_id int,
+  PRIMARY KEY (location_monster_id),
+  CONSTRAINT Locations_Monsters_fk_1 FOREIGN KEY (location_id) REFERENCES Locations(location_id) ON DELETE CASCADE,
+  CONSTRAINT Locations_Monsters_fk_2 FOREIGN KEY (monster_id) REFERENCES Monsters(monster_id) ON DELETE CASCADE
 );
 
 SET FOREIGN_KEY_CHECKS=1;
@@ -215,7 +217,7 @@ INSERT INTO Actions (monster_id, action_name, description) VALUES
 /*
 Populate the Locations_Items table by reference
 */ 
-INSERT INTO Locations_Items (lid, iid) VALUES
+INSERT INTO Locations_Items (location_id, item_id) VALUES
 (
 (SELECT location_id FROM Locations WHERE location_name = 'Ilmar''s Room'), 
 (SELECT item_id FROM Items WHERE item_name = 'Amulet')
@@ -244,7 +246,7 @@ INSERT INTO Locations_Items (lid, iid) VALUES
 /*
 Populate the Locations_Monsters table by reference
 */
-INSERT INTO Locations_Monsters (lid, mid) VALUES
+INSERT INTO Locations_Monsters (location_id, monster_id) VALUES
 (
 (SELECT location_id FROM Locations WHERE location_name = 'Southern Wing'), 
 (SELECT monster_id FROM Monsters WHERE monster_name = 'Swarm of Bats')

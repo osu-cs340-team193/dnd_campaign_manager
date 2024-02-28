@@ -4,7 +4,6 @@ import SideNav from "@/app/ui/navigation/sidenav";
 import AppLogo from "@/app/ui/app-logo";
 import { AppShell, Burger, Flex, Group, UnstyledButton } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import NavLinks from '@/app/ui/navigation/nav-links';
 import TopNav from "./navigation/topnav";
 
 // See: https://mantine.dev/app-shell/?e=MobileNavbar&s=code

@@ -31,17 +31,37 @@ SELECT *
 FROM Campaigns
 WHERE campaign_id = :campaign_id_selected_when_clicking_edit_button;
 
+-- Get all available dungeon masters to populate a dropdown for selecting Campaign's dungeon master
+SELECT DISTINCT dungeon_master 
+FROM Campaigns 
+ORDER BY dungeon_master ASC;
+
 /*************************************
-Action: User clicks create button while on the Campaigns page (nothing happens here).
+Action: User clicks create button while on the Campaigns page.
 *************************************/
+
+-- Get all available dungeon masters to populate a dropdown for selecting Campaign's dungeon master
+SELECT DISTINCT dungeon_master 
+FROM Campaigns 
+ORDER BY dungeon_master ASC;
 
 /*************************************
 Action: User clicks submit button on Campaigns/create page.
 *************************************/
 
 -- Add a new campaign
-INSERT INTO Campaigns (title, start_date, end_date, dungeon_master) 
-VALUES (:titleInput, :start_date_Input, :end_date_Input, :dungeon_master_Input);
+INSERT INTO Campaigns (
+    title, 
+    start_date, 
+    end_date, 
+    dungeon_master
+) 
+VALUES (
+    :titleInput, 
+    :start_date_Input, 
+    :end_date_Input, 
+    :dungeon_master_Input
+);
 
 /*************************************
 Action: User clicks submit button on Campaigns/{id}/edit page.
@@ -49,7 +69,11 @@ Action: User clicks submit button on Campaigns/{id}/edit page.
 
 -- Update a campaign
 UPDATE Campaigns 
-SET title = :titleInput, start_date = :start_date_Input, end_date = :end_date_Input, dungeon_master = :dungeon_master_Input
+SET 
+    title = :titleInput, 
+    start_date = :start_date_Input, 
+    end_date = :end_date_Input, 
+    dungeon_master = :dungeon_master_Input
 WHERE campaign_id = :campaign_id_from_table;
 
 /*************************************
@@ -74,7 +98,10 @@ Action: User visits Locations page.
 *************************************/
 
 -- Retrieve all Locations entries and join to show the relevant campaign name instead of the title
-SELECT C.title AS "Campaign Name", L.location_name, L.location_description
+SELECT 
+    C.title AS 'campaign_name', 
+    L.location_name, 
+    L.location_description
 FROM Locations L
 INNER JOIN Campaigns C ON Campaigns.campaign_id = Locations.campaign_id;
 
@@ -82,42 +109,62 @@ INNER JOIN Campaigns C ON Campaigns.campaign_id = Locations.campaign_id;
 Action: User clicks edit button for a given location in the Locations table.
 *************************************/
 
--- Select a single location for the update location form
-SELECT *
-FROM Locations 
+-- Select a single location for the update location form and join to show the relevant campaign name instead of the title
+SELECT 
+    C.title AS 'campaign_name',
+    L.locatin_name,
+    L.location_description
+FROM Locations L
+INNER JOIN Campaigns C ON Campaigns.campaign_id = Locations.campaign_id
 WHERE location_id = :location_id_selected_when_clicking_edit_button;
 
 -- Get all available Campaigns to populate a dropdown for selecting location's associated campaign 
-SELECT title 
+SELECT DISTINCT title 
 FROM Campaigns
 ORDER BY title ASC;
 
 -- Get all available Monsters to populate a checkbox for selecting location's Monsters 
-SELECT monster_name
+SELECT DISTINCT monster_name
 FROM Monsters 
 ORDER BY monster_name ASC;
 
 -- Get all available item to populate a checkbox for selecting location's item 
-SELECT item_name
+SELECT DISTINCT item_name
 FROM Items 
 ORDER BY item_name ASC;
+
+-- Get all monsters for this location with user friendly names
+SELECT 
+    M.monster_name AS 'monster_name'
+FROM Locations_Monsters LM
+	INNER JOIN Locations L ON L.location_id = LM.location_id
+    INNER JOIN Monsters M ON M.monster_id = LM.monster_id
+WHERE L.location_id = :location_id_selected_when_clicking_edit_button;
+
+-- Get all items for this location with user friendly names
+SELECT 
+    I.item_name AS 'item_name'
+FROM Locations_Items LI
+	INNER JOIN Locations L ON L.location_id = LI.lid
+    INNER JOIN Items I ON I.item_id = LI.iid
+WHERE L.location_id = :location_id_selected_when_clicking_edit_button;
 
 /*************************************
 Action: User clicks create button while on the Locations page.
 *************************************/
 
 -- Get all available Campaigns to populate a dropdown for selecting location's associated campaign 
-SELECT title 
+SELECT DISTINCT title 
 FROM Campaigns
 ORDER BY title ASC;
 
 -- Get all available Monsters to populate a checkbox for selecting location's Monsters 
-SELECT monster_name
+SELECT DISTINCT monster_name
 FROM Monsters 
 ORDER BY monster_name ASC;
 
 -- Get all available item to populate a checkbox for selecting location's item 
-SELECT item_name
+SELECT DISTINCT item_name
 FROM Items 
 ORDER BY item_name ASC;
 
@@ -126,22 +173,39 @@ Action: User clicks submit button on Locations/create page.
 *************************************/
 
 -- Add a new location
-INSERT INTO Locations (campaign_id, location_name, location_description)
-VALUE (:campaign_id_matching_title_from_Campaigns_dropdown, :location_name_Input, :location_description_Input);
+INSERT INTO Locations (
+    campaign_id, 
+    location_name, 
+    location_description
+)
+VALUE (
+    :campaign_id_matching_title_from_Campaigns_dropdown, 
+    :location_name_Input, 
+    :location_description_Input
+);
 
 -- Insert into Locations_Monsters intersection table when adding a location (do once for each selected monster)
-INSERT INTO Locations_Monsters (lid, mid) 
+INSERT INTO Locations_Monsters (
+    lid, mid
+) 
 VALUES (
-    (SELECT location_id FROM Locations WHERE location_id = :location_id_from_insert), 
-    (SELECT monster_id FROM Monsters WHERE monster_name = :monster_name_from_selected_Monsters_array)
+    (SELECT location_id FROM Locations 
+     WHERE location_id = :location_id_from_insert), 
+    (SELECT monster_id FROM Monsters 
+     WHERE monster_name = :monster_name_from_selected_Monsters_array)
 ),
 -- Repeat for all selected Monsters 
 
 -- Insert into Locations_Items intersection table when adding a location (do once for each selected item)
-INSERT INTO Locations_Items (lid, iid) 
+INSERT INTO Locations_Items (
+    lid, 
+    iid
+) 
 VALUES (
-    (SELECT location_id FROM Locations WHERE location_id = :location_id_from_insert), 
-    (SELECT item_id FROM Items WHERE item_name = :item_name_from_selected_Items_array)
+    (SELECT location_id FROM Locations 
+     WHERE location_id = :location_id_from_insert), 
+    (SELECT item_id FROM Items 
+     WHERE item_name = :item_name_from_selected_Items_array)
 ),
 -- Repeat for all selected Items
 
@@ -151,24 +215,33 @@ Action: User clicks submit button on Locations/{id}/edit page.
 
 -- Update a location
 UPDATE Locations 
-SET campaign_id = :campaign_id_from_Campaigns_Dropdown, location_name = :location_name_Input, location_description = :location_description_Input
+SET 
+    campaign_id = :campaign_id_from_Campaigns_Dropdown, 
+    location_name = :location_name_Input, 
+    location_description = :location_description_Input
 WHERE location_id = :location_id_from_table;
 
 -- Update Locations_Items intersection table when updating a location (do once for each selected item)
 UPDATE Locations_Items
 SET 
-    lid = (SELECT location_id FROM Locations WHERE location_id = :location_id_from_update),
-    iid = (SELECT item_id FROM Items WHERE item_name = :item_name_from_selected_Items_array)
+    lid = (SELECT location_id FROM Locations 
+           WHERE location_id = :location_id_from_update),
+    iid = (SELECT item_id FROM Items 
+           WHERE item_name = :item_name_from_selected_Items_array)
 WHERE lid = :location_id_from_update
-AND iid = (SELECT item_id FROM Items WHERE item_name = :item_name_from_selected_Items_array);
+AND iid = (SELECT item_id FROM Items 
+           WHERE item_name = :item_name_from_selected_Items_array);
 
 -- Update Locations_Monsters intersection table when updating a location (do once for each selected monster)
 UPDATE Locations_Monsters
 SET 
-    lid = (SELECT location_id FROM Locations WHERE location_id = :location_id_from_update),
-    mid = (SELECT monster_id FROM Monsters WHERE monster_name = :monster_name_from_selected_Monsters_array)
+    lid = (SELECT location_id FROM Locations 
+           WHERE location_id = :location_id_from_update),
+    mid = (SELECT monster_id FROM Monsters 
+           WHERE monster_name = :monster_name_from_selected_Monsters_array)
 WHERE lid = :location_id_from_update 
-AND mid = (SELECT monster_id FROM Monsters WHERE monster_name = :monster_name_from_selected_Monsters_array);
+AND mid = (SELECT monster_id FROM Monsters 
+           WHERE monster_name = :monster_name_from_selected_Monsters_array);
 
 /*************************************
 Action: User clicks delete button for a given location in the Locations table.
@@ -233,11 +306,24 @@ Action: User clicks submit button on Monsters/create page.
 *************************************/
 
 -- Add a new monster
-INSERT INTO Monsters (monster_name, armor_class, hit_points, monster_type)
-VALUE (:monster_name_Input, :armor_class_Input, :hit_point_Input, :monster_type_input)
+INSERT INTO Monsters (
+    monster_name, 
+    armor_class, 
+    hit_points, 
+    monster_type
+)
+VALUE (
+    :monster_name_Input, 
+    :armor_class_Input, 
+    :hit_points_Input, 
+    :monster_type_Input
+);
 
 -- Insert into Locations_Monsters intersection table when adding a location (do once for each selected location)
-INSERT INTO Locations_Monsters (lid, mid) 
+INSERT INTO Locations_Monsters (
+    location_id,
+    monster_id
+) 
 VALUES (
     (SELECT location_id FROM Locations WHERE location_name = :location_name_from_selected_Locations_array), 
     (SELECT monster_id FROM Monsters WHERE monster_id = :monster_id_from_insert)
@@ -245,12 +331,16 @@ VALUES (
 -- Repeat for all selected Locations 
 
 /*************************************
-Action: User clicks submit button on Monsters/{id}/edit page.
+Action: User clicks submit button on monsters/{id}/edit page.
 *************************************/
 
 -- Update a monster
 UPDATE Monsters 
-SET monster_name = :monster_name_Input, armor_class = :armor_class_Input, monster_type = :monster_type_Input
+SET 
+    monster_name = :monster_name_Input, 
+    armor_class = :armor_class_Input, 
+    hit_points = :hit_points_Input,
+    monster_type = :monster_type_Input
 WHERE monster_id = :monster_id_from_table;
 
 -- Update Locations_Monsters intersection table when updating a monster (do once for each selected location)
@@ -283,7 +373,10 @@ Action: User visits Actions page.
 *************************************/
 
 -- Retrieve all Actions
-SELECT A.action_name, M.monster_name AS "Monster Name", A.description
+SELECT 
+    A.action_name, 
+    M.monster_name AS 'monster_name', 
+    A.description
 FROM Actions A
 INNER JOIN Monsters M ON Monsters.monster_id = Actions.monster_id;
 
@@ -292,9 +385,14 @@ Action: User clicks edit button for a given action in the Actions table.
 *************************************/
 
 -- Select a single action for the update action form
-SELECT *
-FROM Actions 
+SELECT 
+    A.action_name, 
+    M.monster_name AS 'monster_name', 
+    A.description
+FROM Actions A
+INNER JOIN Monsters M ON Monsters.monster_id = Actions.monster_id
 WHERE action_id = :action_id_selected_when_clicking_edit_button;
+
 
 -- Get all available Monsters to populate a dropdown for selecting action's associated monster 
 SELECT monster_name
@@ -315,8 +413,17 @@ Action: User clicks submit button on Actions/create page.
 *************************************/
 
 -- Add a new action
-INSERT INTO Actions (action_name, monster_name, description)
-VALUE (:action_name_Input, :monster_ID_as_name_Dropdown, :description_Input);
+INSERT INTO Actions (
+    action_name, 
+    monster_name, 
+    description
+)
+VALUE (
+    :action_name_Input, 
+    :(SELECT monster_id FROM Monsters 
+      WHERE monster_name = :monster_name_from_dropdown),
+    :description_Input
+);
 
 /*************************************
 Action: User clicks submit button on Actions/{id}/edit page.
@@ -324,8 +431,12 @@ Action: User clicks submit button on Actions/{id}/edit page.
 
 -- Update action
 UPDATE Actions 
-SET action_name = :action_name_Input, monster_name = :monster_ID_as_name_Dropdown, description = :description_Input
-WHERE action_id = :action_id_from_table                    
+SET 
+    action_name = :action_name_Input, 
+    monster_id = (SELECT monster_id FROM Monsters 
+                  WHERE monster_name = :monster_name_from_dropdown),
+    description = :description_Input
+WHERE action_id = :action_id_from_table;
 
 /*************************************
 Action: User clicks delete button for a given action in the Actions table.
@@ -380,14 +491,27 @@ Action: User clicks submit button on Items/create page.
 *************************************/
 
 -- Add a new item
-INSERT INTO Items (item_name, value, weight)
-VALUE (:item_name_Input, :value_Input, :weight_Input)
+INSERT INTO Items (
+    item_name, 
+    value, 
+    weight
+)
+VALUE (
+    :item_name_Input, 
+    :value_Input, 
+    :weight_Input
+)
 
 -- Insert into Locations_Items intersection table when adding an item (do once for each selected location)
-INSERT INTO Locations_Items (lid, iid) 
+INSERT INTO Locations_Items (
+    lid, 
+    iid
+) 
 VALUES (
-    (SELECT location_id FROM Locations WHERE location_name = :location_name_from_selected_Locations_array), 
-    (SELECT item_id FROM Items WHERE item_id = :item_id_from_insert)
+    (SELECT location_id FROM Locations 
+     WHERE location_name = :location_name_from_selected_Locations_array), 
+    (SELECT item_id FROM Items 
+     WHERE item_id = :item_id_from_insert)
 ),
 -- Repeat for all selected Locations 
 
@@ -397,16 +521,22 @@ Action: User clicks submit button on Items/{id}/edit page.
 
 -- Update item
 UPDATE Items 
-SET item_name = :item_name_Input, value = :value_Input, weight = :weight_Input
-WHERE item_id = :item_id_from_table
+SET 
+    item_name = :item_name_Input, 
+    value = :value_Input, 
+    weight = :weight_Input
+WHERE item_id = :item_id_from_table;
 
 -- Insert into Locations_Items intersection table when adding an item (do once for each selected location)
 UPDATE Locations_Items
 SET
-    lid = (SELECT location_id FROM Locations WHERE location_name = :location_name_from_selected_Locations_array), 
-    iid = (SELECT item_id FROM Items WHERE item_id = :item_id_from_insert)
+    lid = (SELECT location_id FROM Locations 
+           WHERE location_name = :location_name_from_selected_Locations_array), 
+    iid = (SELECT item_id FROM Items 
+           WHERE item_id = :item_id_from_insert)
 WHERE iid = :item_id_from_update
-AND lid = (SELECT location_id FROM Locations WHERE location_name = :location_name_from_selected_Locations_array);
+AND lid = (SELECT location_id FROM Locations 
+           WHERE location_name = :location_name_from_selected_Locations_array);
 
 /*************************************
 Action: User clicks delete button for a given item in the Items table.
@@ -415,7 +545,7 @@ Action: User clicks delete button for a given item in the Items table.
 -- Delete item
 DELETE
 FROM Items
-WHERE item_id = :item_id_from_table
+WHERE item_id = :item_id_from_table;
 
 /****************************************************************************************
 
@@ -444,21 +574,200 @@ WHERE lid = :location_id_input AND iid = :item_id_input;
 
 
 Locations_Monsters
-(no associated page on UI)
 
 
 *****************************************************************************************/
 
+/*************************************
+Action: User visits Locations Monsters page.
+*************************************/
+
 -- return all entries from table in a user friendly manner (using names)
-SELECT L.location_name AS "Location Name", M.monster_name AS "Monster Name"
+SELECT 
+    LM.location_monster_id,
+    L.location_name AS 'location_name', 
+    M.monster_name AS 'monster_name'
 FROM Locations_Monsters LM
-	INNER JOIN Locations L ON L.location_id = LM.lid
-    INNER JOIN Monsters M ON M.monster_id = LM.mid;
+	INNER JOIN Locations L ON L.location_id = LM.location_id
+    INNER JOIN Monsters M ON M.monster_id = LM.monster_id;
 
--- add a new entry to the table from the Monsters page in the form of a multi-select drop down of possible location names
-INSERT INTO Locations_Monsters (lid, mid)
-VALUES (:location_id_Input, :monster_id_Input);
+/*************************************
+Action: User clicks edit button for a given location monster in the Locations Monsters table.
+*************************************/
 
--- delete a record
-DELETE FROM Locations_Items
-WHERE lid = :location_id_input AND iid = :item_id_input;
+-- Select a single location monster for the update location monster form
+SELECT 
+    LM.location_monster_id,
+    L.location_name AS 'location_name', 
+    M.monster_name AS 'monster_name'
+FROM Locations_Monsters LM
+	INNER JOIN Locations L ON L.location_id = LM.location_id
+    INNER JOIN Monsters M ON M.monster_id = LM.monster_id
+WHERE LM.location_monster_id = :location_monster_id_selected_when_clicking_edit_button;
+
+-- Get all available location names to populate a dropdown for selecting location 
+SELECT DISTINCT location_name 
+FROM Locations 
+ORDER BY location_name ASC;
+
+-- Get all available monster names to populate a dropdown for selecting monster
+SELECT DISTINCT monster_name
+FROM Monsters
+ORDER BY monster_name ASC;
+
+/*************************************
+Action: User clicks create button while on the Locations Monsters page.
+*************************************/
+
+-- Get all available location names to populate a dropdown for selecting location 
+SELECT DISTINCT location_name 
+FROM Locations 
+ORDER BY location_name ASC;
+
+-- Get all available monster names to populate a dropdown for selecting monster
+SELECT DISTINCT monster_name
+FROM Monsters
+ORDER BY monster_name ASC;
+
+/*************************************
+Action: User clicks submit button on locations-monsters/create page.
+*************************************/
+
+-- Add a new location monster
+INSERT INTO Locations_Monsters (
+    location_id,
+    monster_id
+)
+VALUE (
+    (SELECT location_id 
+     FROM Locations
+     WHERE location_name = :location_name_selected_from_dropdown),
+    (SELECT monster_id 
+     FROM Monsters 
+     WHERE monster_name = :monster_name_selected_from_dropdown)
+);
+
+/*************************************
+Action: User clicks submit button on locations-monsters/{id}/edit page.
+*************************************/
+
+-- Update location monster
+UPDATE Locations_Monsters
+SET
+    location_id = (SELECT location_id
+                   FROM Locations
+                   WHERE location_name = :location_name_selected_from_dropdown),
+    monster_id = (SELECT monster_id
+                   FROM Monsters 
+                   WHERE monster_name = :monster_name_selected_from_dropdown)
+WHERE location_monster_id = :location_monster_id_from_update;
+
+/*************************************
+Action: User clicks delete button for a given location monster in the Locations Monsters table.
+*************************************/
+
+-- Delete location monster
+DELETE
+FROM Locations_Monsters
+WHERE location_monster_id = :location_monster_id_from_table;
+
+/****************************************************************************************
+
+
+Locations_Items
+
+
+*****************************************************************************************/
+
+/*************************************
+Action: User visits Locations Items page.
+*************************************/
+
+-- return all entries from table in a user friendly manner (using names)
+SELECT 
+    LI.location_item_id,
+    L.location_name AS 'location_name', 
+    I.item_name AS 'item_name'
+FROM Locations_Items LI
+	INNER JOIN Locations L ON L.location_id = LI.location_id
+    INNER JOIN Items I ON I.item_id = LI.item_id;
+
+/*************************************
+Action: User clicks edit button for a given location item in the Locations Items table.
+*************************************/
+
+-- Select a single location item for the update location item form
+SELECT 
+    LI.location_item_id,
+    L.location_name AS 'location_name', 
+    I.item_name AS 'item_name'
+FROM Locations_Items LI
+	INNER JOIN Locations L ON L.location_id = LI.location_id
+    INNER JOIN Items L ON L.item_id = LI.item_id
+WHERE LM.location_item_id = :location_item_id_selected_when_clicking_edit_button;
+
+-- Get all available location names to populate a dropdown for selecting location 
+SELECT DISTINCT location_name 
+FROM Locations 
+ORDER BY location_name ASC;
+
+-- Get all available item names to populate a dropdown for selecting item 
+SELECT DISTINCT item_name 
+FROM Items 
+ORDER BY item_name ASC;
+
+/*************************************
+Action: User clicks create button while on the Locations Items page.
+*************************************/
+
+-- Get all available location names to populate a dropdown for selecting location 
+SELECT DISTINCT location_name 
+FROM Locations 
+ORDER BY location_name ASC;
+
+-- Get all available item names to populate a dropdown for selecting item 
+SELECT DISTINCT item_name 
+FROM Items 
+ORDER BY item_name ASC;
+
+/*************************************
+Action: User clicks submit button on locations-items/create page.
+*************************************/
+
+-- Add a new location item 
+INSERT INTO Locations_Items (
+    location_id,
+    item_id
+)
+VALUE (
+    (SELECT location_id 
+     FROM Locations
+     WHERE location_name = :location_name_selected_from_dropdown),
+    (SELECT item_id 
+     FROM Items 
+     WHERE item_name = :item_name_selected_from_dropdown)
+);
+
+/*************************************
+Action: User clicks submit button on locations-items/{id}/edit page.
+*************************************/
+
+-- Update location item 
+UPDATE Locations_Items
+SET
+    location_id = (SELECT location_id
+                   FROM Locations
+                   WHERE location_name = :location_name_selected_from_dropdown),
+    item_id = (SELECT item_id 
+               FROM Items 
+               WHERE item_name = :item_name_selected_from_dropdown)
+WHERE location_item_id = :location_item_id_from_update;
+
+/*************************************
+Action: User clicks delete button for a given location item in the Locations Items table.
+*************************************/
+
+-- Delete location item 
+DELETE
+FROM Locations_Items
+WHERE location_item_id = :location_item_id_from_table;

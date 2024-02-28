@@ -1,4 +1,4 @@
-import { Container, Flex, Title } from '@mantine/core';
+import { Container, Flex, Image, Title } from '@mantine/core';
 
 // Page displayed when routing to hostname/monsters
 export default async function Page()
@@ -16,8 +16,16 @@ export default async function Page()
         align='center'
       >
         <Title>
-          Home Page
+          Database Overview
         </Title>
+        <Image
+          radius='md'
+          src='/image1.PNG'
+        />
+        <Image
+          radius='md'
+          src='/image2.PNG'
+        />
       </Flex>
     </Container>
   );

@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "npx tsx ./scripts/seed.ts",
     "test": "npx tsx ./scripts/test.ts"
   },
   "dependencies": {
@@ -34,6 +33,7 @@
     "dotenv": "^16.4.4",
     "embla-carousel-react": "^8.0.0",
     "heroicons": "^2.1.1",
+    "loglevel": "^1.9.1",
     "mysql2": "^3.9.1",
     "net": "^1.0.2",
     "next": "14.1.0",

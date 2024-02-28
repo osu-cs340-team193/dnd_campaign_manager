@@ -1,8 +1,8 @@
-import MonstersTable from '@/app/ui/monsters/monsters-table';
+import EntityTable from '@/app/ui/monsters/entity-table';
 
 import { Container, Flex, Text } from '@mantine/core';
-import AddMonsterButton from '@/app/ui/monsters/add-monster-button';
-import { fetchMonsters } from '@/app/lib/data/monster-data';
+import { AddButton } from '@/app/ui/monsters/buttons';
+import { fetchMonsters } from '@/app/lib/data';
 
 // Page displayed when routing to hostname/monsters
 export default async function Page()
@@ -28,10 +28,10 @@ export default async function Page()
             Monsters
           </Text>
         </Container>
-        <MonstersTable
+        <EntityTable
           monsters={monsters}
         />
-        <AddMonsterButton />
+        <AddButton />
       </Flex>
     </Container>
   );

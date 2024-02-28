@@ -1,0 +1,8 @@
+// Set to true when connected to backend.
+export const campaignsDbConnected:         boolean = false;
+export const locationsDbConnected:         boolean = false;
+export const monstersDbConnected:          boolean = true;
+export const actionsDbConnected:           boolean = false;
+export const itemsDbConnected:             boolean = false;
+export const locationsMonstersDbConnected: boolean = false;
+export const locationsItemsDbConnected:    boolean = false;

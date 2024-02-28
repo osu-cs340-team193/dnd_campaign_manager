@@ -1,58 +1,10 @@
 import { PoolConnection } from 'mysql2/promise';
 
 // App's database connection state.
-import mysql from '@/app/lib/database/db';
-
-// Import helper classes for performing CRUD on database entities.
-import { MonstersEntity } from '@/app/lib/entities/monsters-entity';
-
-// Helper definitions/types for dynamically creating queries.
-import { EntityAttributeFilter } from '@/app/lib/entities/entity';
-
-import {
-  greaterThan, 
-  lessThanEqual, 
-  equalTo 
-} from '@/app/lib/database/query';
+import mysql from '@/app/lib/db';
 
 async function testQueries(connection: PoolConnection)
 {
-  const hpFilter: EntityAttributeFilter = 
-  {
-    attr: MonstersEntity.hit_points,
-    op: greaterThan,
-    value: 10,
-  };
-
-  const acFilter: EntityAttributeFilter =
-  {
-    attr: MonstersEntity.armor_class,
-    op: lessThanEqual,
-    value: 13,
-  };
-
-  let result = await MonstersEntity.selectAll(connection, [hpFilter, acFilter], false, 2);
-  console.log(result);
-
-  result = await MonstersEntity.select(connection, [MonstersEntity.monster_name, MonstersEntity.monster_id]);
-  console.log(result);
-
-  const idFilter: EntityAttributeFilter =
-  {
-    attr: MonstersEntity.monster_id,
-    op: equalTo,
-    value: 1
-  };
-
-  MonstersEntity.update(connection, [MonstersEntity.monster_name], ['New Name'] , [idFilter]);
-
-  result = await MonstersEntity.selectAll(connection);
-  console.log(result);
-
-  MonstersEntity.delete(connection, [idFilter]);
-
-  result = await MonstersEntity.selectAll(connection);
-  console.log(result);
 }
 
 async function main()

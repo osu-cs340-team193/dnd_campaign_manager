@@ -2,9 +2,9 @@ import
 { 
   fetchMonsterById, 
   fetchMonsterTypes 
-} from '@/app/lib/data/monster-data';
+} from '@/app/lib/data';
 
-import Form from '@/app/ui/monsters/monster-edit-form';
+import Form from '@/app/ui/monsters/edit-form';
 
 // Citation for the following function:
 // Date: 02/18/2024
@@ -19,7 +19,14 @@ export default async function Page({ params }: { params: { id: number }})
 {
   // TODO: Move this to the form instead.
   // Query monster and types in parallel. Types used for form dropdown.
-  const [monster, monsterTypes] = await Promise.all([
+  const 
+  [
+    monster, 
+    monsterTypes
+  ] 
+  = 
+  await Promise.all
+  ([
     fetchMonsterById(params.id),
     fetchMonsterTypes()
   ]);
@@ -28,13 +35,9 @@ export default async function Page({ params }: { params: { id: number }})
   console.info(`Available monster types:\n ${JSON.stringify(monsterTypes)}`);
 
   return (
-    <div
-      className=''
-    >
-      <Form 
-        monster={monster} 
-        monsterTypes={monsterTypes}
-      />
-    </div>
+    <Form 
+      monster={monster} 
+      monsterTypes={monsterTypes}
+    />
   );
 }

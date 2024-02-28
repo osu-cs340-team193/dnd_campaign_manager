@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import '@mantine/core/styles.css';
 
 import { inter } from "@/app/ui/fonts";
-import Provider from '@/app/ui/extensions/provider';
-import { ColorSchemeScript } from '@mantine/core';
+import { ColorSchemeScript, MantineProvider } from '@mantine/core';
+import { theme } from '@/theme';
 import App from "@/app/ui/app";
 
 export const metadata: Metadata = {
@@ -24,11 +24,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         See: https://nextjs.org/learn/dashboard-app/optimizing-fonts-images 
       */}
       <body className={`${inter.className} antialiased`}>
-        <Provider>
+        <MantineProvider
+          theme={theme}
+        >
           <App>
             {children}
           </App>
-        </Provider>
+        </MantineProvider>
       </body>
     </html>
   );
