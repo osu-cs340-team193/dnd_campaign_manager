@@ -7,6 +7,7 @@ import { useDisclosure } from '@mantine/hooks';
 import TopNav from "./navigation/topnav";
 
 // See: https://mantine.dev/app-shell/?e=MobileNavbar&s=code
+// TODO: Add citation
 export default function App({ children }: Readonly<{ children: React.ReactNode }>) 
 {
   const [opened, { toggle: toggle }] = useDisclosure();

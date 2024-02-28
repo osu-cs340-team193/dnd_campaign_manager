@@ -2,6 +2,7 @@
 
 import Error from '@/app/ui/error';
  
+// Page displayed when trying to visit invalid route 
 export default function NotFound() {
   return (
     <Error 
