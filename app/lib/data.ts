@@ -106,7 +106,7 @@ export async function fetchCampaigns() : Promise<Campaign[]>
       // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
-        redirect('/500');
+        redirect('/pages/500');
       }
     }
 
@@ -290,7 +290,7 @@ export async function fetchLocations() : Promise<Location[]>
       // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
-        redirect('/500');
+        redirect('/pages/500');
       }
     }
 
@@ -523,7 +523,7 @@ export async function fetchMonsters() : Promise<Monster[]>
       // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
-        redirect('/500');
+        redirect('/pages/500');
       }
     }
 
@@ -708,7 +708,7 @@ export async function fetchActions() : Promise<Action[]>
       // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
-        redirect('/500');
+        redirect('/pages/500');
       }
     }
 
@@ -806,7 +806,7 @@ export async function fetchItems() : Promise<Item[]>
       // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
-        redirect('/500');
+        redirect('/pages/500');
       }
     }
 
@@ -993,7 +993,7 @@ export async function fetchLocationsMonsters() : Promise<LocationMonster[]>
       // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
-        redirect('/500');
+        redirect('/pages/500');
       }
     }
 
@@ -1091,7 +1091,7 @@ export async function fetchLocationsItems() : Promise<LocationItem[]>
       // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
-        redirect('/500');
+        redirect('/pages/500');
       }
     }
 
