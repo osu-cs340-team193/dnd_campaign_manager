@@ -1,13 +1,25 @@
 'use client';
 
-import SideNav from "@/app/ui/navigation/sidenav";
-import AppLogo from "@/app/ui/app-logo";
-import { AppShell, Burger, Flex, Group, UnstyledButton } from '@mantine/core';
+import AppLogo from '@/app/ui/app-logo';
+import { 
+  AppShell, 
+  Burger, 
+  Flex, 
+  Group 
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import TopNav from "./navigation/topnav";
+import Navbar from '@/app/ui/navbar';
 
-// See: https://mantine.dev/app-shell/?e=MobileNavbar&s=code
-// TODO: Add citation
+// Application container. All components are managed by this one.
+
+// Citation for the following function:
+// Date: 02/23/2024
+// Title: Adapted from [Mantine: AppShell Examples]
+// Type: Source Code
+// Author: Mantine Dev 
+// Code Version: N/A
+// Source URL: https://mantine.dev/app-shell/?e=MobileNavbar&s=code
+// Description: Component formatting and mobile-only nav logic borrowed from source.
 export default function App({ children }: Readonly<{ children: React.ReactNode }>) 
 {
   const [opened, { toggle: toggle }] = useDisclosure();
@@ -44,7 +56,12 @@ export default function App({ children }: Readonly<{ children: React.ReactNode }
               gap={0}
               visibleFrom='md'
             >
-              <TopNav />
+              <Flex
+                direction='row'
+                gap='xs'
+              >
+                <Navbar />
+              </Flex>
             </Group>
           </Group>
         </Group>
@@ -53,7 +70,12 @@ export default function App({ children }: Readonly<{ children: React.ReactNode }
       <AppShell.Navbar
         p='lg'
       >
-        <SideNav/>
+        <Flex
+          direction='column'
+          gap='xs'
+        >
+          <Navbar />
+        </Flex>
       </AppShell.Navbar>
 
       <AppShell.Main>

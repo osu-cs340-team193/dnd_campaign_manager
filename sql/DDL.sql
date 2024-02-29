@@ -103,7 +103,7 @@ Populate the Campaigns table
 INSERT INTO Campaigns (title, start_date, end_date, dungeon_master) VALUES
 ('A Deep and Creeping Darkness', '2024-01-16', '2024-02-22', 'Marcus'),
 ('The Price of Beauty', '2022-04-16', '2022-05-12','Liam Braxley'),
-('The Joy of Extradimensional Spaces', '2023-03-30', NULL ,'Mohamed');
+('The Joy of Extradimensional Spaces', '2023-03-30', NULL ,'Brennan Lee Mulligan');
 
 /*
 Populate the Locations table
@@ -180,7 +180,7 @@ INSERT INTO Actions (monster_id, action_name, description) VALUES
 
 (
 (SELECT monster_id FROM Monsters WHERE monster_name = 'Meenlock'), 
-'Shadow Teleport (Recharge 5–6).',
+'Shadow Teleport (Recharge 5-6).',
 'As a bonus action, the meenlock can teleport to an unoccupied space within 30 feet of it, provided that both the space it''s teleporting from and its destination are in dim light or darkness. The destination need not be within line of sight. and its destination are in dim light or darkness. The destination need not be within line of sight.'
 ),
 

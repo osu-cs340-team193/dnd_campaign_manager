@@ -1,19 +1,25 @@
 import EntityTable from '@/app/ui/locations/entity-table';
-
-import { Container, Flex, Text } from '@mantine/core';
-import { AddButton } from '@/app/ui/locations/buttons';
+import 
+{ 
+  Container, 
+  Flex, 
+  Text 
+} from '@mantine/core';
+import { AddButton } from '@/app/ui/buttons';
 import { fetchLocations } from '@/app/lib/data';
 import 
 { 
-  GetFormattedItemNamesByLocationId, 
-  GetFormattedMonsterNamesByLocationId 
+  ItemNamesByLocationId, 
+  MonsterNamesByLocationId 
 } from '@/app/lib/format';
 
-// Page displayed when routing to hostname/campaigns
+// Page displayed when visiting /locations 
 export default async function Page()
 { 
+  // Get all locations from the database
   const locations = await fetchLocations();
 
+  // Get M:M info for each location to display in the table view
   const locationRows = await Promise.all(locations.map(async (location) => 
   {
     return {
@@ -21,8 +27,8 @@ export default async function Page()
       location_name: location.location_name,
       campaign_name: location.campaign_name,
       location_description: location.location_description ?? '',
-      location_monsters: await GetFormattedMonsterNamesByLocationId(location.location_id ?? 0),
-      location_items: await GetFormattedItemNamesByLocationId(location.location_id ?? 0)
+      location_monsters: await MonsterNamesByLocationId(location.location_id ?? 0),
+      location_items: await ItemNamesByLocationId(location.location_id ?? 0)
     }
   }));
 
@@ -46,9 +52,11 @@ export default async function Page()
           </Text>
         </Container>
         <EntityTable
-          locationRows={locationRows}
+          locations={locationRows}
         />
-        <AddButton />
+        <AddButton 
+          pageRoot=''
+        />
       </Flex>
     </Container>
   );

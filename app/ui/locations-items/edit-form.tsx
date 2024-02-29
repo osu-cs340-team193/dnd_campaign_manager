@@ -1,21 +1,46 @@
 'use client';
 
-import { updateLocationItemById, updateLocationMonsterById } from '@/app/lib/actions';
+import { updateLocationItemById } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
-
 import { useRouter } from 'next/navigation';
-import { Container, Fieldset, Flex, Button, Select } from '@mantine/core';
-import { ItemName, LocationItem, LocationName } from '@/app/lib/definitions';
+import 
+{ 
+  Container, 
+  Fieldset, 
+  Flex, 
+  Button, 
+  Select 
+} from '@mantine/core';
+import 
+{ 
+  ItemName, 
+  LocationItem, 
+  LocationName 
+} from '@/app/lib/definitions';
 
+// Edit form view for location items intersection table
+// TODO: Implement client-side form validation
+
+// Citation for the following function:
+// Date: 02/18/2024
+// Title: Adapted from [Learn Next.js: Mutating Data]
+// Type: Source Code
+// Author: Vercel Company
+// Code Version: N/A
+// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data
+// Description: Form state management and action binding borrowed from source.
 export default function Form(
   { locationItem, locationNames, itemNames }: 
   { locationItem: LocationItem, locationNames: LocationName[], itemNames: ItemName[] })
 {
-  const initialState = { message: null, errors: {}};
-  // Use bind to pass additional arguments to a server action.
+  // Bind the current location_item_id to the update action
   const updateLocationItemWithId = updateLocationItemById.bind(null, locationItem?.location_item_id ?? -1);
-  // TS does not like. Throws error for some reason.
-  //@ts-ignore
+
+  // Form initially has no errors
+  const initialState = { message: null, errors: {}};
+
+  // Action to be called when form is submitted
+  // @ts-ignore
   const [state, dispatch] = useFormState(updateLocationItemWithId, initialState);
 
   const router = useRouter();

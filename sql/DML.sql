@@ -105,6 +105,24 @@ SELECT
 FROM Locations L
 INNER JOIN Campaigns C ON Campaigns.campaign_id = Locations.campaign_id;
 
+-- Get all monster names for each location
+SELECT 
+    M.monster_name AS 'monster_name'
+FROM Locations_Monsters LM
+    INNER JOIN Locations L ON L.location_id = LM.location_id
+    INNER JOIN Monsters M ON M.monster_id = LM.monster_id
+WHERE L.location_id = :location_id_for_row_in_table;
+-- Repeat for all rows 
+
+-- Get all item names for each location
+SELECT 
+    I.item_name AS 'item_name'
+FROM Locations_Items LI
+    INNER JOIN Locations L ON L.location_id = LI.location_id
+    INNER JOIN Items I ON I.item_id = LI.item_id
+WHERE L.location_id = :location_id_for_row_in_table;
+-- Repeat for all rows 
+
 /*************************************
 Action: User clicks edit button for a given location in the Locations table.
 *************************************/
@@ -145,8 +163,8 @@ WHERE L.location_id = :location_id_selected_when_clicking_edit_button;
 SELECT 
     I.item_name AS 'item_name'
 FROM Locations_Items LI
-	INNER JOIN Locations L ON L.location_id = LI.lid
-    INNER JOIN Items I ON I.item_id = LI.iid
+	INNER JOIN Locations L ON L.location_id = LI.location_id
+    INNER JOIN Items I ON I.item_id = LI.item_id
 WHERE L.location_id = :location_id_selected_when_clicking_edit_button;
 
 /*************************************
@@ -186,7 +204,7 @@ VALUE (
 
 -- Insert into Locations_Monsters intersection table when adding a location (do once for each selected monster)
 INSERT INTO Locations_Monsters (
-    lid, mid
+    location_id, monster_id
 ) 
 VALUES (
     (SELECT location_id FROM Locations 
@@ -198,8 +216,8 @@ VALUES (
 
 -- Insert into Locations_Items intersection table when adding a location (do once for each selected item)
 INSERT INTO Locations_Items (
-    lid, 
-    iid
+    location_id, 
+    item_id
 ) 
 VALUES (
     (SELECT location_id FROM Locations 
@@ -224,23 +242,23 @@ WHERE location_id = :location_id_from_table;
 -- Update Locations_Items intersection table when updating a location (do once for each selected item)
 UPDATE Locations_Items
 SET 
-    lid = (SELECT location_id FROM Locations 
+    location_id = (SELECT location_id FROM Locations 
            WHERE location_id = :location_id_from_update),
-    iid = (SELECT item_id FROM Items 
+    item_id = (SELECT item_id FROM Items 
            WHERE item_name = :item_name_from_selected_Items_array)
-WHERE lid = :location_id_from_update
-AND iid = (SELECT item_id FROM Items 
+WHERE location_id = :location_id_from_update
+AND item_id = (SELECT item_id FROM Items 
            WHERE item_name = :item_name_from_selected_Items_array);
 
 -- Update Locations_Monsters intersection table when updating a location (do once for each selected monster)
 UPDATE Locations_Monsters
 SET 
-    lid = (SELECT location_id FROM Locations 
+    location_id = (SELECT location_id FROM Locations 
            WHERE location_id = :location_id_from_update),
-    mid = (SELECT monster_id FROM Monsters 
+    monster_id = (SELECT monster_id FROM Monsters 
            WHERE monster_name = :monster_name_from_selected_Monsters_array)
-WHERE lid = :location_id_from_update 
-AND mid = (SELECT monster_id FROM Monsters 
+WHERE location_id = :location_id_from_update 
+AND monster_id = (SELECT monster_id FROM Monsters 
            WHERE monster_name = :monster_name_from_selected_Monsters_array);
 
 /*************************************
@@ -267,6 +285,23 @@ Action: User visits Monsters page.
 -- Retrieve all Monsters entries
 SELECT *
 FROM Monsters;
+
+-- Get all location names each monster
+SELECT
+    L.location_name AS 'location_name'
+FROM Locations_Monsters LM
+    INNER JOIN Locations L ON L.location_id = LM.location_id
+    INNER JOIN Monsters M ON M.monster_id = LM.monster_id
+WHERE M.monster_id = :monster_id_for_row_in_table
+-- Repeat for all rows 
+
+-- Get all action names for each monster
+SELECT
+    A.action_name AS 'action_name'
+FROM Actions A 
+    INNER JOIN Monsters M ON M.monster_id = A.monster_id
+WHERE M.monster_id = :monster_id_for_row_in_table;
+-- Repeat for all rows
 
 /*************************************
 Action: User clicks edit button for a given monster in the Monsters table.
@@ -346,10 +381,10 @@ WHERE monster_id = :monster_id_from_table;
 -- Update Locations_Monsters intersection table when updating a monster (do once for each selected location)
 UPDATE Locations_Monsters
 SET 
-    lid = (SELECT location_id FROM Locations WHERE location_id = :location_name_from_selected_Locations_array),
-    mid = (SELECT monster_id FROM Monsters WHERE monster_name = :monster_id_from_update)
-WHERE mid = :monster_id_from_update 
-AND lid = (SELECT location_id FROM Locations WHERE location_name = :location_name_from_selected_Locations_array);
+    location_id = (SELECT location_id FROM Locations WHERE location_id = :location_name_from_selected_Locations_array),
+    monster_id = (SELECT monster_id FROM Monsters WHERE monster_name = :monster_id_from_update)
+WHERE monster_id = :monster_id_from_update 
+AND location_id = (SELECT location_id FROM Locations WHERE location_name = :location_name_from_selected_Locations_array);
 
 /*************************************
 Action: User clicks delete button for a given monster in the Monsters table.
@@ -463,6 +498,15 @@ Action: User visits Items page.
 SELECT *
 FROM Items;
 
+-- Get all location names for each item
+SELECT 
+    L.location_name AS 'location_name'
+FROM Locations_Items LI
+    INNER JOIN Locations L ON L.location_id = LI.location_id
+    INNER JOIN Items I ON I.item_id = LI.item_id
+WHERE I.item_id = :item_id_for_row_in_table;
+-- Repeat for all rows
+
 /*************************************
 Action: User clicks edit button for a given item in the Items table.
 *************************************/
@@ -504,8 +548,8 @@ VALUE (
 
 -- Insert into Locations_Items intersection table when adding an item (do once for each selected location)
 INSERT INTO Locations_Items (
-    lid, 
-    iid
+    location_id, 
+    item_id
 ) 
 VALUES (
     (SELECT location_id FROM Locations 
@@ -530,12 +574,12 @@ WHERE item_id = :item_id_from_table;
 -- Insert into Locations_Items intersection table when adding an item (do once for each selected location)
 UPDATE Locations_Items
 SET
-    lid = (SELECT location_id FROM Locations 
+    location_id = (SELECT location_id FROM Locations 
            WHERE location_name = :location_name_from_selected_Locations_array), 
-    iid = (SELECT item_id FROM Items 
+    item_id = (SELECT item_id FROM Items 
            WHERE item_id = :item_id_from_insert)
-WHERE iid = :item_id_from_update
-AND lid = (SELECT location_id FROM Locations 
+WHERE item_id = :item_id_from_update
+AND location_id = (SELECT location_id FROM Locations 
            WHERE location_name = :location_name_from_selected_Locations_array);
 
 /*************************************
@@ -559,16 +603,16 @@ Locations_Items
 -- return all entries from table
 SELECT L.location_name AS "Location Name", I.item_name AS "Item Name" 
 FROM Locations_Items LI
-	INNER JOIN Locations L ON L.location_id = LI.lid
-    INNER JOIN Items I ON I.item_id = LI.iid;
+	INNER JOIN Locations L ON L.location_id = LI.location_id
+    INNER JOIN Items I ON I.item_id = LI.item_id;
 
 -- add a new entry to the table from the Items page in the form of a multi-select drop down of possible location names
-INSERT INTO Locations_Items (lid, iid)
+INSERT INTO Locations_Items (location_id, item_id)
 VALUES (:location_id_Input, :item_id_Input);
 
 -- delete a record
 DELETE FROM Locations_Items
-WHERE lid = :location_id_input AND iid = :item_id_input;
+WHERE location_id = :location_id_input AND item_id = :item_id_input;
 
 /****************************************************************************************
 

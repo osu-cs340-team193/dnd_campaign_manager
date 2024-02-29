@@ -36,7 +36,7 @@ export const metadata: Metadata =
 };
 
 // App root
-// TODO: Add citation
+// TODO: Look into icon metadata formatting for nextjs
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) 
 {
   return (
@@ -48,11 +48,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <meta name="msapplication-TileColor" content="#da532c"/>
         <meta name="theme-color" content="#ffffff"/>
       </head>
-      {/* 
-        Use antialiasing to make font smoother. 
-        See: https://nextjs.org/learn/dashboard-app/optimizing-fonts-images 
-      */}
-      <body className={`${inter.className} antialiased`}>
+      <body>
         <MantineProvider
           theme={theme}
         >

@@ -10,8 +10,16 @@ import
   Title 
 } from '@mantine/core';
 
-// TODO: Add citation
 // Default error page component. Used for 404, 500, etc.
+
+// Citation for the following function:
+// Date: 02/28/2024
+// Title: Adapted from [Learn Next.js: Handling Errors]
+// Type: Source Code
+// Author: Vercel Company
+// Code Version: N/A
+// Source URL: https://nextjs.org/learn/dashboard-app/error-handling
+// Description: Error page format adapted from source.
 export default function Error({ message, details }: { message: string, details: string })
 {
   return (

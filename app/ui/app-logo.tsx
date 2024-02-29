@@ -1,9 +1,13 @@
-// Application logo component.
-// See: https://nextjs.org/learn/dashboard-app/optimizing-fonts-images
+import DndIcon from '@/app/ui/icons/dnd-icon';
+import 
+{ 
+  Center, 
+  Container, 
+  Flex, 
+  Text 
+} from '@mantine/core';
 
-import DndIcon from "@/app/ui/icons/dnd-icon";
-import { Center, Container, Flex, Text, Title } from "@mantine/core";
-
+// App logo component
 export default function AppLogo()
 {
   return (

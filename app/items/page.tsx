@@ -1,15 +1,21 @@
 import EntityTable from '@/app/ui/items/entity-table';
-
-import { Container, Flex, Text } from '@mantine/core';
-import { AddButton } from '@/app/ui/items/buttons';
+import 
+{ 
+  Container, 
+  Flex, 
+  Text 
+} from '@mantine/core';
+import { AddButton } from '@/app/ui/buttons';
 import { fetchItems } from '@/app/lib/data';
-import { GetFormattedLocationNamesByItemId } from '@/app/lib/format';
+import { LocationNamesByItemId } from '@/app/lib/format';
 
-// Page displayed when routing to hostname/campaigns
+// Page displayed when visiting /items
 export default async function Page()
 { 
+  // Get all item names
   const items = await fetchItems();
 
+  // Get M:M info for each item to display in the table view
   const itemRows = await Promise.all(items.map(async (item) => 
   {
     return {
@@ -17,7 +23,7 @@ export default async function Page()
       item_name: item.item_name,
       value: item.value ?? 0,
       weight: item.weight ?? 0,
-      item_locations: await GetFormattedLocationNamesByItemId(item.item_id ?? 0),
+      item_locations: await LocationNamesByItemId(item.item_id ?? 0),
     }
   }));
 
@@ -43,7 +49,9 @@ export default async function Page()
         <EntityTable
           items={itemRows}
         />
-        <AddButton />
+        <AddButton 
+          pageRoot='items'
+        />
       </Flex>
     </Container>
   );

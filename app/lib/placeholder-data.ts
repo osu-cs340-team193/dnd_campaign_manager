@@ -1,6 +1,7 @@
 import 
 { 
   Action, 
+  ActionName, 
   Campaign, 
   CampaignTitle, 
   DungeonMaster, 
@@ -15,6 +16,7 @@ import
   MonsterType
 } from '@/app/lib/definitions';
 
+// Defines all sample data used for offline testing.
 export const campaigns: Campaign[] =
 [
   {
@@ -36,7 +38,7 @@ export const campaigns: Campaign[] =
     title: 'The Joy of Extradimensional Spaces', 
     start_date: '2023-03-30', 
     end_date: null, 
-    dungeon_master: 'Mohamed',
+    dungeon_master: 'Brennan Lee Mulligan',
   },
 ];
 
@@ -153,6 +155,35 @@ export const monsters: Monster[] =
   },
 ];
 
+export const monsterLocationNames: LocationName[][] =
+[
+  [
+    {
+      location_name: 'Southern Wing'
+    }
+  ],
+  [
+    {
+      location_name: 'Chamber of Weeping'
+    }
+  ],
+  [
+    {
+      location_name: 'Lobby'
+    }
+  ],
+  [
+    {
+      location_name: 'Library'
+    }
+  ],
+  [
+    {
+      location_name: 'Exercise Room'
+    }
+  ],
+];
+
 export const actions: Action[] =
 [
   {
@@ -197,6 +228,41 @@ export const actions: Action[] =
     action_name: 'Broomstick',
     action_description: 'Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 (1d4 + 3) bludgeoning damage.'
   },
+];
+
+export const monsterActionNames: ActionName[][] =
+[
+  [
+    {
+      action_name: 'Bites'
+    },
+  ],
+  [
+    {
+      action_name: 'Shadow Teleport (Recharge 5-6).'
+    },
+  ],
+  [
+    {
+      action_name: 'Spear'
+    },
+    {
+      action_name: 'Fire Ray'
+    },
+  ],
+  [
+    {
+      action_name: 'Book Club'
+    },
+  ],
+  [
+    {
+      action_name: 'Multiattack'
+    },
+    {
+      action_name: 'Broomstick'
+    },
+  ],
 ];
 
 export const locationsItems: LocationItem[] =
@@ -337,6 +403,9 @@ export const locationMonsterNames: MonsterName[][] =
   [
     {
       monster_name: 'Swarm of Animated Books',
+    },
+    {
+      monster_name: 'Medium Swarm of Tiny Constructs',
     },
   ],
   [

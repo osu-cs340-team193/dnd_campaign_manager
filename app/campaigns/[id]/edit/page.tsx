@@ -3,7 +3,6 @@ import
   fetchCampaignById,
   fetchDungeonMasters,
 } from '@/app/lib/data';
-
 import Form from '@/app/ui/campaigns/edit-form';
 
 // Citation for the following function:
@@ -14,7 +13,7 @@ import Form from '@/app/ui/campaigns/edit-form';
 // Code Version: N/A
 // Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
 // Description: Function parameters and form querying from backend adapted from source.
-// Page displayed when routing to hostname/campaigns/{id}/edit
+// Page displayed when visiting /campaigns/{id}/edit
 export default async function Page({ params }: { params: { id: number }})
 {
   // Query campaign and dungeon masters in parallel. Types used for form dropdown.

@@ -2,16 +2,38 @@
 
 import { createMonster } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
-
 import { MonsterType } from '@/app/lib/definitions';
 import { useRouter } from 'next/navigation';
-import { Autocomplete, Container, Fieldset, Flex, NumberInput, Button, TextInput } from '@mantine/core';
+import 
+{ 
+  Autocomplete, 
+  Container, 
+  Fieldset, 
+  Flex, 
+  NumberInput, 
+  Button, 
+  TextInput 
+} from '@mantine/core';
 
+// Create form view for monster entity
+// TODO: Implement client-side form validation
+// TODO: See if we can combine edit and create forms to reduce redundant code
+
+// Citation for the following function:
+// Date: 02/18/2024
+// Title: Adapted from [Learn Next.js: Mutating Data]
+// Type: Source Code
+// Author: Vercel Company
+// Code Version: N/A
+// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data
+// Description: Form state management and action binding borrowed from source.
 export default function Form({ monsterTypes } : { monsterTypes : MonsterType[] })
 {
+  // Form initially has no errors
   const initialState = { message: null, errors: {}};
-  // TS does not like. Throws error for some reason.
-  //@ts-ignore
+
+  // Action to be called when form is submitted
+  // @ts-ignore
   const [state, dispatch] = useFormState(createMonster, initialState);
 
   const router = useRouter();

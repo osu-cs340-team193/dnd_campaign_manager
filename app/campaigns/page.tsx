@@ -1,12 +1,17 @@
 import EntityTable from '@/app/ui/campaigns/entity-table';
-
-import { Container, Flex, Text } from '@mantine/core';
-import { AddButton } from '@/app/ui/campaigns/buttons';
+import 
+{ 
+  Container, 
+  Flex, 
+  Text 
+} from '@mantine/core';
+import { AddButton } from '@/app/ui/buttons';
 import { fetchCampaigns } from '@/app/lib/data';
 
-// Page displayed when routing to hostname/campaigns
+// Page displayed when visiting /campaigns
 export default async function Page()
 { 
+  // Get all campaigns from database
   const campaigns = await fetchCampaigns();
 
   return (
@@ -31,7 +36,9 @@ export default async function Page()
         <EntityTable
           campaigns={campaigns}
         />
-        <AddButton />
+        <AddButton 
+          pageRoot='campaigns'
+        />
       </Flex>
     </Container>
   );

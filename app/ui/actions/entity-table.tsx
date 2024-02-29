@@ -1,11 +1,22 @@
 'use client';
 
-import { Container, Flex, Table, Text } from '@mantine/core';
-
-import { DeleteButton, UpdateButton } from '@/app/ui/actions/buttons';
-
+import 
+{ 
+  Container, 
+  Flex, 
+  Table, 
+  Text 
+} from '@mantine/core';
+import 
+{ 
+  DeleteButton, 
+  UpdateButton 
+} from '@/app/ui/buttons';
 import { Action } from '@/app/lib/definitions';
+import { deleteActionById } from '@/app/lib/actions';
 
+// Table view for actions entity
+// TODO: Have alternate format for mobile layouts. Maybe something like a card per row.
 export default function EntityTable({ actions }: { actions: Action[] })
 {
   return (
@@ -45,16 +56,28 @@ export default function EntityTable({ actions }: { actions: Action[] })
                     gap='xs'
                     visibleFrom='xs'
                   >
-                    <UpdateButton id={action.action_id ?? -1} />
-                    <DeleteButton id={action.action_id ?? -1} />
+                    <UpdateButton 
+                      id={action.action_id ?? -1} 
+                      pageRoot='actions'
+                    />
+                    <DeleteButton 
+                      id={action.action_id ?? -1} 
+                      onDelete={deleteActionById}
+                    />
                   </Flex>
                   <Flex
                     direction='column'
                     gap='xs'
                     hiddenFrom='xs'
                   >
-                    <UpdateButton id={action.action_id ?? -1} />
-                    <DeleteButton id={action.action_id ?? -1} />
+                    <UpdateButton 
+                      id={action.action_id ?? -1} 
+                      pageRoot='actions'
+                    />
+                    <DeleteButton 
+                      id={action.action_id ?? -1} 
+                      onDelete={deleteActionById}
+                    />
                   </Flex>
                 </Table.Td>
               </Table.Tr>

@@ -1,8 +1,10 @@
 import { unstable_noStore as noStore } from 'next/cache';
 import { PoolConnection } from 'mysql2/promise';
-
-import { notFound, redirect } from 'next/navigation';
-
+import 
+{ 
+  notFound, 
+  redirect 
+} from 'next/navigation';
 import mysql from '@/app/lib/db';
 import Query from '@/app/lib/query';
 import
@@ -33,8 +35,9 @@ import
   ILocationMonster,
   LocationItem,
   ILocationItem,
+  ActionName,
+  IActionName,
 } from '@/app/lib/definitions';
-
 import 
 { 
   actions,
@@ -53,8 +56,9 @@ import
   monsterTypes, 
   monsters,
   itemLocationNames,
+  monsterLocationNames,
+  monsterActionNames,
 } from '@/app/lib/placeholder-data';
-
 import
 {
   campaignsDbConnected,
@@ -66,6 +70,18 @@ import
   locationsItemsDbConnected,
 } from '@/app/lib/db-conn-status';
 
+
+// Data fetching handlers
+
+// Citation for the following functions:
+// Date: 02/18/2024
+// Title: Adapted from [Learn Next.js: Fetching Data]
+// Type: Source Code
+// Author: Vercel Company
+// Code Version: N/A
+// Source URL: https://nextjs.org/learn/dashboard-app/fetching-data
+// Description: General function structure adapted from source.
+
 /****************************************************************************************
 
 
@@ -73,15 +89,15 @@ Campaigns
 
 
 *****************************************************************************************/
+// GET /campaigns
 export async function fetchCampaigns() : Promise<Campaign[]>
 {
   if (campaignsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
+    // Don't cache db queries
     noStore();
 
-    // Attempt to get monsters from backend.
+    // Attempt to get data from backend
     let connection: PoolConnection | null = null;
     let data: ICampaign[] | null = null;
     try 
@@ -96,14 +112,14 @@ export async function fetchCampaigns() : Promise<Campaign[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
+      // Always release connection at end of transaction
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
+      // No results found from query
+      // Reroute outside of try-catch so we don't trigger catch block again
       if (data == null)
       {
         redirect('/pages/500');
@@ -118,17 +134,14 @@ export async function fetchCampaigns() : Promise<Campaign[]>
   }
 }
 
+// GET /campaigns/{id}
 export async function fetchCampaignById(id: number) : Promise<Campaign>
 {
   if (campaignsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
     let data: ICampaign | null = null;
-
-    // Attempt to get monster from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -142,14 +155,11 @@ export async function fetchCampaignById(id: number) : Promise<Campaign>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         notFound();
@@ -164,6 +174,7 @@ export async function fetchCampaignById(id: number) : Promise<Campaign>
   }
 }
 
+// GET /campaigns/titles
 export async function fetchCampaignTitles() : Promise<CampaignTitle[]>
 {
   if (campaignsDbConnected)
@@ -171,8 +182,6 @@ export async function fetchCampaignTitles() : Promise<CampaignTitle[]>
     noStore();
 
     let data: ICampaignTitle[] | null = null;
-
-    // Attempt to get dungeon masters from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -185,14 +194,11 @@ export async function fetchCampaignTitles() : Promise<CampaignTitle[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data?.length == 0)
       {
         notFound();
@@ -207,6 +213,7 @@ export async function fetchCampaignTitles() : Promise<CampaignTitle[]>
   }
 }
 
+// GET /campaigns/dungeon-masters
 export async function fetchDungeonMasters() : Promise<DungeonMaster[]>
 {
   if (campaignsDbConnected)
@@ -215,7 +222,6 @@ export async function fetchDungeonMasters() : Promise<DungeonMaster[]>
 
     let data: IDungeonMaster[] | null = null;
 
-    // Attempt to get dungeon masters from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -228,14 +234,11 @@ export async function fetchDungeonMasters() : Promise<DungeonMaster[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data?.length == 0)
       {
         notFound();
@@ -257,15 +260,13 @@ Locations
 
 
 *****************************************************************************************/
+// GET /locations
 export async function fetchLocations() : Promise<Location[]>
 {
   if (locationsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
-    // Attempt to get monsters from backend.
     let connection: PoolConnection | null = null;
     let data: ILocation[] | null = null;
     try 
@@ -280,14 +281,11 @@ export async function fetchLocations() : Promise<Location[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         redirect('/pages/500');
@@ -302,12 +300,11 @@ export async function fetchLocations() : Promise<Location[]>
   }
 }
 
+// GET /locations/{id}
 export async function fetchLocationById(id: number) : Promise<Location>
 {
   if (locationsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
     let data: ILocation | null = null;
@@ -326,14 +323,11 @@ export async function fetchLocationById(id: number) : Promise<Location>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         notFound();
@@ -348,6 +342,7 @@ export async function fetchLocationById(id: number) : Promise<Location>
   }
 }
 
+// GET /locations/names
 export async function fetchLocationNames() : Promise<LocationName[]>
 {
   if (locationsDbConnected)
@@ -355,8 +350,6 @@ export async function fetchLocationNames() : Promise<LocationName[]>
     noStore();
 
     let data: ILocationName[] | null = null;
-
-    // Attempt to get dungeon masters from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -369,14 +362,11 @@ export async function fetchLocationNames() : Promise<LocationName[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data?.length == 0)
       {
         notFound();
@@ -391,17 +381,14 @@ export async function fetchLocationNames() : Promise<LocationName[]>
   }
 }
 
+// GET /locations/{id}/monster-names
 export async function fetchLocationMonsterNamesById(id: number) : Promise<MonsterName[]>
 {
   if (locationsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
     let data: IMonsterName[] | null = null;
-
-    // Attempt to get monster from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -415,14 +402,11 @@ export async function fetchLocationMonsterNamesById(id: number) : Promise<Monste
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         notFound();
@@ -437,12 +421,11 @@ export async function fetchLocationMonsterNamesById(id: number) : Promise<Monste
   }
 }
 
+// GET /locations/{id}/item-names
 export async function fetchLocationItemNamesById(id: number) : Promise<ItemName[]>
 {
   if (locationsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
     let data: IItemName[] | null = null;
@@ -461,14 +444,11 @@ export async function fetchLocationItemNamesById(id: number) : Promise<ItemName[
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         notFound();
@@ -490,15 +470,13 @@ Monsters
 
 
 *****************************************************************************************/
+// GET /monsters
 export async function fetchMonsters() : Promise<Monster[]>
 {
   if (monstersDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
-    // Attempt to get monsters from backend.
     let connection: PoolConnection | null = null;
     let data: Monster[] | null = null;
     try 
@@ -513,14 +491,11 @@ export async function fetchMonsters() : Promise<Monster[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         redirect('/pages/500');
@@ -535,17 +510,14 @@ export async function fetchMonsters() : Promise<Monster[]>
   }
 }
 
+// GET /monsters/{id}
 export async function fetchMonsterById(id: number) : Promise<Monster>
 {
   if (monstersDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
     let data: IMonster | null = null;
-
-    // Attempt to get monster from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -555,19 +527,15 @@ export async function fetchMonsterById(id: number) : Promise<Monster>
     catch (err)
     {
       console.error('Database Error:', err);
-      //return { message: 'Database Error: Failed to Fetch Monster' }
       throw new Error('Failed to fetch monster.');
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         notFound();
@@ -582,6 +550,7 @@ export async function fetchMonsterById(id: number) : Promise<Monster>
   }
 }
 
+// GET /monsters/names
 export async function fetchMonsterNames() : Promise<MonsterName[]>
 {
   if (monstersDbConnected)
@@ -589,8 +558,6 @@ export async function fetchMonsterNames() : Promise<MonsterName[]>
     noStore();
 
     let data: IMonsterName[] | null = null;
-
-    // Attempt to get monster types from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -603,14 +570,11 @@ export async function fetchMonsterNames() : Promise<MonsterName[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data?.length == 0)
       {
         notFound();
@@ -625,6 +589,7 @@ export async function fetchMonsterNames() : Promise<MonsterName[]>
   }
 }
 
+// GET /monsters/types
 export async function fetchMonsterTypes() : Promise<MonsterType[]>
 {
   if (monstersDbConnected)
@@ -632,8 +597,6 @@ export async function fetchMonsterTypes() : Promise<MonsterType[]>
     noStore();
 
     let data: IMonsterType[] | null = null;
-
-    // Attempt to get monster types from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -646,14 +609,11 @@ export async function fetchMonsterTypes() : Promise<MonsterType[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data?.length == 0)
       {
         notFound();
@@ -668,6 +628,86 @@ export async function fetchMonsterTypes() : Promise<MonsterType[]>
   }
 }
 
+// GET /monsters/{id}/location-names
+export async function fetchMonsterLocationNamesById(id: number) : Promise<LocationName[]>
+{
+  if (monstersDbConnected)
+  {
+    noStore();
+
+    let data: ILocationName[] | null = null;
+    let connection: PoolConnection | null = null;
+    try
+    {
+      connection = await mysql.createConnection();
+      data = await Query.getAllMonsterLocationNamesById(connection, id);
+    }
+    catch (err)
+    {
+      console.error('Database Error:', err);
+      throw new Error('Failed to fetch monster locations.');
+    }
+    finally
+    {
+      if (connection)
+      {
+        mysql.releaseConnection(connection);
+      }
+
+      if (data == null)
+      {
+        notFound();
+      }
+    }
+
+    return data;
+  }
+  else
+  {
+    return monsterLocationNames[id - 1];
+  }
+}
+
+// GET /monsters/{id}/action-names
+export async function fetchMonsterActionNamesById(id: number) : Promise<ActionName[]>
+{
+  if (monstersDbConnected)
+  {
+    noStore();
+
+    let data: IActionName[] | null = null;
+    let connection: PoolConnection | null = null;
+    try
+    {
+      connection = await mysql.createConnection();
+      data = await Query.getAllMonsterActionNamesById(connection, id);
+    }
+    catch (err)
+    {
+      console.error('Database Error:', err);
+      throw new Error('Failed to fetch monster actions.');
+    }
+    finally
+    {
+      if (connection)
+      {
+        mysql.releaseConnection(connection);
+      }
+
+      if (data == null)
+      {
+        notFound();
+      }
+    }
+
+    return data;
+  }
+  else
+  {
+    return monsterActionNames[id - 1];
+  }
+}
+
 /****************************************************************************************
 
 
@@ -675,15 +715,13 @@ Actions
 
 
 *****************************************************************************************/
+// GET /actions
 export async function fetchActions() : Promise<Action[]>
 {
   if (actionsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
-    // Attempt to get monsters from backend.
     let connection: PoolConnection | null = null;
     let data: IAction[] | null = null;
     try 
@@ -698,14 +736,11 @@ export async function fetchActions() : Promise<Action[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         redirect('/pages/500');
@@ -720,17 +755,14 @@ export async function fetchActions() : Promise<Action[]>
   }
 }
 
+// GET /actions/{id}
 export async function fetchActionById(id: number) : Promise<Action>
 {
   if (actionsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
     let data: IAction | null = null;
-
-    // Attempt to get monster from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -744,14 +776,11 @@ export async function fetchActionById(id: number) : Promise<Action>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         notFound();
@@ -773,15 +802,13 @@ Items
 
 
 *****************************************************************************************/
+// GET /items
 export async function fetchItems() : Promise<Item[]>
 {
   if (itemsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
-    // Attempt to get monsters from backend.
     let connection: PoolConnection | null = null;
     let data: IItem[] | null = null;
     try 
@@ -796,14 +823,11 @@ export async function fetchItems() : Promise<Item[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         redirect('/pages/500');
@@ -818,17 +842,14 @@ export async function fetchItems() : Promise<Item[]>
   }
 }
 
+// GET /items/{id}
 export async function fetchItemById(id: number) : Promise<Item>
 {
   if (itemsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
     let data: IItem | null = null;
-
-    // Attempt to get monster from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -842,14 +863,11 @@ export async function fetchItemById(id: number) : Promise<Item>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         notFound();
@@ -864,6 +882,7 @@ export async function fetchItemById(id: number) : Promise<Item>
   }
 }
 
+// GET /items/names
 export async function fetchItemNames() : Promise<ItemName[]>
 {
   if (itemsDbConnected)
@@ -871,8 +890,6 @@ export async function fetchItemNames() : Promise<ItemName[]>
     noStore();
 
     let data: IItemName[] | null = null;
-
-    // Attempt to get monster types from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -885,14 +902,11 @@ export async function fetchItemNames() : Promise<ItemName[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data?.length == 0)
       {
         notFound();
@@ -907,17 +921,14 @@ export async function fetchItemNames() : Promise<ItemName[]>
   }
 }
 
+// GET /items/{id}/location-names
 export async function fetchItemLocationNamesById(id: number) : Promise<LocationName[]>
 {
   if (itemsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
     let data: ILocationName[] | null = null;
-
-    // Attempt to get monster from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -931,14 +942,11 @@ export async function fetchItemLocationNamesById(id: number) : Promise<LocationN
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         notFound();
@@ -960,15 +968,13 @@ Locations_Monsters
 
 
 *****************************************************************************************/
+// GET /locations-monsters
 export async function fetchLocationsMonsters() : Promise<LocationMonster[]>
 {
   if (locationsMonstersDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
-    // Attempt to get monsters from backend.
     let connection: PoolConnection | null = null;
     let data: ILocationMonster[] | null = null;
     try 
@@ -983,14 +989,11 @@ export async function fetchLocationsMonsters() : Promise<LocationMonster[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         redirect('/pages/500');
@@ -1005,17 +1008,15 @@ export async function fetchLocationsMonsters() : Promise<LocationMonster[]>
   }
 }
 
+// GET locations-monsters/{id}
 export async function fetchLocationMonsterById(id: number) : Promise<LocationMonster>
 {
   if (locationsMonstersDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
     let data: ILocationMonster | null = null;
 
-    // Attempt to get monster from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -1029,14 +1030,11 @@ export async function fetchLocationMonsterById(id: number) : Promise<LocationMon
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         notFound();
@@ -1058,15 +1056,13 @@ Locations_Items
 
 
 *****************************************************************************************/
+// GET /locations-items
 export async function fetchLocationsItems() : Promise<LocationItem[]>
 {
   if (locationsItemsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
-    // Attempt to get monsters from backend.
     let connection: PoolConnection | null = null;
     let data: ILocationItem[] | null = null;
     try 
@@ -1081,14 +1077,11 @@ export async function fetchLocationsItems() : Promise<LocationItem[]>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         redirect('/pages/500');
@@ -1103,17 +1096,15 @@ export async function fetchLocationsItems() : Promise<LocationItem[]>
   }
 }
 
+// GET /locations-items/{id}
 export async function fetchLocationItemById(id: number) : Promise<LocationItem>
 {
   if (locationsItemsDbConnected)
   {
-    // Don't cache db queries.
-    // See: https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering
     noStore();
 
     let data: ILocationItem | null = null;
 
-    // Attempt to get monster from backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -1127,14 +1118,11 @@ export async function fetchLocationItemById(id: number) : Promise<LocationItem>
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
 
-      // No results found from query.
-      // Reroute outside of try-catch so we don't trigger catch block again.
       if (data == null)
       {
         notFound();

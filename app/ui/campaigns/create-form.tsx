@@ -2,17 +2,37 @@
 
 import { createCampaign } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
-
 import { useRouter } from 'next/navigation';
-import { Autocomplete, Container, Fieldset, Flex, Button, TextInput } from '@mantine/core';
+import 
+{ 
+  Autocomplete, 
+  Container, 
+  Fieldset, 
+  Flex, 
+  Button, 
+  TextInput 
+} from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { DungeonMaster } from '@/app/lib/definitions';
 
+// Create form view for campaign entity
+// TODO: Implement client-side form validation
+
+// Citation for the following function:
+// Date: 02/18/2024
+// Title: Adapted from [Learn Next.js: Mutating Data]
+// Type: Source Code
+// Author: Vercel Company
+// Code Version: N/A
+// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data
+// Description: Form state management and action binding borrowed from source.
 export default function Form({ dungeonMasters }: { dungeonMasters : DungeonMaster[] })
 {
+  // Form initially has no errors
   const initialState = { message: null, errors: {}};
-  // TS does not like. Throws error for some reason.
-  //@ts-ignore
+
+  // Action to be called when form is submitted
+  // @ts-ignore
   const [state, dispatch] = useFormState(createCampaign, initialState);
 
   const router = useRouter();

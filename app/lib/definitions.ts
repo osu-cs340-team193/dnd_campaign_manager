@@ -177,6 +177,17 @@ Monsters
 
 *****************************************************************************************/
 
+export type MonsterTableRow =
+{
+  monster_id: number;
+  monster_name: string;
+  armor_class: number;
+  hit_points: number;
+  monster_type: string;
+  monster_actions: string;
+  monster_locations: string;
+};
+
 // Monster type.
 export type Monster = 
 {
@@ -291,6 +302,16 @@ Actions
 
 
 *****************************************************************************************/
+
+export type ActionName =
+{
+  action_name: string;
+};
+
+export interface IActionName extends RowDataPacket
+{
+  action_name: string;
+};
 
 // Action type.
 export type Action = 

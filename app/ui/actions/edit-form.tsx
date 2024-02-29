@@ -2,18 +2,44 @@
 
 import { updateActionById } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
-
 import { useRouter } from 'next/navigation';
-import { Container, Fieldset, Flex, Button, TextInput, Select, Textarea } from '@mantine/core';
-import { Action, MonsterName } from '@/app/lib/definitions';
+import 
+{ 
+  Container, 
+  Fieldset, 
+  Flex, 
+  Button, 
+  TextInput, 
+  Select, 
+  Textarea 
+} from '@mantine/core';
+import 
+{ 
+  Action, 
+  MonsterName 
+} from '@/app/lib/definitions';
 
+// Edit form view for action entity
+// TODO: Implement client-side form validation
+
+// Citation for the following function:
+// Date: 02/18/2024
+// Title: Adapted from [Learn Next.js: Mutating Data]
+// Type: Source Code
+// Author: Vercel Company
+// Code Version: N/A
+// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data
+// Description: Form state management and action binding borrowed from source.
 export default function Form({ action, monsterNames }: { action: Action, monsterNames: MonsterName[] })
 {
-  const initialState = { message: null, errors: {}};
-  // Use bind to pass additional arguments to a server action.
+  // Bind the current action_id to the update action
   const updateActionWithId = updateActionById.bind(null, action?.action_id ?? -1);
-  // TS does not like. Throws error for some reason.
-  //@ts-ignore
+
+  // Form initially has no errors
+  const initialState = { message: null, errors: {}};
+
+  // Action to be called when form is submitted
+  // @ts-ignore
   const [state, dispatch] = useFormState(updateActionWithId, initialState);
 
   const router = useRouter();

@@ -3,7 +3,6 @@ import
   fetchMonsterById, 
   fetchMonsterTypes 
 } from '@/app/lib/data';
-
 import Form from '@/app/ui/monsters/edit-form';
 
 // Citation for the following function:
@@ -14,10 +13,9 @@ import Form from '@/app/ui/monsters/edit-form';
 // Code Version: N/A
 // Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
 // Description: Function parameters and form querying from backend adapted from source.
-// Page displayed when routing to hostname/monsters/{id}/edit
+// Page displayed when visiting /monsters/{id}/edit
 export default async function Page({ params }: { params: { id: number }})
 {
-  // TODO: Move this to the form instead.
   // Query monster and types in parallel. Types used for form dropdown.
   const 
   [
@@ -30,9 +28,6 @@ export default async function Page({ params }: { params: { id: number }})
     fetchMonsterById(params.id),
     fetchMonsterTypes()
   ]);
-
-  console.info(`Displaying data for monster with id ${params.id}\n ${JSON.stringify(monster)}`);
-  console.info(`Available monster types:\n ${JSON.stringify(monsterTypes)}`);
 
   return (
     <Form 

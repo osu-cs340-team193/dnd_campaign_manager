@@ -1,20 +1,23 @@
 'use client';
 
 import { Container, Flex, Table } from '@mantine/core';
-
-import { DeleteButton, UpdateButton } from '@/app/ui/locations/buttons';
-
+import { DeleteButton, UpdateButton } from '@/app/ui/buttons';
 import { LocationTableRow } from '@/app/lib/definitions';
+import { deleteLocationById } from '@/app/lib/actions';
 
+// Table view for locations entity
+// TODO: Have alternate format for mobile layouts. Maybe something like a card per row.
 export default function EntityTable(
-  { locationRows }: 
-  { locationRows: LocationTableRow[] })
+  { locations }: 
+  { locations: LocationTableRow[] })
 {
   return (
     <Container>
       <Table
         striped='odd'
         withRowBorders={false}
+        stickyHeader
+        stickyHeaderOffset={60}
       >
         <Table.Thead>
           <Table.Tr>
@@ -24,11 +27,12 @@ export default function EntityTable(
             <Table.Th>Description</Table.Th>
             <Table.Th>Monsters</Table.Th>
             <Table.Th>Items</Table.Th>
+            <Table.Th></Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
           {
-            locationRows?.map((location) => (
+            locations?.map((location) => (
               <Table.Tr key={location.location_id}>
                 <Table.Td>{location.location_id}</Table.Td>
                 <Table.Td>{location.location_name}</Table.Td>
@@ -42,16 +46,28 @@ export default function EntityTable(
                     gap='xs'
                     visibleFrom='xs'
                   >
-                    <UpdateButton id={location.location_id ?? -1} />
-                    <DeleteButton id={location.location_id ?? -1} />
+                    <UpdateButton 
+                      id={location.location_id} 
+                      pageRoot='locations'
+                    />
+                    <DeleteButton 
+                      id={location.location_id} 
+                      onDelete={deleteLocationById}
+                    />
                   </Flex>
                   <Flex
                     direction='column'
                     gap='xs'
                     hiddenFrom='xs'
                   >
-                    <UpdateButton id={location.location_id ?? -1} />
-                    <DeleteButton id={location.location_id ?? -1} />
+                    <UpdateButton 
+                      id={location.location_id} 
+                      pageRoot='locations'
+                    />
+                    <DeleteButton 
+                      id={location.location_id} 
+                      onDelete={deleteLocationById}
+                    />
                   </Flex>
                 </Table.Td>
               </Table.Tr>

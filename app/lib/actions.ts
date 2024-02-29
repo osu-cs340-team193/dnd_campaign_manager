@@ -1,11 +1,8 @@
-// POST API endpoints for all entities.
 'use server';
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-
 import { PoolConnection } from 'mysql2/promise';
-
 import mysql from '@/app/lib/db';
 import Query from '@/app/lib/query';
 import 
@@ -39,8 +36,15 @@ import
   LocationItem,
   UpdateLocationItem,
 } from '@/app/lib/definitions';
-import { actions, campaigns, items, locations, locationsItems, locationsMonsters } from '@/app/lib/placeholder-data';
-
+import 
+{ 
+  actions, 
+  campaigns, 
+  items, 
+  locations, 
+  locationsItems, 
+  locationsMonsters 
+} from '@/app/lib/placeholder-data';
 import
 {
   campaignsDbConnected,
@@ -52,6 +56,17 @@ import
   locationsItemsDbConnected,
 } from '@/app/lib/db-conn-status';
 
+// Data updating/deleting handlers 
+
+// Citation for the following functions:
+// Date: 02/18/2024
+// Title: Adapted from [Learn Next.js: Mutating Data]
+// Type: Source Code
+// Author: Vercel Company
+// Code Version: N/A
+// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
+// Description: General function structure and validation logic adapted from source.
+
 /****************************************************************************************
 
 
@@ -60,18 +75,10 @@ Campaigns
 
 *****************************************************************************************/
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for creating a new campaign.
+// POST /campaigns 
 export async function createCampaign(prevState: CampaignFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
+  // Perform server-side form validation before submitting data to backend
   const validateFields = CreateCampaign.safeParse({
     title: formData.get('title'),
     start_date: formData.get('start_date'),
@@ -87,7 +94,7 @@ export async function createCampaign(prevState: CampaignFormState, formData: For
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
+  // Convert form values into a valid type before sending to backend
   const campaign: Campaign =
   {
     title: validateFields.data.title,
@@ -101,7 +108,7 @@ export async function createCampaign(prevState: CampaignFormState, formData: For
 
   if (campaignsDbConnected)
   {
-    // Attempt to send form data to backend.
+    // Attempt to send form data to backend
     let connection: PoolConnection | null = null;
     try
     {
@@ -116,7 +123,7 @@ export async function createCampaign(prevState: CampaignFormState, formData: For
     }
     finally
     {
-      // Always release connection at end of transaction.
+      // Always release connection at end of transaction
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -125,33 +132,22 @@ export async function createCampaign(prevState: CampaignFormState, formData: For
   }
 
   // Since we added a new campaign, we want to force the campaigns page to update
-  // its state to display it.
+  // its state to display it
   revalidatePath('/campaigns');
 
-  // Send user back to campaigns page.
+  // Send user back to campaigns page
   redirect('/campaigns');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for updating an existing campaign.
+// PUT /campaigns/{id}
 export async function updateCampaignById(id: number, prevState: CampaignFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = UpdateCampaign.safeParse({
     title: formData.get('title'),
     start_date: formData.get('start_date'),
     end_date: formData.get('end_date'),
     dungeon_master: formData.get('dungeon_master'),
   });
-
-  console.info(formData);
 
   if (!validateFields.success)
   {
@@ -161,7 +157,6 @@ export async function updateCampaignById(id: number, prevState: CampaignFormStat
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const campaign: Campaign =
   {
     campaign_id: id,
@@ -176,7 +171,6 @@ export async function updateCampaignById(id: number, prevState: CampaignFormStat
 
   if (campaignsDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -191,7 +185,6 @@ export async function updateCampaignById(id: number, prevState: CampaignFormStat
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -199,33 +192,17 @@ export async function updateCampaignById(id: number, prevState: CampaignFormStat
     }
   }
 
-  // Since we updated an existing campaign, we want to force the campaigns page to update
-  // its state to display it.
   revalidatePath('/campaigns');
-
-  // Send user back to campaigns page.
   redirect('/campaigns');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when deleting an existing campaign.
+// DELETE /campaigns/{id}
 export async function deleteCampaignById(id: number)
 {
-  campaigns.splice(id - 1, 1);
-  console.log(JSON.stringify(campaigns));
-
   if (campaignsDbConnected)
   {
     let connection: PoolConnection | null = null;
 
-    // Attempt to delete campaign from backend.
     try
     {
       connection = await mysql.createConnection();
@@ -239,19 +216,19 @@ export async function deleteCampaignById(id: number)
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
     }
   }
+  else
+  {
+    campaigns.splice(id - 1, 1);
+    console.log(JSON.stringify(campaigns));
+  }
 
-  // Since we deleted an existing campaign, we want to force the campaigns page to update
-  // its state to display it.
   revalidatePath('/campaigns');
-
-  // Send user back to campaigns page.
   redirect('/campaigns');
 }
 
@@ -263,18 +240,9 @@ Locations
 
 *****************************************************************************************/
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for creating a new location.
+// POST /locations
 export async function createLocation(prevState: LocationFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = CreateLocation.safeParse({
     campaign_name: formData.get('campaign_name'),
     location_name: formData.get('location_name'),
@@ -289,7 +257,6 @@ export async function createLocation(prevState: LocationFormState, formData: For
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const location: Location =
   {
     campaign_name: validateFields.data.campaign_name,
@@ -302,7 +269,6 @@ export async function createLocation(prevState: LocationFormState, formData: For
 
   if (locationsDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -317,7 +283,6 @@ export async function createLocation(prevState: LocationFormState, formData: For
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -325,26 +290,13 @@ export async function createLocation(prevState: LocationFormState, formData: For
     }
   }
 
-  // Since we added a new location, we want to force the locations page to update
-  // its state to display it.
   revalidatePath('/locations');
-
-  // Send user back to locations page.
   redirect('/locations');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for updating an existing location.
+// PUT /locations/{id}
 export async function updateLocationById(id: number, prevState: LocationFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = UpdateLocation.safeParse({
     campaign_name: formData.get('campaign_name'),
     location_name: formData.get('location_name'),
@@ -359,7 +311,6 @@ export async function updateLocationById(id: number, prevState: LocationFormStat
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const location: Location =
   {
     location_id: id,
@@ -373,7 +324,6 @@ export async function updateLocationById(id: number, prevState: LocationFormStat
 
   if (locationsDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -388,7 +338,6 @@ export async function updateLocationById(id: number, prevState: LocationFormStat
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -396,33 +345,17 @@ export async function updateLocationById(id: number, prevState: LocationFormStat
     }
   }
 
-  // Since we updated an existing location, we want to force the locations page to update
-  // its state to display it.
   revalidatePath('/locations');
-
-  // Send user back to locations page.
   redirect('/locations');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when deleting an existing location.
+// DELETE /locations/{id}
 export async function deleteLocationById(id: number)
 {
-  campaigns.splice(id - 1, 1);
-  console.log(JSON.stringify(campaigns));
-
   if (locationsDbConnected)
   {
     let connection: PoolConnection | null = null;
 
-    // Attempt to delete campaign from backend.
     try
     {
       connection = await mysql.createConnection();
@@ -436,19 +369,19 @@ export async function deleteLocationById(id: number)
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
     }
   }
+  else
+  {
+    campaigns.splice(id - 1, 1);
+    console.log(JSON.stringify(campaigns));
+  }
 
-  // Since we deleted an existing location, we want to force the locations page to update
-  // its state to display it.
   revalidatePath('/locations');
-
-  // Send user back to locations page.
   redirect('/locations');
 }
 
@@ -460,18 +393,9 @@ Monsters
 
 *****************************************************************************************/
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for creating a new monster.
+// POST /monsters
 export async function createMonster(prevState: MonsterFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = CreateMonster.safeParse({
     monster_name: formData.get('monster_name'),
     armor_class: formData.get('armor_class'),
@@ -487,7 +411,6 @@ export async function createMonster(prevState: MonsterFormState, formData: FormD
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const monster: Monster =
   {
     monster_name: validateFields.data.monster_name,
@@ -498,7 +421,6 @@ export async function createMonster(prevState: MonsterFormState, formData: FormD
 
   if (monstersDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -513,7 +435,6 @@ export async function createMonster(prevState: MonsterFormState, formData: FormD
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -521,26 +442,13 @@ export async function createMonster(prevState: MonsterFormState, formData: FormD
     }
   }
 
-  // Since we added a new monster, we want to force the monsters page to update
-  // its state to display it.
   revalidatePath('/monsters');
-
-  // Send user back to monsters page.
   redirect('/monsters');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for updating an existing monster.
+// PUT /monsters/{id}
 export async function updateMonsterById(id: number, prevState: MonsterFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = UpdateMonster.safeParse({
     monster_name: formData.get('monster_name'),
     armor_class: formData.get('armor_class'),
@@ -558,7 +466,6 @@ export async function updateMonsterById(id: number, prevState: MonsterFormState,
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const monster: Monster =
   {
     monster_id: id,
@@ -570,7 +477,6 @@ export async function updateMonsterById(id: number, prevState: MonsterFormState,
 
   if (monstersDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -585,7 +491,6 @@ export async function updateMonsterById(id: number, prevState: MonsterFormState,
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -593,30 +498,17 @@ export async function updateMonsterById(id: number, prevState: MonsterFormState,
     }
   }
 
-  // Since we updated an existing monster, we want to force the monsters page to update
-  // its state to display it.
   revalidatePath('/monsters');
-
-  // Send user back to monsters page.
   redirect('/monsters');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when deleting an existing monster.
+// DELETE /monsters/{id}
 export async function deleteMonsterById(id: number)
 {
   if (monstersDbConnected)
   {
     let connection: PoolConnection | null = null;
 
-    // Attempt to delete monster from backend.
     try
     {
       connection = await mysql.createConnection();
@@ -630,7 +522,6 @@ export async function deleteMonsterById(id: number)
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -638,11 +529,7 @@ export async function deleteMonsterById(id: number)
     }
   }
 
-  // Since we deleted an existing monster, we want to force the monsters page to update
-  // its state to display it.
   revalidatePath('/monsters');
-
-  // Send user back to monsters page.
   redirect('/monsters');
 }
 
@@ -654,18 +541,9 @@ Actions
 
 *****************************************************************************************/
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for creating a new action.
+// POST /actions
 export async function createAction(prevState: ActionFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = CreateAction.safeParse({
     action_name: formData.get('action_name'),
     monster_name: formData.get('monster_name'),
@@ -680,7 +558,6 @@ export async function createAction(prevState: ActionFormState, formData: FormDat
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const action: Action =
   {
     action_name: validateFields.data.action_name,
@@ -693,7 +570,6 @@ export async function createAction(prevState: ActionFormState, formData: FormDat
 
   if (actionsDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -708,7 +584,6 @@ export async function createAction(prevState: ActionFormState, formData: FormDat
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -716,26 +591,13 @@ export async function createAction(prevState: ActionFormState, formData: FormDat
     }
   }
 
-  // Since we added a new action, we want to force the actions page to update
-  // its state to display it.
   revalidatePath('/actions');
-
-  // Send user back to actions page.
   redirect('/actions');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for updating an existing action.
+// PUT /actions/{id}
 export async function updateActionById(id: number, prevState: ActionFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = UpdateAction.safeParse({
     action_name: formData.get('action_name'),
     monster_name: formData.get('monster_name'),
@@ -750,7 +612,6 @@ export async function updateActionById(id: number, prevState: ActionFormState, f
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const action: Action =
   {
     action_id: id,
@@ -764,7 +625,6 @@ export async function updateActionById(id: number, prevState: ActionFormState, f
 
   if (actionsDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -779,7 +639,6 @@ export async function updateActionById(id: number, prevState: ActionFormState, f
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -787,33 +646,17 @@ export async function updateActionById(id: number, prevState: ActionFormState, f
     }
   }
 
-  // Since we updated an existing action, we want to force the actions page to update
-  // its state to display it.
   revalidatePath('/actions');
-
-  // Send user back to actions page.
   redirect('/actions');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when deleting an existing action.
+// DELETE /actions/{id}
 export async function deleteActionById(id: number)
 {
-  actions.splice(id - 1, 1);
-  console.log(JSON.stringify(actions));
-
   if (actionsDbConnected)
   {
     let connection: PoolConnection | null = null;
 
-    // Attempt to delete campaign from backend.
     try
     {
       connection = await mysql.createConnection();
@@ -827,19 +670,19 @@ export async function deleteActionById(id: number)
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
     }
   }
+  else
+  {
+    actions.splice(id - 1, 1);
+    console.log(JSON.stringify(actions));
+  }
 
-  // Since we deleted an existing action, we want to force the actions page to update
-  // its state to display it.
   revalidatePath('/actions');
-
-  // Send user back to actions page.
   redirect('/actions');
 }
 
@@ -851,18 +694,9 @@ Items
 
 *****************************************************************************************/
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for creating a new item.
+// POST /items
 export async function createItem(prevState: ItemFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = CreateItem.safeParse({
     item_name: formData.get('item_name'),
     value: formData.get('value'),
@@ -877,7 +711,6 @@ export async function createItem(prevState: ItemFormState, formData: FormData)
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const item: Item =
   {
     item_name: validateFields.data.item_name,
@@ -890,7 +723,6 @@ export async function createItem(prevState: ItemFormState, formData: FormData)
 
   if (itemsDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -905,7 +737,6 @@ export async function createItem(prevState: ItemFormState, formData: FormData)
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -913,26 +744,13 @@ export async function createItem(prevState: ItemFormState, formData: FormData)
     }
   }
 
-  // Since we added a new item, we want to force the items page to update
-  // its state to display it.
   revalidatePath('/items');
-
-  // Send user back to items page.
   redirect('/items');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for updating an existing item.
+// PUT /items/{id}
 export async function updateItemById(id: number, prevState: ItemFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = UpdateItem.safeParse({
     item_name: formData.get('item_name'),
     value: formData.get('value'),
@@ -947,7 +765,6 @@ export async function updateItemById(id: number, prevState: ItemFormState, formD
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const item: Item =
   {
     item_id: id,
@@ -961,7 +778,6 @@ export async function updateItemById(id: number, prevState: ItemFormState, formD
 
   if (itemsDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -976,7 +792,6 @@ export async function updateItemById(id: number, prevState: ItemFormState, formD
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -984,33 +799,17 @@ export async function updateItemById(id: number, prevState: ItemFormState, formD
     }
   }
 
-  // Since we updated an existing item, we want to force the items page to update
-  // its state to display it.
   revalidatePath('/items');
-
-  // Send user back to items page.
   redirect('/items');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when deleting an existing item.
+// DELETE /items/{id}
 export async function deleteItemById(id: number)
 {
-  items.splice(id - 1, 1);
-  console.log(JSON.stringify(items));
-
   if (itemsDbConnected)
   {
     let connection: PoolConnection | null = null;
 
-    // Attempt to delete item from backend.
     try
     {
       connection = await mysql.createConnection();
@@ -1024,19 +823,19 @@ export async function deleteItemById(id: number)
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
     }
   }
+  else
+  {
+    items.splice(id - 1, 1);
+    console.log(JSON.stringify(items));
+  }
 
-  // Since we deleted an existing item, we want to force the items page to update
-  // its state to display it.
   revalidatePath('/items');
-
-  // Send user back to items page.
   redirect('/items');
 }
 
@@ -1048,18 +847,9 @@ Locations_Monsters
 
 *****************************************************************************************/
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for creating a new item.
+// POST /locations-monsters
 export async function createLocationMonster(prevState: LocationMonsterFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = CreateLocationMonster.safeParse({
     location_name: formData.get('location_name'),
     monster_name: formData.get('monster_name'),
@@ -1073,7 +863,6 @@ export async function createLocationMonster(prevState: LocationMonsterFormState,
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const locationMonster: LocationMonster =
   {
     location_name: validateFields.data.location_name,
@@ -1085,7 +874,6 @@ export async function createLocationMonster(prevState: LocationMonsterFormState,
 
   if (locationsMonstersDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -1100,7 +888,6 @@ export async function createLocationMonster(prevState: LocationMonsterFormState,
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -1108,26 +895,13 @@ export async function createLocationMonster(prevState: LocationMonsterFormState,
     }
   }
 
-  // Since we added a new item, we want to force the items page to update
-  // its state to display it.
   revalidatePath('/locations-monsters');
-
-  // Send user back to items page.
   redirect('/locations-monsters');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for updating an existing item.
+// PUT /locations-monsters/{id}
 export async function updateLocationMonsterById(id: number, prevState: LocationMonsterFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = UpdateLocationMonster.safeParse({
     location_name: formData.get('location_name'),
     monster_name: formData.get('monster_name'),
@@ -1141,7 +915,6 @@ export async function updateLocationMonsterById(id: number, prevState: LocationM
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const locationMonster: LocationMonster =
   {
     location_monster_id: id,
@@ -1154,7 +927,6 @@ export async function updateLocationMonsterById(id: number, prevState: LocationM
 
   if (locationsMonstersDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -1169,7 +941,6 @@ export async function updateLocationMonsterById(id: number, prevState: LocationM
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -1177,33 +948,17 @@ export async function updateLocationMonsterById(id: number, prevState: LocationM
     }
   }
 
-  // Since we updated an existing item, we want to force the items page to update
-  // its state to display it.
   revalidatePath('/locations-monsters');
-
-  // Send user back to items page.
   redirect('/locations-monsters');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when deleting an existing item.
+// DELETE /locations-monsters/{id}
 export async function deleteLocationMonsterById(id: number)
 {
-  items.splice(id - 1, 1);
-  console.log(JSON.stringify(items));
-
   if (locationsMonstersDbConnected)
   {
     let connection: PoolConnection | null = null;
 
-    // Attempt to delete item from backend.
     try
     {
       connection = await mysql.createConnection();
@@ -1217,19 +972,19 @@ export async function deleteLocationMonsterById(id: number)
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
     }
   }
+  else
+  {
+    items.splice(id - 1, 1);
+    console.log(JSON.stringify(items));
+  }
 
-  // Since we deleted an existing item, we want to force the items page to update
-  // its state to display it.
   revalidatePath('/locations-monsters');
-
-  // Send user back to items page.
   redirect('/locations-monsters');
 }
 
@@ -1241,18 +996,9 @@ Locations_Items
 
 *****************************************************************************************/
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for creating a new item.
+// POST /locations-items
 export async function createLocationItem(prevState: LocationItemFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = CreateLocationItem.safeParse({
     location_name: formData.get('location_name'),
     item_name: formData.get('item_name'),
@@ -1266,7 +1012,6 @@ export async function createLocationItem(prevState: LocationItemFormState, formD
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const locationItem: LocationItem =
   {
     location_name: validateFields.data.location_name,
@@ -1278,7 +1023,6 @@ export async function createLocationItem(prevState: LocationItemFormState, formD
 
   if (locationsItemsDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -1293,7 +1037,6 @@ export async function createLocationItem(prevState: LocationItemFormState, formD
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -1301,26 +1044,13 @@ export async function createLocationItem(prevState: LocationItemFormState, formD
     }
   }
 
-  // Since we added a new item, we want to force the items page to update
-  // its state to display it.
   revalidatePath('/locations-items');
-
-  // Send user back to items page.
   redirect('/locations-items');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when submitting a form for updating an existing item.
+// PUT /locations-items/{id}
 export async function updateLocationItemById(id: number, prevState: LocationItemFormState, formData: FormData)
 {
-  // Perform server-side form validation before submitting data to backend.
   const validateFields = UpdateLocationItem.safeParse({
     location_name: formData.get('location_name'),
     item_name: formData.get('item_name'),
@@ -1334,7 +1064,6 @@ export async function updateLocationItemById(id: number, prevState: LocationItem
     };
   }
 
-  // Convert form values into a valid type before sending to backend.
   const locationItem: LocationItem =
   {
     location_item_id: id,
@@ -1347,7 +1076,6 @@ export async function updateLocationItemById(id: number, prevState: LocationItem
 
   if (locationsItemsDbConnected)
   {
-    // Attempt to send form data to backend.
     let connection: PoolConnection | null = null;
     try
     {
@@ -1362,7 +1090,6 @@ export async function updateLocationItemById(id: number, prevState: LocationItem
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
@@ -1370,33 +1097,17 @@ export async function updateLocationItemById(id: number, prevState: LocationItem
     }
   }
 
-  // Since we updated an existing item, we want to force the items page to update
-  // its state to display it.
   revalidatePath('/locations-items');
-
-  // Send user back to items page.
   redirect('/locations-items');
 }
 
-// Citation for the following function:
-// Date: 02/18/2024
-// Title: Adapted from [Learn Next.js: Mutating Data]
-// Type: Source Code
-// Author: Vercel Company
-// Code Version: N/A
-// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
-// Description: Function adapted from source.
-// POST API endpoint when deleting an existing item.
+// DELETE /locations-items/{id}
 export async function deleteLocationItemById(id: number)
 {
-  items.splice(id - 1, 1);
-  console.log(JSON.stringify(items));
-
   if (locationsItemsDbConnected)
   {
     let connection: PoolConnection | null = null;
 
-    // Attempt to delete item from backend.
     try
     {
       connection = await mysql.createConnection();
@@ -1410,18 +1121,18 @@ export async function deleteLocationItemById(id: number)
     }
     finally
     {
-      // Always release connection at end of transaction.
       if (connection)
       {
         mysql.releaseConnection(connection);
       }
     }
   }
+  else 
+  {
+    items.splice(id - 1, 1);
+    console.log(JSON.stringify(items));
+  }
 
-  // Since we deleted an existing item, we want to force the items page to update
-  // its state to display it.
   revalidatePath('/locations-items');
-
-  // Send user back to items page.
   redirect('/locations-items');
 }

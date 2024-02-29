@@ -1,12 +1,17 @@
 import EntityTable from '@/app/ui/locations-monsters/entity-table';
-
-import { Container, Flex, Text } from '@mantine/core';
-import { AddButton } from '@/app/ui/locations-monsters/buttons';
+import 
+{ 
+  Container, 
+  Flex, 
+  Text 
+} from '@mantine/core';
+import { AddButton } from '@/app/ui/buttons';
 import { fetchLocationsMonsters } from '@/app/lib/data';
 
-// Page displayed when routing to hostname/campaigns
+// Page displayed when visiting /locations-monsters
 export default async function Page()
 { 
+  // Get all locations-monsters fromd database 
   const locationsMonsters = await fetchLocationsMonsters();
 
   return (
@@ -31,7 +36,9 @@ export default async function Page()
         <EntityTable
           locationsMonsters={locationsMonsters}
         />
-        <AddButton />
+        <AddButton 
+          pageRoot='locations-items'
+        />
       </Flex>
     </Container>
   );

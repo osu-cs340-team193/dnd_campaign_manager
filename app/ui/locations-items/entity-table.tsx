@@ -1,11 +1,12 @@
 'use client';
 
 import { Container, Flex, Table } from '@mantine/core';
-
-import { DeleteButton, UpdateButton } from '@/app/ui/locations-items/buttons';
-
+import { DeleteButton, UpdateButton } from '@/app/ui/buttons';
 import { LocationItem } from '@/app/lib/definitions';
+import { deleteLocationItemById } from '@/app/lib/actions';
 
+// Table view for locations items intersection table 
+// TODO: Have alternate format for mobile layouts. Maybe something like a card per row.
 export default function EntityTable({ locationsItems }: { locationsItems: LocationItem[] })
 {
   return (
@@ -37,16 +38,28 @@ export default function EntityTable({ locationsItems }: { locationsItems: Locati
                     gap='xs'
                     visibleFrom='xs'
                   >
-                    <UpdateButton id={locationItem.location_item_id ?? -1} />
-                    <DeleteButton id={locationItem.location_item_id ?? -1} />
+                    <UpdateButton 
+                      id={locationItem.location_item_id ?? -1} 
+                      pageRoot='locations-items'
+                    />
+                    <DeleteButton 
+                      id={locationItem.location_item_id ?? -1} 
+                      onDelete={deleteLocationItemById}
+                    />
                   </Flex>
                   <Flex
                     direction='column'
                     gap='xs'
                     hiddenFrom='xs'
                   >
-                    <UpdateButton id={locationItem.location_item_id ?? -1} />
-                    <DeleteButton id={locationItem.location_item_id ?? -1} />
+                    <UpdateButton 
+                      id={locationItem.location_item_id ?? -1} 
+                      pageRoot='locations-items'
+                    />
+                    <DeleteButton 
+                      id={locationItem.location_item_id ?? -1} 
+                      onDelete={deleteLocationItemById}
+                    />
                   </Flex>
                 </Table.Td>
               </Table.Tr>

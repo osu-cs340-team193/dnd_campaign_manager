@@ -7,7 +7,6 @@ import
   fetchLocationMonsterNamesById,
   fetchLocationItemNamesById
 } from '@/app/lib/data';
-
 import Form from '@/app/ui/locations/edit-form';
 
 // Citation for the following function:
@@ -18,7 +17,7 @@ import Form from '@/app/ui/locations/edit-form';
 // Code Version: N/A
 // Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
 // Description: Function parameters and form querying from backend adapted from source.
-// Page displayed when routing to hostname/locations/{id}/edit
+// Page displayed when visiting /locations/{id}/edit 
 export default async function Page({ params }: { params: { id: number }})
 {
   // Query location, monster names, campaign titles, and item names in parallel. 

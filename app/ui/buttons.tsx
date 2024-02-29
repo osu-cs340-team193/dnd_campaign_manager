@@ -7,10 +7,8 @@ import { Button, Text } from '@mantine/core';
 import { GrEdit } from 'react-icons/gr';
 import { RiDeleteBinLine } from 'react-icons/ri';
 
-import { deleteLocationItemById } from '@/app/lib/actions';
-
-// Page displayed when routing to hostname/monsters
-export function AddButton()
+// Sends user to create form to create a new entity 
+export function AddButton({ pageRoot }: { pageRoot: string } )
 { 
   const router = useRouter();
 
@@ -19,14 +17,15 @@ export function AddButton()
       variant='filled'
       color='blue'
       radius='md'
-      onClick={ () => router.push('/locations-items/create') }
+      onClick={ () => router.push(`/${pageRoot}/create`) }
     >
       Add
     </Button>
   );
 }
 
-export function UpdateButton({ id } : { id: number })
+// Sends user to edit form to update an existing entity
+export function UpdateButton({ id, pageRoot }: { id: number, pageRoot: string })
 {
   const router = useRouter();
 
@@ -36,7 +35,7 @@ export function UpdateButton({ id } : { id: number })
       color='blue'
       radius='md'
       leftSection={<GrEdit />}
-      onClick={ () => router.push(`/locations-items/${id}/edit`) }
+      onClick={ () => router.push(`/${pageRoot}/${id}/edit`) }
     >
       <Text
         visibleFrom='xs'
@@ -47,9 +46,13 @@ export function UpdateButton({ id } : { id: number })
   );
 }
 
-export function DeleteButton({ id }: { id: number })
+// Sends request to delete existing entity
+export function DeleteButton(
+  { id, onDelete}: 
+  { id: number, onDelete: (id: number) => Promise<{message: string}> })
 {
-  const deleteAction = deleteLocationItemById.bind(null, id);
+  const deleteAction = onDelete.bind(null, id);
+
   // TS does not like. Throws error for some reason.
   //@ts-ignore
   const [state, dispatch] = useFormState(deleteAction);

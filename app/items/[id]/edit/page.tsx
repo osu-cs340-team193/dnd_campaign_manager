@@ -4,7 +4,6 @@ import
   fetchItemLocationNamesById,
   fetchLocationNames,
 } from '@/app/lib/data';
-
 import Form from '@/app/ui/items/edit-form';
 
 // Citation for the following function:
@@ -15,7 +14,7 @@ import Form from '@/app/ui/items/edit-form';
 // Code Version: N/A
 // Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
 // Description: Function parameters and form querying from backend adapted from source.
-// Page displayed when routing to hostname/items/{id}/edit
+// Page displayed when visiting /items/{id}/edit
 export default async function Page({ params }: { params: { id: number }})
 {
   // Query items and location names in parallel. Types used for form dropdown.

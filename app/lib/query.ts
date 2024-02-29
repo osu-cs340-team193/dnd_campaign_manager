@@ -2,9 +2,7 @@ import
 { 
   PoolConnection, 
 } from 'mysql2/promise';
-
 import log from 'loglevel';
-
 import 
 {
   Monster,
@@ -27,9 +25,11 @@ import
   LocationMonster,
   ILocationItem,
   LocationItem,
+  IActionName,
 } from '@/app/lib/definitions';
 
-log.setLevel('debug');
+// Change this to 'trace' for more verbose logging
+log.setLevel('info');
 
 // Defines all database queries used by this app.
 export default class Query 
@@ -670,6 +670,70 @@ export default class Query
     log.trace(`Query Result: ${JSON.stringify(result)}`);
 
     return result;
+  }
+
+  /*
+  Get all locations for this monster with user friendly names
+
+  SELECT
+    L.location_name AS 'location_name'
+  FROM Locations_Monsters LM
+    INNER JOIN Locations L ON L.location_id = LM.location_id
+    INNER JOIN Monsters M ON M.monster_id = LM.monster_id
+  WHERE M.monster_id = :id
+  */
+  public static async getAllMonsterLocationNamesById(connection: PoolConnection, id: number) : Promise<ILocationName[]>
+  {
+    const query: string = `
+      SELECT
+        L.location_name AS 'location_name'
+      FROM Locations_Monsters LM
+        INNER JOIN Locations L ON L.location_id = LM.location_id
+        INNER JOIN Monsters M ON M.monster_id = LM.monster_id
+      WHERE M.monster_id = ${id}
+    `;
+
+    log.debug(`Executing Query: ${query}`);
+
+    const result = await connection.execute<ILocationName[]>(query);
+
+    log.info(`Retrieved ${result[0].length} location names from ${this.locationsTable} table.`);
+    log.debug(`Location Names: ${result[0].map((value) => JSON.stringify(value))}`);
+    log.trace(`Query Result: ${JSON.stringify(result)}`);
+
+    // Second value in result array holds query metadata that we don't care about.
+    return result[0];
+  }
+
+  /*
+  Get all actions for this monster with user friendly names
+
+  SELECT
+    A.action_name AS 'action_name'
+  FROM Actions A 
+    INNER JOIN Monsters M ON M.monster_id = A.monster_id
+  WHERE M.monster_id = :id
+  */
+  public static async getAllMonsterActionNamesById(connection: PoolConnection, id: number) : Promise<IActionName[]>
+  {
+    const query: string = `
+      SELECT
+        A.action_name AS 'action_name'
+      FROM Actions A 
+        INNER JOIN Monsters M ON M.monster_id = A.monster_id
+      WHERE M.monster_id = ${id}
+    `;
+
+    log.debug(`Executing Query: ${query}`);
+
+    const result = await connection.execute<IActionName[]>(query);
+
+    log.info(`Retrieved ${result[0].length} action names from ${this.actionsTable} table.`);
+    log.debug(`Action Names: ${result[0].map((value) => JSON.stringify(value))}`);
+    log.trace(`Query Result: ${JSON.stringify(result)}`);
+
+    // Second value in result array holds query metadata that we don't care about.
+    return result[0];
   }
 
   /****************************************************************************************

@@ -1,11 +1,21 @@
 'use client';
 
-import { Container, Flex, Table } from '@mantine/core';
-
-import { DeleteButton, UpdateButton } from '@/app/ui/items/buttons';
-
+import 
+{ 
+  Container, 
+  Flex, 
+  Table 
+} from '@mantine/core';
+import 
+{ 
+  DeleteButton, 
+  UpdateButton 
+} from '@/app/ui/buttons';
 import { ItemTableRow } from '@/app/lib/definitions';
+import { deleteItemById } from '@/app/lib/actions';
 
+// Table view for items entity
+// TODO: Have alternate format for mobile layouts. Maybe something like a card per row.
 export default function EntityTable({ items }: { items: ItemTableRow[] })
 {
   return (
@@ -13,6 +23,8 @@ export default function EntityTable({ items }: { items: ItemTableRow[] })
       <Table
         striped='odd'
         withRowBorders={false}
+        stickyHeader
+        stickyHeaderOffset={60}
       >
         <Table.Thead>
           <Table.Tr>
@@ -21,6 +33,7 @@ export default function EntityTable({ items }: { items: ItemTableRow[] })
             <Table.Th>Value</Table.Th>
             <Table.Th>Weight</Table.Th>
             <Table.Th>Locations</Table.Th>
+            <Table.Th></Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
@@ -38,16 +51,28 @@ export default function EntityTable({ items }: { items: ItemTableRow[] })
                     gap='xs'
                     visibleFrom='xs'
                   >
-                    <UpdateButton id={item.item_id} />
-                    <DeleteButton id={item.item_id} />
+                    <UpdateButton 
+                      id={item.item_id} 
+                      pageRoot='items'
+                    />
+                    <DeleteButton 
+                      id={item.item_id} 
+                      onDelete={deleteItemById}
+                    />
                   </Flex>
                   <Flex
                     direction='column'
                     gap='xs'
                     hiddenFrom='xs'
                   >
-                    <UpdateButton id={item.item_id} />
-                    <DeleteButton id={item.item_id} />
+                    <UpdateButton 
+                      id={item.item_id} 
+                      pageRoot='items'
+                    />
+                    <DeleteButton 
+                      id={item.item_id} 
+                      onDelete={deleteItemById}
+                    />
                   </Flex>
                 </Table.Td>
               </Table.Tr>

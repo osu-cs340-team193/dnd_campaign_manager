@@ -3,7 +3,6 @@ import
   fetchActionById,
   fetchMonsterNames,
 } from '@/app/lib/data';
-
 import Form from '@/app/ui/actions/edit-form';
 
 // Citation for the following function:
@@ -14,10 +13,10 @@ import Form from '@/app/ui/actions/edit-form';
 // Code Version: N/A
 // Source URL: https://nextjs.org/learn/dashboard-app/mutating-data 
 // Description: Function parameters and form querying from backend adapted from source.
-// Page displayed when routing to hostname/campaigns/{id}/edit
+// Page displayed when visitnig /actions/{id}/edit
 export default async function Page({ params }: { params: { id: number }})
 {
-  // Query actions and monster names in parallel. Types used for form dropdown.
+  // Query actions and monster names in parallel. Names used for form dropdown.
   const 
   [
     action, 

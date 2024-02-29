@@ -1,4 +1,3 @@
-// Code borrowed from: https://sidorares.github.io/node-mysql2/docs/examples/typescript/basic-custom-class
 import
 {
   createPool,
@@ -7,6 +6,16 @@ import
   PoolConnection,
 } from 'mysql2/promise';
 
+// Handles sql connection to database
+
+// Citation for the following class:
+// Date: 02/18/2024
+// Title: Adapted from [MySQL2: Basic Custom Class]
+// Type: Source Code
+// Author: Andrey Sidorov
+// Code Version: N/A
+// Source URL: https://sidorares.github.io/node-mysql2/docs/examples/typescript/basic-custom-class
+// Description: Class structure and methods borrowed from source.
 export class MySQLConnection
 {
   private pool: Pool;
@@ -34,7 +43,6 @@ export class MySQLConnection
   // to free up connection for others to use.
   // 2. The pool.query automatically releases the connection when finished, so this
   // is more for making a connection for multiple queries that need to run sequentially.
-  // See: https://stackoverflow.com/a/57121491
   async createConnection()
   {
     this.ensureConnection();
@@ -42,11 +50,9 @@ export class MySQLConnection
     return await this.pool.getConnection(); 
   }
 
+  // A connection must be released manually back into the pool after its no longer in use
   releaseConnection(connection: PoolConnection)
   {
-    // The mysql docs say to call both, but I'm not sure if it's saying
-    // you have to choose one option or do both in the exact same order.
-    // See: https://sidorares.github.io/node-mysql2/docs/examples/connections/create-pool
     if (connection)
     {
       this.pool?.releaseConnection(connection);
@@ -54,7 +60,7 @@ export class MySQLConnection
     }
   }
 
-  // Close connection to database.
+  // Close connection to database
   closeConnection()
   {
     this.pool?.end();

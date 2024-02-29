@@ -2,18 +2,41 @@
 
 import { createLocationItem } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
-
 import { useRouter } from 'next/navigation';
-import { Container, Fieldset, Flex, Button, Select } from '@mantine/core';
-import { ItemName, LocationName } from '@/app/lib/definitions';
+import 
+{ 
+  Container, 
+  Fieldset, 
+  Flex, 
+  Button, 
+  Select 
+} from '@mantine/core';
+import 
+{ 
+  ItemName, 
+  LocationName 
+} from '@/app/lib/definitions';
 
+// Create form view for location items intersection table
+// TODO: Implement client-side form validation
+
+// Citation for the following function:
+// Date: 02/18/2024
+// Title: Adapted from [Learn Next.js: Mutating Data]
+// Type: Source Code
+// Author: Vercel Company
+// Code Version: N/A
+// Source URL: https://nextjs.org/learn/dashboard-app/mutating-data
+// Description: Form state management and action binding borrowed from source.
 export default function Form(
   { locationNames, itemNames }: 
   { locationNames: LocationName[], itemNames: ItemName[] })
 {
+  // Form initially has no errors
   const initialState = { message: null, errors: {}};
-  // TS does not like. Throws error for some reason.
-  //@ts-ignore
+
+  // Action to be called when form is submitted
+  // @ts-ignore
   const [state, dispatch] = useFormState(createLocationItem, initialState);
 
   const router = useRouter();

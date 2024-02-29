@@ -2,6 +2,7 @@
 
 import Error from '@/app/ui/error';
  
+// Page displayed for 500 internal server error
 export default function InternalServerError() {
   return (
     <Error 
