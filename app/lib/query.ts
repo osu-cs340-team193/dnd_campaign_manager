@@ -55,20 +55,23 @@ export default class Query
   SELECT *
   FROM Campaigns;
   */
-  public static async getAllCampaigns(connection: PoolConnection) : Promise<ICampaign[]>
-  {
+  public static async getAllCampaigns(connection: PoolConnection): Promise<ICampaign[]> {
     const query: string = `
+      SELECT campaign_id, title, 
+             DATE_FORMAT(start_date, '%Y-%m-%d') as start_date,
+             DATE_FORMAT(end_date, '%Y-%m-%d') as end_date,
+             dungeon_master
+      FROM ${this.campaignsTable}
     `;
-
+  
     log.debug(`Executing Query: ${query}`);
-
+  
     const result = await connection.execute<ICampaign[]>(query);
-
+  
     log.info(`Retrieved ${result[0].length} campaigns from ${this.campaignsTable} table.`);
     log.debug(`Campaigns: ${result[0].map((value) => JSON.stringify(value))}`);
     log.trace(`Query Result: ${JSON.stringify(result)}`);
-
-    // Second value in result array holds query metadata that we don't care about.
+  
     return result[0];
   }
 
@@ -82,6 +85,12 @@ export default class Query
   public static async getCampaignById(connection: PoolConnection, id: number): Promise<ICampaign>
   {
     const query: string = `
+    SELECT ${this.campaign_id}, ${this.title}, 
+            DATE_FORMAT(${this.start_date}, '%Y-%m-%d') as start_date,
+            DATE_FORMAT(${this.end_date}, '%Y-%m-%d') as end_date,
+            ${this.dungeon_master}
+    FROM ${this.campaignsTable}
+    WHERE ${this.campaign_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -107,6 +116,8 @@ export default class Query
   public static async getAllCampaignTitles(connection: PoolConnection) : Promise<ICampaignTitle[]>
   {
     const query: string = `
+    SELECT DISTINCT ${this.campaign_id}
+    FROM ${this.campaignsTable}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -131,6 +142,8 @@ export default class Query
   public static async getAllDungeonMasters(connection: PoolConnection) : Promise<IDungeonMaster[]>
   {
     const query: string = `
+    SELECT DISTINCT ${this.dungeon_master}
+    FROM ${this.campaignsTable}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -163,12 +176,34 @@ export default class Query
   */
   public static async addCampaign(connection: PoolConnection, value: Campaign) : Promise<any>
   {
+    let startDate: string | null = null;
+    let endDate: string | null = null;
+  
+    // Only convert if value.start_date is not null.
+    if (value.start_date !== null) {
+      startDate = new Date(value.start_date).toISOString().split('T')[0];
+    }
+  
+    // Only convert if value.end_date is not null.
+    if (value.end_date !== null) {
+      endDate = new Date(value.end_date).toISOString().split('T')[0];
+    }
+
     const query: string = `
-    `
+      INSERT INTO ${this.campaignsTable} (
+        ${this.title},
+        ${this.start_date},
+        ${this.end_date},
+        ${this.dungeon_master}
+      )
+      VALUES (?, ?, ?, ?)
+      `;
 
-    log.debug(`Executing Query: ${query}`);
+    const params = [value.title, startDate, endDate, value.dungeon_master];    
 
-    const result = await connection.execute(query);
+    log.debug(`Executing Query: ${query} with params ${params}`);
+
+    const result = await connection.execute(query, params);
 
     log.info(`Inserted new campaign into ${this.campaignsTable} table.`);
     log.debug(`Campaign: ${JSON.stringify(value)}`);
@@ -188,19 +223,31 @@ export default class Query
     dungeon_master = :dungeon_master_value
   WHERE campaign_id = :id;
   */
-  public static async updateCampaignById(connection: PoolConnection, value: Campaign) : Promise<any>
-  {
+  public static async updateCampaignById(connection: PoolConnection, value: Campaign): Promise<any> {
+    // Convert datetime strings to date-only strings if  they are't null
+    let startDate: string | null = value.start_date !== null ? new Date(value.start_date).toISOString().split('T')[0] : null;
+    let endDate: string | null = value.end_date !== null ? new Date(value.end_date).toISOString().split('T')[0] : null;
+  
     const query: string = `
+      UPDATE ${this.campaignsTable}
+      SET
+        ${this.title} = ?,
+        ${this.start_date} = ?,
+        ${this.end_date} = ?,
+        ${this.dungeon_master} = ?
+      WHERE ${this.campaign_id} = ?
     `;
-
-    log.debug(`Executing Query: ${query}`);
-
-    const result = await connection.execute(query);
-
+  
+    const params = [value.title, startDate, endDate, value.dungeon_master, value.campaign_id];
+  
+    log.debug(`Executing Query: ${query} with params ${params}`);
+  
+    const [result] = await connection.execute(query, params);
+  
     log.info(`Updated campaign with ${this.campaign_id} = ${value.campaign_id}.`);
     log.debug(`Campaign: ${JSON.stringify(value)}`);
     log.trace(`Query Result: ${JSON.stringify(result)}`);
-
+  
     return result;
   }
 
@@ -214,6 +261,9 @@ export default class Query
   public static async deleteCampaignById(connection: PoolConnection, id: number) : Promise<any>
   {
     const query: string = `
+      DELETE
+      FROM ${this.campaignsTable}
+      WHERE ${this.campaign_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
