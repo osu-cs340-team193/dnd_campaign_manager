@@ -104,7 +104,7 @@ export default function Form({ dungeonMasters }: { dungeonMasters : DungeonMaste
             <Autocomplete
               id='dungeon_master'
               name='dungeon_master'
-              label='Type'
+              label='Dungeon Master'
               placeholder='Select or create one'
               data={dungeonMasters.map((dungeonMaster) => dungeonMaster.dungeon_master)}
               aria-label='Type'
