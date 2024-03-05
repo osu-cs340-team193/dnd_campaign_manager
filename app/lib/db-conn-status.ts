@@ -6,4 +6,4 @@ export const monstersDbConnected:          boolean = true;
 export const actionsDbConnected:           boolean = false;
 export const itemsDbConnected:             boolean = false;
 export const locationsMonstersDbConnected: boolean = false;
-export const locationsItemsDbConnected:    boolean = false;
+export const locationsItemsDbConnected:    boolean = true;

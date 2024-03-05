@@ -1283,7 +1283,7 @@ export default class Query
   *****************************************************************************************/
   static locationsItemsTable: string = 'Locations_Items';
 
-  static location_item_id: string = 'location_items_id';
+  static location_item_id: string = 'location_item_id';
 
   /* 
   Return all entries from table in a user friendly manner (using names)
@@ -1299,6 +1299,14 @@ export default class Query
   public static async getAllLocationsItems(connection: PoolConnection) : Promise<ILocationItem[]>
   {
     const query: string = `
+    SELECT 
+      location_item_id,
+      location_name,
+      item_name
+
+    FROM ${this.locationsItemsTable} 
+      INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsItemsTable}.location_id
+        INNER JOIN ${this.itemsTable} ON ${this.itemsTable}.item_id = ${this.locationsItemsTable}.item_id
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1327,6 +1335,16 @@ export default class Query
   public static async getLocationItemById(connection: PoolConnection, id: number): Promise<ILocationItem>
   {
     const query: string = `
+    SELECT 
+      location_item_id,
+      location_name,
+      item_name
+
+    FROM ${this.locationsItemsTable} 
+      INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsItemsTable}.location_id
+        INNER JOIN ${this.itemsTable} ON ${this.itemsTable}.item_id = ${this.locationsItemsTable}.item_id
+    WHERE 
+      ${this.locationsItemsTable}.location_item_id = ${id} 
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1358,19 +1376,31 @@ export default class Query
       WHERE item_name = :item_name_selected_from_dropdown)
   );
   */
-  public static async addLocationItem(connection: PoolConnection, value: LocationItem) : Promise<any>
-  {
+  public static async addLocationItem(connection: PoolConnection, value: LocationItem): Promise<any> {
     const query: string = `
-    `
-
-    log.debug(`Executing Query: ${query}`);
-
-    const result = await connection.execute(query);
-
-    log.info(`Inserted new location item into ${this.locationsItemsTable} table.`);
+      INSERT INTO Locations_Items (location_id, item_id)
+      VALUES (
+        (
+          SELECT location_id 
+          FROM Locations
+          WHERE location_name = ?
+        ),
+        (
+          SELECT item_id 
+          FROM Items 
+          WHERE item_name = ?
+        )
+      )
+    `;
+  
+    log.debug(`Preparing to execute query: ${query}`);
+  
+    const result = await connection.execute(query, [value.location_name, value.item_name]);
+  
+    log.info(`Inserted new location item into Locations_Items table.`);
     log.debug(`Location Item: ${JSON.stringify(value)}`);
     log.trace(`Query Result: ${JSON.stringify(result)}`);
-
+  
     return result;
   }
 
@@ -1387,20 +1417,34 @@ export default class Query
                 WHERE item_name = :item_name_selected_from_dropdown)
   WHERE location_item_id = :location_item_id_from_update;
   */
-  public static async updateLocationItemById(connection: PoolConnection, value: LocationItem) : Promise<any>
-  {
+  public static async updateLocationItemById(connection: PoolConnection, value: LocationItem): Promise<any> {
+    // Assuming this.locationsItemsTable, this.location_id, etc., are class properties/constants representing table or column names.
+    // The query template remains mostly unchanged but now uses parameter placeholders for values.
     const query: string = `
-    `;
-
-    log.debug(`Executing Query: ${query}`);
-
-    const result = await connection.execute(query);
-
-    log.info(`Updated location item with ${this.location_item_id} = ${value.location_item_id}.`);
-    log.debug(`Location Item: ${JSON.stringify(value)}`);
-    log.trace(`Query Result: ${JSON.stringify(result)}`);
-
-    return result;
+      UPDATE ${this.locationsItemsTable}
+      SET 
+        location_id = (
+          SELECT location_id
+          FROM ${this.locationsTable}
+          WHERE location_name = ?
+        ),
+        item_id = (
+          SELECT item_id
+          FROM ${this.itemsTable}
+          WHERE item_name = ?
+        )
+      WHERE location_item_id = ?`;
+  
+    try {
+      const [result] = await connection.execute(query, [value.location_name, value.item_name, value.location_item_id]);
+  
+      return result;
+    } catch (error) {
+  
+      console.error('Error updating location item by ID:', error);
+      throw error; 
+    }
+  
   }
 
   /*
@@ -1410,18 +1454,25 @@ export default class Query
   FROM Locations_Items
   WHERE location_item_id = :location_item_id_from_table;
   */
-  public static async deleteLocationItemById(connection: PoolConnection, id: number) : Promise<any>
-  {
+  public static async deleteLocationItemById(connection: PoolConnection, id: number): Promise<any> {
+   
     const query: string = `
-    `;
-
-    log.debug(`Executing Query: ${query}`);
-
-    const result = await connection.execute(query);
-
-    log.info(`Deleted location item with ${this.location_item_id} = ${id}.`);
-    log.trace(`Query Result: ${JSON.stringify(result)}`);
-
-    return result;
+      DELETE
+      FROM ${this.locationsItemsTable}
+      WHERE ${this.location_item_id} = ?`;
+  
+    try {
+      // Execute query w/ ID as a param
+      const [result] = await connection.execute(query, [id]);
+      
+      log.info(`Deleted location item with ${this.location_item_id} = ${id}.`);
+      
+      return result;
+    } catch (error) {
+      // Asserting error is of type Error
+      const errorMessage = (error as Error).message;
+      log.error(`Error deleting location item by ID: ${errorMessage}`);
+      throw error; // Re-throwing the error to handle it further up the call stack if necessary
+    }
   }
 }
