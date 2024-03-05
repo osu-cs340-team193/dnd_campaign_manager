@@ -1418,8 +1418,7 @@ export default class Query
   WHERE location_item_id = :location_item_id_from_update;
   */
   public static async updateLocationItemById(connection: PoolConnection, value: LocationItem): Promise<any> {
-    // Assuming this.locationsItemsTable, this.location_id, etc., are class properties/constants representing table or column names.
-    // The query template remains mostly unchanged but now uses parameter placeholders for values.
+
     const query: string = `
       UPDATE ${this.locationsItemsTable}
       SET 
