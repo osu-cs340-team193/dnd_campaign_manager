@@ -29,7 +29,7 @@ import
 } from '@/app/lib/definitions';
 
 // Change this to 'trace' for more verbose logging
-log.setLevel('info');
+log.setLevel('debug');
 
 // Defines all database queries used by this app.
 export default class Query 
@@ -284,7 +284,6 @@ export default class Query
 
   *****************************************************************************************/
   static locationsTable: string = 'Locations';
-  static locations_monstersTable: string = 'Locations_Monsters';
   static locations_itemsTable: string = 'Locations_Items';
   static location_id: string = 'location_id';
   static campaign_name: string = 'campaign_name';
@@ -305,8 +304,9 @@ export default class Query
   public static async getAllLocations(connection: PoolConnection) : Promise<ILocation[]>
   {
     const query: string = `
-    SELECT location_name, campaign_name, location_description
+    SELECT ${this.location_id}, ${this.location_name}, ${this.title}, ${this.location_description}
     FROM ${this.locationsTable}
+    INNER JOIN ${this.campaignsTable} ON ${this.campaignsTable}.campaign_id = ${this.locationsTable}.campaign_id;
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -335,8 +335,9 @@ export default class Query
   public static async getLocationById(connection: PoolConnection, id: number): Promise<ILocation>
   {
     const query: string = `
-    SELECT ${this.location_id}, ${this.campaign_name}, ${this.location_name}, ${this.location_description}
+    SELECT ${this.location_id}, ${this.title}, ${this.location_name}, ${this.location_description}
     FROM ${this.locationsTable}
+    INNER JOIN ${this.campaignsTable} ON ${this.campaignsTable}.campaign_id = ${this.locationsTable}.campaign_id
     WHERE ${this.location_id} = ${id}
     `;
 
@@ -365,6 +366,7 @@ export default class Query
     const query: string = `
     SELECT DISTINCT ${this.location_name}
     FROM ${this.locationsTable}
+    ORDER BY ${this.location_name} ASC;
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -393,10 +395,10 @@ export default class Query
   {
     const query: string = `
     SELECT ${this.monster_name}
-    FROM ${this.locations_monstersTable}
-    INNER JOIN ${this.locationsTable} ON ${this.location_id}
-    INNER JOIN ${this.monstersTable} ON ${this.monster_id}
-    WHERE ${this.location_id} = ${id}
+    FROM ${this.locationsMonstersTable}
+    INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsMonstersTable}.location_id
+    INNER JOIN ${this.monstersTable} ON ${this.monstersTable}.monster_id = ${this.locationsMonstersTable}.monster_id
+    WHERE ${this.locationsMonstersTable}.location_monster_id = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -426,9 +428,9 @@ export default class Query
     const query: string = `
     SELECT ${this.item_name}
     FROM ${this.locations_itemsTable}
-    INNER JOIN ${this.locationsTable} ON ${this.location_id}
-    INNER JOIN ${this.itemsTable} ON ${this.item_id}
-    WHERE ${this.location_id} = ${id}
+    INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsItemsTable}.location_id
+    INNER JOIN ${this.itemsTable} ON ${this.itemsTable}.item_id = ${this.locationsItemsTable}.item_id
+    WHERE ${this.locationsItemsTable}.location_item_id = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -461,7 +463,7 @@ export default class Query
   {
     const query: string = `
     INSERT INTO ${this.locationsTable} (
-      ${this.campaign_name}, 
+      ${this.title}, 
       ${this.location_name}, 
       ${this.location_description}
     )
@@ -494,7 +496,7 @@ export default class Query
     const query: string = `
     UPDATE ${this.locationsTable} 
     SET 
-      ${this.campaign_name} = ${value.campaign_name}, 
+      ${this.title} = ${value.campaign_name}, 
       ${this.location_name} = ${value.location_name}, 
       ${this.location_description} = ${value.location_description}
     WHERE ${this.location_id} = ${value.location_id};
@@ -1075,8 +1077,8 @@ export default class Query
     const query: string = `
     SELECT ${this.location_name}
     FROM ${this.locations_itemsTable}
-    INNER JOIN ${this.locationsTable} ON ${this.location_id}
-    INNER JOIN ${this.itemsTable} ON ${this.item_id}
+    INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsItemsTable}.location_id
+    INNER JOIN ${this.itemsTable} ON ${this.itemsTable}.item_id = ${this.locationsItemsTable}.item_id
     WHERE ${this.item_id} = ${id}
     `;
 
@@ -1214,11 +1216,12 @@ export default class Query
   {
     const query: string = `
     SELECT 
-      ${this.location_name}, 
-      ${this.monster_name}'
-    FROM ${this.locationsMonstersTable}
-    INNER JOIN ${this.locationsTable} ON ${this.location_id} 
-    INNER JOIN ${this.monstersTable}  ON ${this.monster_id};
+      location_name,
+      monster_name
+
+    FROM ${this.locationsMonstersTable} 
+      INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsMonstersTable}.location_id
+      INNER JOIN ${this.monstersTable} ON ${this.monstersTable}.monster_id = ${this.locationsMonstersTable}.monster_id;
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1249,13 +1252,13 @@ export default class Query
   {
     const query: string = `
     SELECT 
-      ${this.location_monster_id},
-      ${this.location_id}, 
-      ${this.monster_id}
+      location_monster_id,
+      location_name,
+      monster_name
     FROM ${this.locationsMonstersTable}
-    INNER JOIN ${this.locationsTable} ON ${this.location_id}
-    INNER JOIN ${this.monstersTable} ON ${this.monster_id}
-    WHERE ${this.location_monster_id} = ${id}
+    INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsMonstersTable}.location_id
+    INNER JOIN ${this.monstersTable} ON ${this.monstersTable}.monster_id = ${this.locationsMonstersTable}.monster_id
+    WHERE ${this.locationsMonstersTable}.location_manster_id = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1290,18 +1293,19 @@ export default class Query
   public static async addLocationMonster(connection: PoolConnection, value: LocationMonster) : Promise<any>
   {
     const query: string = `
-    INSERT INTO Locations_Monsters (
-      ${this.location_id},
-      ${this.monster_id}
-  )
-  VALUE (
-      (SELECT ${this.location_id}
-      FROM ${this.locationsTable}
-      WHERE ${this.location_name} = ${value.location_name},
-      (SELECT ${this.monster_id} 
-      FROM ${this.monstersTable} 
-      WHERE ${this.monster_name} = ${value.monster_name})
-  );
+    INSERT INTO Locations_Monsters (location_id, monster_id)
+      VALUES (
+        (
+          SELECT location_id 
+          FROM Locations
+          WHERE location_name = ?
+        ),
+        (
+          SELECT monster_id 
+          FROM Monsters 
+          WHERE monster_name = ?
+        )
+      )
     `
 
     log.debug(`Executing Query: ${query}`);
@@ -1332,15 +1336,18 @@ export default class Query
   {
     const query: string = `
     UPDATE ${this.locationsMonstersTable}
-    SET
-      ${this.location_id} = (SELECT ${this.location_id}
-                    FROM ${this.locationsTable}
-                    WHERE ${this.location_name} = ${value.location_name}),
-      ${this.monster_id} = (SELECT ${this.monster_id}
-                    FROM ${this.monstersTable} 
-                    WHERE ${this.monster_name} = ${value.monster_name})
-    WHERE ${this.location_monster_id} = ${id}
-    `;
+      SET 
+        location_id = (
+          SELECT location_id
+          FROM ${this.locationsTable}
+          WHERE location_name = ?
+        ),
+        monster_id = (
+          SELECT monster_id
+          FROM ${this.monstersTable}
+          WHERE monster_name = ?
+        )
+      WHERE location_monster_id = ?`;
 
     log.debug(`Executing Query: ${query}`);
 
@@ -1365,7 +1372,7 @@ export default class Query
     const query: string = `
     DELETE
     FROM ${this.locationsMonstersTable}
-    WHERE ${this.location_monster_id} = ${id}
+    WHERE ${this.location_monster_id} = ?
     `;
 
     log.debug(`Executing Query: ${query}`);
