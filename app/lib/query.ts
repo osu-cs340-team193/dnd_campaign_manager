@@ -284,11 +284,13 @@ export default class Query
 
   *****************************************************************************************/
   static locationsTable: string = 'Locations';
-
+  static locations_monstersTable: string = 'Locations_Monsters';
+  static locations_itemsTable: string = 'Locations_Items';
   static location_id: string = 'location_id';
   static campaign_name: string = 'campaign_name';
   static location_name: string = 'location_name';
   static location_description: string = 'location_description';
+  
 
   /* 
   Retrieve all Locations entries and join to show the relevant campaign name instead of the title
@@ -303,6 +305,8 @@ export default class Query
   public static async getAllLocations(connection: PoolConnection) : Promise<ILocation[]>
   {
     const query: string = `
+    SELECT location_name, campaign_name, location_description
+    FROM ${this.locationsTable}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -331,6 +335,9 @@ export default class Query
   public static async getLocationById(connection: PoolConnection, id: number): Promise<ILocation>
   {
     const query: string = `
+    SELECT ${this.location_id}, ${this.campaign_name}, ${this.location_name}, ${this.location_description}
+    FROM ${this.locationsTable}
+    WHERE ${this.location_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -356,6 +363,8 @@ export default class Query
   public static async getAllLocationNames(connection: PoolConnection) : Promise<ILocationName[]>
   {
     const query: string = `
+    SELECT DISTINCT ${this.location_name}
+    FROM ${this.locationsTable}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -383,6 +392,11 @@ export default class Query
   public static async getAllLocationMonsterNamesById(connection: PoolConnection, id: number) : Promise<IMonsterName[]>
   {
     const query: string = `
+    SELECT ${this.monster_name}
+    FROM ${this.locations_monstersTable}
+    INNER JOIN ${this.locationsTable} ON ${this.location_id}
+    INNER JOIN ${this.monstersTable} ON ${this.monster_id}
+    WHERE ${this.location_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -410,6 +424,11 @@ export default class Query
   public static async getAllLocationItemNamesById(connection: PoolConnection, id: number) : Promise<IItemName[]>
   {
     const query: string = `
+    SELECT ${this.item_name}
+    FROM ${this.locations_itemsTable}
+    INNER JOIN ${this.locationsTable} ON ${this.location_id}
+    INNER JOIN ${this.itemsTable} ON ${this.item_id}
+    WHERE ${this.location_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -441,7 +460,13 @@ export default class Query
   public static async addLocation(connection: PoolConnection, value: Location) : Promise<any>
   {
     const query: string = `
-    `
+    INSERT INTO ${this.locationsTable} (
+      ${this.campaign_name}, 
+      ${this.location_name}, 
+      ${this.location_description}
+    )
+    VALUE (${value.campaign_name}, ${value.location_name}, ${value.location_description})
+    `;
 
     log.debug(`Executing Query: ${query}`);
 
@@ -467,6 +492,12 @@ export default class Query
   public static async updateLocationById(connection: PoolConnection, value: Location) : Promise<any>
   {
     const query: string = `
+    UPDATE ${this.locationsTable} 
+    SET 
+      ${this.campaign_name} = ${value.campaign_name}, 
+      ${this.location_name} = ${value.location_name}, 
+      ${this.location_description} = ${value.location_description}
+    WHERE ${this.location_id} = ${value.location_id};
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -490,6 +521,9 @@ export default class Query
   public static async deleteLocationById(connection: PoolConnection, id: number) : Promise<any>
   {
     const query: string = `
+    DELETE 
+    FROM ${this.locationsTable}
+    WHERE ${this.location_id} = ${id};
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -955,6 +989,8 @@ export default class Query
   public static async getAllItems(connection: PoolConnection) : Promise<IItem[]>
   {
     const query: string = `
+    SELECT *
+    FROM ${this.itemsTable}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -979,6 +1015,9 @@ export default class Query
   public static async getItemById(connection: PoolConnection, id: number): Promise<IItem>
   {
     const query: string = `
+    SELECT *
+    FROM ${this.itemsTable}
+    WHERE ${this.item_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1004,6 +1043,9 @@ export default class Query
   public static async getAllItemNames(connection: PoolConnection) : Promise<IItemName[]>
   {
     const query: string = `
+    SELECT DISTINCT ${this.item_name}
+    FROM ${this.itemsTable}
+    ORDER BY ${this.item_name} ASC
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1031,6 +1073,11 @@ export default class Query
   public static async getAllItemLocationNamesById(connection: PoolConnection, id: number) : Promise<ILocationName[]>
   {
     const query: string = `
+    SELECT ${this.location_name}
+    FROM ${this.locations_itemsTable}
+    INNER JOIN ${this.locationsTable} ON ${this.location_id}
+    INNER JOIN ${this.itemsTable} ON ${this.item_id}
+    WHERE ${this.item_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1062,6 +1109,16 @@ export default class Query
   public static async addItem(connection: PoolConnection, value: Item) : Promise<any>
   {
     const query: string = `
+    INSERT INTO ${this.itemsTable} (
+      ${this.item_name}, 
+      ${this.value}, 
+      ${this.weight}
+    )
+    VALUE (
+      ${value.item_name}, 
+      ${value.value}, 
+      ${value.weight}
+    )
     `
 
     log.debug(`Executing Query: ${query}`);
@@ -1088,6 +1145,12 @@ export default class Query
   public static async updateItemById(connection: PoolConnection, value: Item) : Promise<any>
   {
     const query: string = `
+    UPDATE ${this.itemsTable}
+    SET 
+    ${this.item_name} = ${value.item_name}, 
+    ${this.value} = ${value.value}, 
+    ${this.weight} = ${value.value}
+    WHERE ${this.item_id} = ${value.item_id};
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1111,6 +1174,9 @@ export default class Query
   public static async deleteItemById(connection: PoolConnection, id: number) : Promise<any>
   {
     const query: string = `
+    DELETE 
+    FROM ${this.itemsTable} 
+    WHERE ${this.item_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1147,6 +1213,12 @@ export default class Query
   public static async getAllLocationsMonsters(connection: PoolConnection) : Promise<ILocationMonster[]>
   {
     const query: string = `
+    SELECT 
+      ${this.location_name}, 
+      ${this.monster_name}'
+    FROM ${this.locationsMonstersTable}
+    INNER JOIN ${this.locationsTable} ON ${this.location_id} 
+    INNER JOIN ${this.monstersTable}  ON ${this.monster_id};
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1176,6 +1248,14 @@ export default class Query
   public static async getLocationMonsterById(connection: PoolConnection, id: number): Promise<ILocationMonster>
   {
     const query: string = `
+    SELECT 
+      ${this.location_monster_id},
+      ${this.location_id}, 
+      ${this.monster_id}
+    FROM ${this.locationsMonstersTable}
+    INNER JOIN ${this.locationsTable} ON ${this.location_id}
+    INNER JOIN ${this.monstersTable} ON ${this.monster_id}
+    WHERE ${this.location_monster_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1210,6 +1290,18 @@ export default class Query
   public static async addLocationMonster(connection: PoolConnection, value: LocationMonster) : Promise<any>
   {
     const query: string = `
+    INSERT INTO Locations_Monsters (
+      ${this.location_id},
+      ${this.monster_id}
+  )
+  VALUE (
+      (SELECT ${this.location_id}
+      FROM ${this.locationsTable}
+      WHERE ${this.location_name} = ${value.location_name},
+      (SELECT ${this.monster_id} 
+      FROM ${this.monstersTable} 
+      WHERE ${this.monster_name} = ${value.monster_name})
+  );
     `
 
     log.debug(`Executing Query: ${query}`);
@@ -1236,9 +1328,18 @@ export default class Query
                     WHERE monster_name = :monster_name_value)
   WHERE location_monster_id = :id;
   */
-  public static async updateLocationMonsterById(connection: PoolConnection, value: LocationMonster) : Promise<any>
+  public static async updateLocationMonsterById(connection: PoolConnection, value: LocationMonster, id: number) : Promise<any>
   {
     const query: string = `
+    UPDATE ${this.locationsMonstersTable}
+    SET
+      ${this.location_id} = (SELECT ${this.location_id}
+                    FROM ${this.locationsTable}
+                    WHERE ${this.location_name} = ${value.location_name}),
+      ${this.monster_id} = (SELECT ${this.monster_id}
+                    FROM ${this.monstersTable} 
+                    WHERE ${this.monster_name} = ${value.monster_name})
+    WHERE ${this.location_monster_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1262,6 +1363,9 @@ export default class Query
   public static async deleteLocationMonsterById(connection: PoolConnection, id: number) : Promise<any>
   {
     const query: string = `
+    DELETE
+    FROM ${this.locationsMonstersTable}
+    WHERE ${this.location_monster_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
