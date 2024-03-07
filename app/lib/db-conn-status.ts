@@ -3,7 +3,7 @@
 export const campaignsDbConnected:         boolean = true;
 export const locationsDbConnected:         boolean = false;
 export const monstersDbConnected:          boolean = true;
-export const actionsDbConnected:           boolean = false;
+export const actionsDbConnected:           boolean = true;
 export const itemsDbConnected:             boolean = false;
 export const locationsMonstersDbConnected: boolean = false;
 export const locationsItemsDbConnected:    boolean = true;

@@ -190,43 +190,43 @@ export const actions: Action[] =
     action_id: 1,
     monster_name: 'Swarm of Bats',
     action_name: 'Bites',
-    action_description: 'Melee Weapon Attack: +4 to hit, reach 0 ft., one creature in the swarm\'s space. Hit: 5 (2d4) piercing damage, or 2 (1d4) piercing damage if the swarm has half of its hit points or fewer.'
+    description: 'Melee Weapon Attack: +4 to hit, reach 0 ft., one creature in the swarm\'s space. Hit: 5 (2d4) piercing damage, or 2 (1d4) piercing damage if the swarm has half of its hit points or fewer.'
   },
   {
     action_id: 2,
     monster_name: 'Meenlock',
     action_name: 'Shadow Teleport (Recharge 5-6).',
-    action_description: 'As a bonus action, the meenlock can teleport to an unoccupied space within 30 feet of it, provided that both the space it\'s teleporting from and its destination are in dim light or darkness. The destination need not be within line of sight. and its destination are in dim light or darkness. The destination need not be within line of sight.'
+    description: 'As a bonus action, the meenlock can teleport to an unoccupied space within 30 feet of it, provided that both the space it\'s teleporting from and its destination are in dim light or darkness. The destination need not be within line of sight. and its destination are in dim light or darkness. The destination need not be within line of sight.'
   },
   {
     action_id: 3,
     monster_name: 'Cambion',
     action_name: 'Spear',
-    action_description: 'Melee or Ranged Weapon Attack'
+    description: 'Melee or Ranged Weapon Attack'
   },
   {
     action_id: 4,
     monster_name: 'Cambion',
     action_name: 'Fire Ray',
-    action_description: 'Range Spell Attack'
+    description: 'Range Spell Attack'
   },
   {
     action_id: 5,
     monster_name: 'Searm of Animated Books',
     action_name: 'Book Club',
-    action_description: 'Melee Weapon Attack: +3 to hit, reach 0 ft., one target in the swarm\'s space. Hit: 6 (2d4 + 1) bludgeoning damage, or 3 (1d4 + 1) bludgeoning damage if the swarm has half its hit points or fewer.'
+    description: 'Melee Weapon Attack: +3 to hit, reach 0 ft., one target in the swarm\'s space. Hit: 6 (2d4 + 1) bludgeoning damage, or 3 (1d4 + 1) bludgeoning damage if the swarm has half its hit points or fewer.'
   },
   {
     action_id: 6,
     monster_name: 'Animated Broom',
     action_name: 'Multiattack',
-    action_description: 'The broom makes two melee attacks.'
+    description: 'The broom makes two melee attacks.'
   },
   {
     action_id: 7,
     monster_name: 'Animated Broom',
     action_name: 'Broomstick',
-    action_description: 'Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 (1d4 + 3) bludgeoning damage.'
+    description: 'Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 (1d4 + 3) bludgeoning damage.'
   },
 ];
 

@@ -473,239 +473,197 @@ Monsters
 // GET /monsters
 export async function fetchMonsters() : Promise<Monster[]>
 {
-  if (monstersDbConnected)
+  noStore();
+
+  let connection: PoolConnection | null = null;
+  let data: Monster[] | null = null;
+  try 
   {
-    noStore();
-
-    let connection: PoolConnection | null = null;
-    let data: Monster[] | null = null;
-    try 
-    {
-      connection = await mysql.createConnection();
-      data = await Query.getAllMonsters(connection);
-    }
-    catch (err)
-    {
-      console.error('Database Error:', err);
-      throw new Error('Failed to fetch all monsters');
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-
-      if (data == null)
-      {
-        redirect('/pages/500');
-      }
-    }
-
-    return data;
+    connection = await mysql.createConnection();
+    data = await Query.getAllMonsters(connection);
   }
-  else
+  catch (err)
   {
-    return monsters;
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all monsters');
   }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
+
+    if (data == null)
+    {
+      redirect('/pages/500');
+    }
+  }
+
+  return data;
 }
 
 // GET /monsters/{id}
 export async function fetchMonsterById(id: number) : Promise<Monster>
 {
-  if (monstersDbConnected)
+  noStore();
+
+  let data: IMonster | null = null;
+  let connection: PoolConnection | null = null;
+  try
   {
-    noStore();
-
-    let data: IMonster | null = null;
-    let connection: PoolConnection | null = null;
-    try
-    {
-      connection = await mysql.createConnection();
-      data = await Query.getMonsterById(connection, id);
-    }
-    catch (err)
-    {
-      console.error('Database Error:', err);
-      throw new Error('Failed to fetch monster.');
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-
-      if (data == null)
-      {
-        notFound();
-      }
-    }
-
-    return data;
+    connection = await mysql.createConnection();
+    data = await Query.getMonsterById(connection, id);
   }
-  else 
+  catch (err)
   {
-    return monsters[id - 1];
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch monster.');
   }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
+
+    if (data == null)
+    {
+      notFound();
+    }
+  }
+
+  return data;
 }
 
 // GET /monsters/names
 export async function fetchMonsterNames() : Promise<MonsterName[]>
 {
-  if (monstersDbConnected)
+  noStore();
+
+  let data: IMonsterName[] | null = null;
+  let connection: PoolConnection | null = null;
+  try
   {
-    noStore();
-
-    let data: IMonsterName[] | null = null;
-    let connection: PoolConnection | null = null;
-    try
-    {
-      connection = await mysql.createConnection();
-      data = await Query.getAllMonsterNames(connection);
-    }
-    catch (err)
-    {
-      throw new Error('Failed to fetch monster names');
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-
-      if (data?.length == 0)
-      {
-        notFound();
-      }
-    }
-
-    return data;
+    connection = await mysql.createConnection();
+    data = await Query.getAllMonsterNames(connection);
   }
-  else
+  catch (err)
   {
-    return monsterNames;
+    throw new Error('Failed to fetch monster names');
   }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
+
+    if (data?.length == 0)
+    {
+      notFound();
+    }
+  }
+
+  return data;
 }
 
 // GET /monsters/types
 export async function fetchMonsterTypes() : Promise<MonsterType[]>
 {
-  if (monstersDbConnected)
+  noStore();
+
+  let data: IMonsterType[] | null = null;
+  let connection: PoolConnection | null = null;
+  try
   {
-    noStore();
-
-    let data: IMonsterType[] | null = null;
-    let connection: PoolConnection | null = null;
-    try
-    {
-      connection = await mysql.createConnection();
-      data = await Query.getAllMonsterTypes(connection);
-    }
-    catch (err)
-    {
-      throw new Error('Failed to fetch monster types');
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-
-      if (data?.length == 0)
-      {
-        notFound();
-      }
-    }
-
-    return data;
+    connection = await mysql.createConnection();
+    data = await Query.getAllMonsterTypes(connection);
   }
-  else
+  catch (err)
   {
-    return monsterTypes;
+    throw new Error('Failed to fetch monster types');
   }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
+
+    if (data?.length == 0)
+    {
+      notFound();
+    }
+  }
+
+  return data;
 }
 
 // GET /monsters/{id}/location-names
 export async function fetchMonsterLocationNamesById(id: number) : Promise<LocationName[]>
 {
-  if (monstersDbConnected)
+  noStore();
+
+  let data: ILocationName[] | null = null;
+  let connection: PoolConnection | null = null;
+  try
   {
-    noStore();
-
-    let data: ILocationName[] | null = null;
-    let connection: PoolConnection | null = null;
-    try
-    {
-      connection = await mysql.createConnection();
-      data = await Query.getAllMonsterLocationNamesById(connection, id);
-    }
-    catch (err)
-    {
-      console.error('Database Error:', err);
-      throw new Error('Failed to fetch monster locations.');
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-
-      if (data == null)
-      {
-        notFound();
-      }
-    }
-
-    return data;
+    connection = await mysql.createConnection();
+    data = await Query.getAllMonsterLocationNamesById(connection, id);
   }
-  else
+  catch (err)
   {
-    return monsterLocationNames[id - 1];
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch monster locations.');
   }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
+
+    if (data == null)
+    {
+      notFound();
+    }
+  }
+
+  return data;
 }
 
 // GET /monsters/{id}/action-names
 export async function fetchMonsterActionNamesById(id: number) : Promise<ActionName[]>
 {
-  if (monstersDbConnected)
+  noStore();
+
+  let data: IActionName[] | null = null;
+  let connection: PoolConnection | null = null;
+  try
   {
-    noStore();
-
-    let data: IActionName[] | null = null;
-    let connection: PoolConnection | null = null;
-    try
-    {
-      connection = await mysql.createConnection();
-      data = await Query.getAllMonsterActionNamesById(connection, id);
-    }
-    catch (err)
-    {
-      console.error('Database Error:', err);
-      throw new Error('Failed to fetch monster actions.');
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-
-      if (data == null)
-      {
-        notFound();
-      }
-    }
-
-    return data;
+    connection = await mysql.createConnection();
+    data = await Query.getAllMonsterActionNamesById(connection, id);
   }
-  else
+  catch (err)
   {
-    return monsterActionNames[id - 1];
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch monster actions.');
   }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
+
+    if (data == null)
+    {
+      notFound();
+    }
+  }
+
+  return data;
 }
 
 /****************************************************************************************
@@ -718,81 +676,67 @@ Actions
 // GET /actions
 export async function fetchActions() : Promise<Action[]>
 {
-  if (actionsDbConnected)
+  noStore();
+
+  let connection: PoolConnection | null = null;
+  let data: IAction[] | null = null;
+  try 
   {
-    noStore();
-
-    let connection: PoolConnection | null = null;
-    let data: IAction[] | null = null;
-    try 
-    {
-      connection = await mysql.createConnection();
-      data = await Query.getAllActions(connection);
-    }
-    catch (err)
-    {
-      console.error('Database Error:', err);
-      throw new Error('Failed to fetch actions.');
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-
-      if (data == null)
-      {
-        redirect('/pages/500');
-      }
-    }
-
-    return data;
+    connection = await mysql.createConnection();
+    data = await Query.getAllActions(connection);
   }
-  else
+  catch (err)
   {
-    return actions;
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch actions.');
   }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
+
+    if (data == null)
+    {
+      redirect('/pages/500');
+    }
+  }
+
+  return data;
 }
 
 // GET /actions/{id}
 export async function fetchActionById(id: number) : Promise<Action>
 {
-  if (actionsDbConnected)
+  noStore();
+
+  let data: IAction | null = null;
+  let connection: PoolConnection | null = null;
+  try
   {
-    noStore();
-
-    let data: IAction | null = null;
-    let connection: PoolConnection | null = null;
-    try
-    {
-      connection = await mysql.createConnection();
-      data = await Query.getActionById(connection, id);
-    }
-    catch (err)
-    {
-      console.error('Database Error:', err);
-      throw new Error('Failed to fetch action.');
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-
-      if (data == null)
-      {
-        notFound();
-      }
-    }
-
-    return data;
+    connection = await mysql.createConnection();
+    data = await Query.getActionById(connection, id);
   }
-  else
+  catch (err)
   {
-    return actions[id - 1];
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch action.');
   }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
+
+    if (data == null)
+    {
+      notFound();
+    }
+  }
+
+  return data;
 }
 
 /****************************************************************************************

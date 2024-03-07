@@ -47,7 +47,7 @@ export default function EntityTable({ actions }: { actions: Action[] })
                   <Text
                     lineClamp={4}
                   >
-                    {action.action_description}
+                    {action.description}
                   </Text>
                 </Table.Td>
                 <Table.Td>

@@ -104,7 +104,7 @@ export default function Form({ action, monsterNames }: { action: Action, monster
               id='description'
               name='description'
               label='Description'
-              defaultValue={action.action_description ?? ''}
+              defaultValue={action.description ?? ''}
               radius='md'
               aria-label='Monster Name'
               variant='filled'

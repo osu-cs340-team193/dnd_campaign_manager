@@ -562,7 +562,7 @@ export async function createAction(prevState: ActionFormState, formData: FormDat
   {
     action_name: validateFields.data.action_name,
     monster_name: validateFields.data.monster_name,
-    action_description: validateFields.data.description,
+    description: validateFields.data.description,
   };
 
   actions.push(action);
@@ -617,7 +617,7 @@ export async function updateActionById(id: number, prevState: ActionFormState, f
     action_id: id,
     action_name: validateFields.data.action_name,
     monster_name: validateFields.data.monster_name,
-    action_description: validateFields.data.description,
+    description: validateFields.data.description,
   };
 
   actions[id - 1] = action;

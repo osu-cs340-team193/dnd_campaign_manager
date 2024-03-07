@@ -319,7 +319,7 @@ export type Action =
   action_id?: number;
   action_name: string;
   monster_name: string | null;
-  action_description: string | null;
+  description: string | null;
 };
 
 // https://dev.to/larswaechter/using-mysql-in-nodejs-with-typescript-ida
@@ -328,7 +328,7 @@ export interface IAction extends RowDataPacket
   action_id?: number;
   action_name: string;
   monster_name: string | null;
-  action_description: string | null;
+  description: string | null;
 };
 
 export type ActionFormState = 

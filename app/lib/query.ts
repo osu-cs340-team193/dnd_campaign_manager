@@ -29,7 +29,7 @@ import
 } from '@/app/lib/definitions';
 
 // Change this to 'trace' for more verbose logging
-log.setLevel('info');
+log.setLevel('debug');
 
 // Defines all database queries used by this app.
 export default class Query 
@@ -799,19 +799,18 @@ export default class Query
   static action_name: string = 'action_name';
   static description: string = 'description';
 
-  /* 
-  Retrieve all Action entries and join to show the relevant monster name instead of the id 
-
-  SELECT 
-      A.action_name, 
-      M.monster_name AS 'monster_name', 
-      A.description
-  FROM Actions A
-  INNER JOIN Monsters M ON Monsters.monster_id = Actions.monster_id;
-  */
+  // Select all actions
   public static async getAllActions(connection: PoolConnection) : Promise<IAction[]>
   {
     const query: string = `
+      SELECT
+        A.${this.action_id},
+        A.${this.action_name},
+        M.${this.monster_name} AS '${this.monster_name}',
+        A.${this.description}
+      FROM ${this.actionsTable} A
+      INNER JOIN ${this.monstersTable} M ON M.${this.monster_id} = A.${this.monster_id}
+      ORDER BY A.${this.action_id} ASC
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -826,19 +825,18 @@ export default class Query
     return result[0];
   }
 
-  /*
-  Select a single action for the update action form
-  SELECT 
-      A.action_name, 
-      M.monster_name AS 'monster_name', 
-      A.description
-  FROM Actions A
-  INNER JOIN Monsters M ON Monsters.monster_id = Actions.monster_id
-  WHERE action_id = :id;
-  */
+  // Select action by id
   public static async getActionById(connection: PoolConnection, id: number): Promise<IAction>
   {
     const query: string = `
+      SELECT
+        A.${this.action_id},
+        A.${this.action_name},
+        M.${this.monster_name} AS '${this.monster_name}',
+        A.${this.description}
+      FROM ${this.actionsTable} A
+      INNER JOIN ${this.monstersTable} M ON M.${this.monster_id} = A.${this.monster_id}
+      WHERE ${this.action_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -854,23 +852,24 @@ export default class Query
     return result[0][0];
   }
 
-  /*
-  Add a new action
-  INSERT INTO Actions (
-      action_name, 
-      monster_name, 
-      description
-  )
-  VALUE (
-      :action_name_value, 
-      :(SELECT monster_id FROM Monsters 
-        WHERE monster_name = :monster_name_value),
-      :description_value
-  );
-  */
+  // Insert new action into actions table
   public static async addAction(connection: PoolConnection, value: Action) : Promise<any>
   {
     const query: string = `
+      INSERT INTO ${this.actionsTable} (
+        ${this.monster_id},
+        ${this.action_name},
+        ${this.description}
+      )
+      VALUE (
+        (
+            SELECT ${this.monster_id} 
+            FROM ${this.monstersTable} 
+            WHERE ${this.monster_name} = '${value.monster_name}'
+        ),
+        '${value.action_name}',
+        '${value.description}'
+      )
     `
 
     log.debug(`Executing Query: ${query}`);
@@ -884,19 +883,21 @@ export default class Query
     return result;
   }
 
-  /*
-  Update action
-
-  UPDATE Actions 
-  SET 
-      action_name = :action_name_value, 
-      monster_name = :monster_name_value, 
-      description = description_value:
-  WHERE action_id = :id
-  */
+  // Update action by id
   public static async updateActionById(connection: PoolConnection, value: Action) : Promise<any>
   {
     const query: string = `
+      UPDATE ${this.actionsTable}
+      SET
+        ${this.monster_id} = 
+        (
+          SELECT ${this.monster_id} 
+          FROM ${this.monstersTable} 
+          WHERE ${this.monster_name} = ${connection.escape(value.monster_name)}
+        ),
+        ${this.action_name} = ${connection.escape(value.action_name)},
+        ${this.description} = ${connection.escape(value.description)}
+      WHERE ${this.action_id} = ${value.action_id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -910,16 +911,13 @@ export default class Query
     return result;
   }
 
-  /*
-  Delete Action 
-
-  DELETE 
-  FROM Actions 
-  WHERE action_id = :id
-  */
+  // Delete action by id
   public static async deleteActionById(connection: PoolConnection, id: number) : Promise<any>
   {
     const query: string = `
+      DELETE
+      FROM ${this.actionsTable}
+      WHERE ${this.action_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
