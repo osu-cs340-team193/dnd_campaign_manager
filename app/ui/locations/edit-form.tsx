@@ -63,6 +63,8 @@ export default function Form(
 
   const router = useRouter();
 
+  console.log(JSON.stringify(campaignTitles))
+
   return (
     <Container
       size='md'
@@ -102,7 +104,7 @@ export default function Form(
               id='campaign_name'
               name='campaign_name'
               label='Campaign Name'
-              data={ campaignTitles.map((campaignTitle) => campaignTitle.campaign_title) }
+              data={ campaignTitles?.map((campaignTitle) => campaignTitle.campaign_title) }
               defaultValue={location.campaign_name}
               radius='md'
               aria-label='Campaign Name'
@@ -141,7 +143,7 @@ export default function Form(
               name='location_monsters'
               label='Location Monsters'
               data={ monsterNames.map((monsterNames) => monsterNames.monster_name) }
-              defaultValue={ locationMonsterNames.map((locationMonsterName) => locationMonsterName.monster_name) }
+              defaultValue={ locationMonsterNames?.map((locationMonsterName) => locationMonsterName.monster_name) }
               radius='md'
               aria-label='Location Monsters'
               variant='filled'

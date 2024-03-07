@@ -303,6 +303,7 @@ export async function fetchLocations() : Promise<Location[]>
 // GET /locations/{id}
 export async function fetchLocationById(id: number) : Promise<Location>
 {
+  
   if (locationsDbConnected)
   {
     noStore();
@@ -333,6 +334,8 @@ export async function fetchLocationById(id: number) : Promise<Location>
         notFound();
       }
     }
+
+    console.log("Id shows as " + JSON.stringify(data))
 
     return data;
   }

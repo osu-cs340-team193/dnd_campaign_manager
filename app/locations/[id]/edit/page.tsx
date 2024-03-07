@@ -40,7 +40,7 @@ export default async function Page({ params }: { params: { id: number }})
     fetchLocationMonsterNamesById(params.id),
     fetchLocationItemNamesById(params.id),
   ]);
-
+  
   return (
     <Form 
       location={location} 

@@ -116,7 +116,7 @@ export default class Query
   public static async getAllCampaignTitles(connection: PoolConnection) : Promise<ICampaignTitle[]>
   {
     const query: string = `
-    SELECT DISTINCT ${this.campaign_id}
+    SELECT DISTINCT ${this.title} AS 'campaign_title'
     FROM ${this.campaignsTable}
     `;
 
@@ -335,7 +335,7 @@ export default class Query
   public static async getLocationById(connection: PoolConnection, id: number): Promise<ILocation>
   {
     const query: string = `
-    SELECT ${this.location_id}, ${this.title}, ${this.location_name}, ${this.location_description}
+    SELECT ${this.location_id}, ${this.title} AS 'campaign_name', ${this.location_name}, ${this.location_description}
     FROM ${this.locationsTable}
     INNER JOIN ${this.campaignsTable} ON ${this.campaignsTable}.campaign_id = ${this.locationsTable}.campaign_id
     WHERE ${this.location_id} = ${id}
@@ -430,7 +430,7 @@ export default class Query
     FROM ${this.locations_itemsTable}
     INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsItemsTable}.location_id
     INNER JOIN ${this.itemsTable} ON ${this.itemsTable}.item_id = ${this.locationsItemsTable}.item_id
-    WHERE ${this.locationsItemsTable}.location_item_id = ${id}
+    WHERE ${this.locationsTable}.location_id = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -496,9 +496,9 @@ export default class Query
     const query: string = `
     UPDATE ${this.locationsTable} 
     SET 
-      ${this.title} = ${value.campaign_name}, 
-      ${this.location_name} = ${value.location_name}, 
-      ${this.location_description} = ${value.location_description}
+      ${this.campaign_id} = (SELECT ${this.campaign_id} FROM ${this.campaignsTable} WHERE ${this.title} = '${value.campaign_name}'), 
+      ${this.location_name} = '${value.location_name}', 
+      ${this.location_description} = '${value.location_description}'
     WHERE ${this.location_id} = ${value.location_id};
     `;
 
@@ -1079,7 +1079,7 @@ export default class Query
     FROM ${this.locations_itemsTable}
     INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsItemsTable}.location_id
     INNER JOIN ${this.itemsTable} ON ${this.itemsTable}.item_id = ${this.locationsItemsTable}.item_id
-    WHERE ${this.item_id} = ${id}
+    WHERE ${this.itemsTable}.${this.item_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1149,9 +1149,9 @@ export default class Query
     const query: string = `
     UPDATE ${this.itemsTable}
     SET 
-    ${this.item_name} = ${value.item_name}, 
+    ${this.item_name} = '${value.item_name}', 
     ${this.value} = ${value.value}, 
-    ${this.weight} = ${value.value}
+    ${this.weight} = ${value.weight}
     WHERE ${this.item_id} = ${value.item_id};
     `;
 
@@ -1258,7 +1258,7 @@ export default class Query
     FROM ${this.locationsMonstersTable}
     INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsMonstersTable}.location_id
     INNER JOIN ${this.monstersTable} ON ${this.monstersTable}.monster_id = ${this.locationsMonstersTable}.monster_id
-    WHERE ${this.locationsMonstersTable}.location_manster_id = ${id}
+    WHERE ${this.locationsMonstersTable}.location_monster_id = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
