@@ -45,16 +45,6 @@ import
   locationsItems, 
   locationsMonsters 
 } from '@/app/lib/placeholder-data';
-import
-{
-  campaignsDbConnected,
-  locationsDbConnected,
-  monstersDbConnected,
-  actionsDbConnected,
-  itemsDbConnected,
-  locationsMonstersDbConnected,
-  locationsItemsDbConnected,
-} from '@/app/lib/db-conn-status';
 
 // Data updating/deleting handlers 
 
@@ -106,28 +96,25 @@ export async function createCampaign(prevState: CampaignFormState, formData: For
   campaigns.push(campaign);
   console.log(JSON.stringify(campaigns));
 
-  if (campaignsDbConnected)
+  // Attempt to send form data to backend
+  let connection: PoolConnection | null = null;
+  try
   {
-    // Attempt to send form data to backend
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.addCampaign(connection, campaign);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Create Campaign.',
+    };
+  }
+  finally
+  {
+    // Always release connection at end of transaction
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.addCampaign(connection, campaign);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Create Campaign.',
-      };
-    }
-    finally
-    {
-      // Always release connection at end of transaction
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -169,26 +156,23 @@ export async function updateCampaignById(id: number, prevState: CampaignFormStat
   campaigns[id - 1] = campaign;
   console.log(JSON.stringify(campaigns));
 
-  if (campaignsDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.updateCampaignById(connection, campaign);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Update Campaign.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.updateCampaignById(connection, campaign);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Update Campaign.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -199,33 +183,25 @@ export async function updateCampaignById(id: number, prevState: CampaignFormStat
 // DELETE /campaigns/{id}
 export async function deleteCampaignById(id: number)
 {
-  if (campaignsDbConnected)
-  {
-    let connection: PoolConnection | null = null;
+  let connection: PoolConnection | null = null;
 
-    try
-    {
-      connection = await mysql.createConnection();
-      await Query.deleteCampaignById(connection, id);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Delete Campaign.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-    }
-  }
-  else
+  try
   {
-    campaigns.splice(id - 1, 1);
-    console.log(JSON.stringify(campaigns));
+    connection = await mysql.createConnection();
+    await Query.deleteCampaignById(connection, id);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Delete Campaign.',
+    };
+  }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
   }
 
   revalidatePath('/campaigns');
@@ -267,26 +243,23 @@ export async function createLocation(prevState: LocationFormState, formData: For
   locations.push(location);
   console.log(JSON.stringify(locations));
 
-  if (locationsDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.addLocation(connection, location);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Create Location.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.addLocation(connection, location);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Create Location.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -322,26 +295,23 @@ export async function updateLocationById(id: number, prevState: LocationFormStat
   locations[id - 1] = location;
   console.log(JSON.stringify(locations));
 
-  if (locationsDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.updateLocationById(connection, location);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Update Location.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.updateLocationById(connection, location);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Update Location.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -352,33 +322,25 @@ export async function updateLocationById(id: number, prevState: LocationFormStat
 // DELETE /locations/{id}
 export async function deleteLocationById(id: number)
 {
-  if (locationsDbConnected)
-  {
-    let connection: PoolConnection | null = null;
+  let connection: PoolConnection | null = null;
 
-    try
-    {
-      connection = await mysql.createConnection();
-      await Query.deleteLocationById(connection, id);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Delete Location.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-    }
-  }
-  else
+  try
   {
-    campaigns.splice(id - 1, 1);
-    console.log(JSON.stringify(campaigns));
+    connection = await mysql.createConnection();
+    await Query.deleteLocationById(connection, id);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Delete Location.',
+    };
+  }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
   }
 
   revalidatePath('/locations');
@@ -419,26 +381,23 @@ export async function createMonster(prevState: MonsterFormState, formData: FormD
     monster_type: validateFields.data.monster_type
   };
 
-  if (monstersDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.addMonster(connection, monster);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Create Monster.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.addMonster(connection, monster);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Create Monster.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -475,26 +434,23 @@ export async function updateMonsterById(id: number, prevState: MonsterFormState,
     monster_type: validateFields.data.monster_type
   };
 
-  if (monstersDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.updateMonsterById(connection, monster);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Update Monster.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.updateMonsterById(connection, monster);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Update Monster.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -505,27 +461,24 @@ export async function updateMonsterById(id: number, prevState: MonsterFormState,
 // DELETE /monsters/{id}
 export async function deleteMonsterById(id: number)
 {
-  if (monstersDbConnected)
-  {
-    let connection: PoolConnection | null = null;
+  let connection: PoolConnection | null = null;
 
-    try
+  try
+  {
+    connection = await mysql.createConnection();
+    await Query.deleteMonsterById(connection, id);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Delete Monster.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.deleteMonsterById(connection, id);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Delete Monster.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -568,26 +521,23 @@ export async function createAction(prevState: ActionFormState, formData: FormDat
   actions.push(action);
   console.log(JSON.stringify(actions));
 
-  if (actionsDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.addAction(connection, action);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Create Action.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.addAction(connection, action);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Create Action.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -623,26 +573,23 @@ export async function updateActionById(id: number, prevState: ActionFormState, f
   actions[id - 1] = action;
   console.log(JSON.stringify(actions));
 
-  if (actionsDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.updateActionById(connection, action);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Update Action.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.updateActionById(connection, action);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Update Action.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -653,33 +600,25 @@ export async function updateActionById(id: number, prevState: ActionFormState, f
 // DELETE /actions/{id}
 export async function deleteActionById(id: number)
 {
-  if (actionsDbConnected)
-  {
-    let connection: PoolConnection | null = null;
+  let connection: PoolConnection | null = null;
 
-    try
-    {
-      connection = await mysql.createConnection();
-      await Query.deleteActionById(connection, id);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Delete Action.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-    }
-  }
-  else
+  try
   {
-    actions.splice(id - 1, 1);
-    console.log(JSON.stringify(actions));
+    connection = await mysql.createConnection();
+    await Query.deleteActionById(connection, id);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Delete Action.',
+    };
+  }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
   }
 
   revalidatePath('/actions');
@@ -721,26 +660,23 @@ export async function createItem(prevState: ItemFormState, formData: FormData)
   items.push(item);
   console.log(JSON.stringify(items));
 
-  if (itemsDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.addItem(connection, item);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Create Item.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.addItem(connection, item);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Create Item.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -776,26 +712,23 @@ export async function updateItemById(id: number, prevState: ItemFormState, formD
   items[id - 1] = item;
   console.log(JSON.stringify(items));
 
-  if (itemsDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.updateItemById(connection, item);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Update Item.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.updateItemById(connection, item);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Update Item.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -806,33 +739,25 @@ export async function updateItemById(id: number, prevState: ItemFormState, formD
 // DELETE /items/{id}
 export async function deleteItemById(id: number)
 {
-  if (itemsDbConnected)
-  {
-    let connection: PoolConnection | null = null;
+  let connection: PoolConnection | null = null;
 
-    try
-    {
-      connection = await mysql.createConnection();
-      await Query.deleteItemById(connection, id);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Delete Item.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-    }
-  }
-  else
+  try
   {
-    items.splice(id - 1, 1);
-    console.log(JSON.stringify(items));
+    connection = await mysql.createConnection();
+    await Query.deleteItemById(connection, id);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Delete Item.',
+    };
+  }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
   }
 
   revalidatePath('/items');
@@ -872,26 +797,23 @@ export async function createLocationMonster(prevState: LocationMonsterFormState,
   locationsMonsters.push(locationMonster);
   console.log(JSON.stringify(locationsMonsters));
 
-  if (locationsMonstersDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.addLocationMonster(connection, locationMonster);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Create Location Monster.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.addLocationMonster(connection, locationMonster);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Create Location Monster.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -925,26 +847,23 @@ export async function updateLocationMonsterById(id: number, prevState: LocationM
   locationsMonsters[id - 1] = locationMonster;
   console.log(JSON.stringify(locationsMonsters));
 
-  if (locationsMonstersDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.updateLocationMonsterById(connection, locationMonster);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Update Location Monster.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.updateLocationMonsterById(connection, locationMonster);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Update Location Monster.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -955,33 +874,25 @@ export async function updateLocationMonsterById(id: number, prevState: LocationM
 // DELETE /locations-monsters/{id}
 export async function deleteLocationMonsterById(id: number)
 {
-  if (locationsMonstersDbConnected)
-  {
-    let connection: PoolConnection | null = null;
+  let connection: PoolConnection | null = null;
 
-    try
-    {
-      connection = await mysql.createConnection();
-      await Query.deleteLocationMonsterById(connection, id);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Delete Location Monster.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-    }
-  }
-  else
+  try
   {
-    items.splice(id - 1, 1);
-    console.log(JSON.stringify(items));
+    connection = await mysql.createConnection();
+    await Query.deleteLocationMonsterById(connection, id);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Delete Location Monster.',
+    };
+  }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
   }
 
   revalidatePath('/locations-monsters');
@@ -1021,26 +932,23 @@ export async function createLocationItem(prevState: LocationItemFormState, formD
   locationsItems.push(locationItem);
   console.log(JSON.stringify(locationsItems));
 
-  if (locationsItemsDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.addLocationItem(connection, locationItem);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Create Location Item.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.addLocationItem(connection, locationItem);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Create Location Item.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -1074,26 +982,23 @@ export async function updateLocationItemById(id: number, prevState: LocationItem
   locationsItems[id - 1] = locationItem;
   console.log(JSON.stringify(locationsItems));
 
-  if (locationsItemsDbConnected)
+  let connection: PoolConnection | null = null;
+  try
   {
-    let connection: PoolConnection | null = null;
-    try
+    connection = await mysql.createConnection();
+    await Query.updateLocationItemById(connection, locationItem);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Update Location Item.',
+    };
+  }
+  finally
+  {
+    if (connection)
     {
-      connection = await mysql.createConnection();
-      await Query.updateLocationItemById(connection, locationItem);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Update Location Item.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
+      mysql.releaseConnection(connection);
     }
   }
 
@@ -1104,33 +1009,25 @@ export async function updateLocationItemById(id: number, prevState: LocationItem
 // DELETE /locations-items/{id}
 export async function deleteLocationItemById(id: number)
 {
-  if (locationsItemsDbConnected)
-  {
-    let connection: PoolConnection | null = null;
+  let connection: PoolConnection | null = null;
 
-    try
-    {
-      connection = await mysql.createConnection();
-      await Query.deleteLocationItemById(connection, id);
-    }
-    catch (err)
-    {
-      return {
-        message: 'Database Error: Failed to Delete Location Item.',
-      };
-    }
-    finally
-    {
-      if (connection)
-      {
-        mysql.releaseConnection(connection);
-      }
-    }
-  }
-  else 
+  try
   {
-    items.splice(id - 1, 1);
-    console.log(JSON.stringify(items));
+    connection = await mysql.createConnection();
+    await Query.deleteLocationItemById(connection, id);
+  }
+  catch (err)
+  {
+    return {
+      message: 'Database Error: Failed to Delete Location Item.',
+    };
+  }
+  finally
+  {
+    if (connection)
+    {
+      mysql.releaseConnection(connection);
+    }
   }
 
   revalidatePath('/locations-items');

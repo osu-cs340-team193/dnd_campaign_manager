@@ -1330,7 +1330,7 @@ export default class Query
                     WHERE monster_name = :monster_name_value)
   WHERE location_monster_id = :id;
   */
-  public static async updateLocationMonsterById(connection: PoolConnection, value: LocationMonster, id: number) : Promise<any>
+  public static async updateLocationMonsterById(connection: PoolConnection, value: LocationMonster) : Promise<any>
   {
     const query: string = `
     UPDATE ${this.locationsMonstersTable}
