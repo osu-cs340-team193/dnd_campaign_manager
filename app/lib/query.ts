@@ -57,10 +57,12 @@ export default class Query
   */
   public static async getAllCampaigns(connection: PoolConnection): Promise<ICampaign[]> {
     const query: string = `
-      SELECT campaign_id, title, 
-             DATE_FORMAT(start_date, '%Y-%m-%d') as start_date,
-             DATE_FORMAT(end_date, '%Y-%m-%d') as end_date,
-             dungeon_master
+      SELECT 
+        ${this.campaign_id} AS 'campaign_id', 
+        ${this.title} AS 'title', 
+        DATE_FORMAT(${this.start_date}, '%Y-%m-%d') AS 'start_date',
+        DATE_FORMAT(${this.end_date}, '%Y-%m-%d') AS 'end_date',
+        ${this.dungeon_master} AS 'dungeon_master'
       FROM ${this.campaignsTable}
     `;
   
@@ -85,12 +87,14 @@ export default class Query
   public static async getCampaignById(connection: PoolConnection, id: number): Promise<ICampaign>
   {
     const query: string = `
-    SELECT ${this.campaign_id}, ${this.title}, 
-            DATE_FORMAT(${this.start_date}, '%Y-%m-%d') as start_date,
-            DATE_FORMAT(${this.end_date}, '%Y-%m-%d') as end_date,
-            ${this.dungeon_master}
-    FROM ${this.campaignsTable}
-    WHERE ${this.campaign_id} = ${id}
+      SELECT 
+        ${this.campaign_id} AS 'campaign_id', 
+        ${this.title} AS 'title', 
+        DATE_FORMAT(${this.start_date}, '%Y-%m-%d') AS 'start_date',
+        DATE_FORMAT(${this.end_date}, '%Y-%m-%d') AS 'end_date',
+        ${this.dungeon_master} AS 'dungeon_master'
+      FROM ${this.campaignsTable}
+      WHERE ${this.campaign_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -116,7 +120,8 @@ export default class Query
   public static async getAllCampaignTitles(connection: PoolConnection) : Promise<ICampaignTitle[]>
   {
     const query: string = `
-    SELECT DISTINCT ${this.title} AS 'campaign_title'
+    SELECT 
+    DISTINCT ${this.title} AS 'title'
     FROM ${this.campaignsTable}
     `;
 
@@ -142,7 +147,8 @@ export default class Query
   public static async getAllDungeonMasters(connection: PoolConnection) : Promise<IDungeonMaster[]>
   {
     const query: string = `
-    SELECT DISTINCT ${this.dungeon_master}
+    SELECT 
+    DISTINCT ${this.dungeon_master} AS 'dungeon_master'
     FROM ${this.campaignsTable}
     `;
 
@@ -289,7 +295,6 @@ export default class Query
   static campaign_name: string = 'campaign_name';
   static location_name: string = 'location_name';
   static location_description: string = 'location_description';
-  
 
   /* 
   Retrieve all Locations entries and join to show the relevant campaign name instead of the title
@@ -304,9 +309,15 @@ export default class Query
   public static async getAllLocations(connection: PoolConnection) : Promise<ILocation[]>
   {
     const query: string = `
-    SELECT ${this.location_id}, ${this.location_name}, ${this.title}, ${this.location_description}
-    FROM ${this.locationsTable}
-    INNER JOIN ${this.campaignsTable} ON ${this.campaignsTable}.campaign_id = ${this.locationsTable}.campaign_id;
+      SELECT 
+        ${this.location_id} AS 'location_id', 
+        ${this.location_name} AS 'location_name', 
+        ${this.title} AS 'title', 
+        ${this.location_description} AS 'location_description'
+      FROM ${this.locationsTable}
+      INNER JOIN 
+        ${this.campaignsTable} 
+        ON ${this.campaignsTable}.${this.campaign_id} = ${this.locationsTable}.${this.campaign_id};
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -335,10 +346,16 @@ export default class Query
   public static async getLocationById(connection: PoolConnection, id: number): Promise<ILocation>
   {
     const query: string = `
-    SELECT ${this.location_id}, ${this.title} AS 'campaign_name', ${this.location_name}, ${this.location_description}
-    FROM ${this.locationsTable}
-    INNER JOIN ${this.campaignsTable} ON ${this.campaignsTable}.campaign_id = ${this.locationsTable}.campaign_id
-    WHERE ${this.location_id} = ${id}
+      SELECT 
+        ${this.location_id} AS 'location_id', 
+        ${this.title} AS 'campaign_name', 
+        ${this.location_name} AS 'location_name', 
+        ${this.location_description} AS 'location_description'
+      FROM ${this.locationsTable}
+      INNER JOIN 
+        ${this.campaignsTable} 
+        ON ${this.campaignsTable}.${this.campaign_id} = ${this.locationsTable}.${this.campaign_id}
+      WHERE ${this.location_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -364,9 +381,10 @@ export default class Query
   public static async getAllLocationNames(connection: PoolConnection) : Promise<ILocationName[]>
   {
     const query: string = `
-    SELECT DISTINCT ${this.location_name}
-    FROM ${this.locationsTable}
-    ORDER BY ${this.location_name} ASC;
+      SELECT 
+        DISTINCT ${this.location_name} AS 'location_name'
+      FROM ${this.locationsTable}
+      ORDER BY ${this.location_name} ASC;
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -394,11 +412,15 @@ export default class Query
   public static async getAllLocationMonsterNamesById(connection: PoolConnection, id: number) : Promise<IMonsterName[]>
   {
     const query: string = `
-    SELECT ${this.monster_name}
-    FROM ${this.locationsMonstersTable}
-    INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsMonstersTable}.location_id
-    INNER JOIN ${this.monstersTable} ON ${this.monstersTable}.monster_id = ${this.locationsMonstersTable}.monster_id
-    WHERE ${this.locationsMonstersTable}.location_monster_id = ${id}
+      SELECT ${this.monster_name} AS 'monster_name'
+      FROM ${this.locationsMonstersTable}
+      INNER JOIN 
+        ${this.locationsTable} 
+        ON ${this.locationsTable}.${this.location_id} = ${this.locationsMonstersTable}.${this.location_id}
+      INNER JOIN 
+        ${this.monstersTable} 
+        ON ${this.monstersTable}.${this.monster_id} = ${this.locationsMonstersTable}.${this.monster_id}
+      WHERE ${this.locationsMonstersTable}.${this.location_monster_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -426,11 +448,15 @@ export default class Query
   public static async getAllLocationItemNamesById(connection: PoolConnection, id: number) : Promise<IItemName[]>
   {
     const query: string = `
-    SELECT ${this.item_name}
-    FROM ${this.locations_itemsTable}
-    INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsItemsTable}.location_id
-    INNER JOIN ${this.itemsTable} ON ${this.itemsTable}.item_id = ${this.locationsItemsTable}.item_id
-    WHERE ${this.locationsTable}.location_id = ${id}
+      SELECT ${this.item_name} AS 'item_name'
+      FROM ${this.locations_itemsTable}
+      INNER JOIN 
+        ${this.locationsTable} 
+        ON ${this.locationsTable}.${this.location_id} = ${this.locationsItemsTable}.${this.location_id}
+      INNER JOIN 
+        ${this.itemsTable} 
+        ON ${this.itemsTable}.${this.item_id} = ${this.locationsItemsTable}.${this.item_id}
+      WHERE ${this.locationsTable}.${this.location_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -463,11 +489,19 @@ export default class Query
   {
     const query: string = `
     INSERT INTO ${this.locationsTable} (
-      ${this.title}, 
+      ${this.campaign_id}, 
       ${this.location_name}, 
       ${this.location_description}
     )
-    VALUE (${value.campaign_name}, ${value.location_name}, ${value.location_description})
+    VALUE (
+      (
+        SELECT ${this.campaign_id} AS 'campaign_id'
+        FROM ${this.campaignsTable}
+        WHERE ${this.title} = ${connection.escape(value.campaign_name)}
+      ), 
+      ${connection.escape(value.location_name)}, 
+      ${connection.escape(value.location_description)}
+    )
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -496,7 +530,12 @@ export default class Query
     const query: string = `
     UPDATE ${this.locationsTable} 
     SET 
-      ${this.campaign_id} = (SELECT ${this.campaign_id} FROM ${this.campaignsTable} WHERE ${this.title} = '${value.campaign_name}'), 
+      ${this.campaign_id} = 
+      (
+        SELECT ${this.campaign_id} AS 'campaign_id'
+        FROM ${this.campaignsTable} 
+        WHERE ${this.title} = '${value.campaign_name}'
+      ), 
       ${this.location_name} = '${value.location_name}', 
       ${this.location_description} = '${value.location_description}'
     WHERE ${this.location_id} = ${value.location_id};
@@ -616,7 +655,7 @@ export default class Query
   public static async getAllMonsterNames(connection: PoolConnection) : Promise<IMonsterName[]>
   {
     const query: string = `
-      SELECT DISTINCT ${this.monster_name} 
+      SELECT DISTINCT ${this.monster_name} AS 'monster_name'
       FROM ${this.monstersTable}
       ORDER BY ${this.monster_name} ASC
     `;
@@ -643,7 +682,7 @@ export default class Query
   public static async getAllMonsterTypes(connection: PoolConnection) : Promise<IMonsterType[]>
   {
     const query: string = `
-      SELECT DISTINCT ${this.monster_type} 
+      SELECT DISTINCT ${this.monster_type} AS 'monster_type'
       FROM ${this.monstersTable}
       ORDER BY ${this.monster_type} ASC
     `;
@@ -772,11 +811,15 @@ export default class Query
   {
     const query: string = `
       SELECT
-        L.location_name AS 'location_name'
-      FROM Locations_Monsters LM
-        INNER JOIN Locations L ON L.location_id = LM.location_id
-        INNER JOIN Monsters M ON M.monster_id = LM.monster_id
-      WHERE M.monster_id = ${id}
+        L.${this.location_name} AS 'location_name'
+      FROM ${this.locationsMonstersTable} LM
+      INNER JOIN 
+        ${this.locationsTable} L 
+        ON L.${this.location_id} = LM.${this.location_id}
+      INNER JOIN 
+        ${this.monstersTable} M 
+        ON M.${this.monster_id} = LM.${this.monster_id}
+      WHERE M.${this.monster_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -804,10 +847,12 @@ export default class Query
   {
     const query: string = `
       SELECT
-        A.action_name AS 'action_name'
+        A.${this.action_name} AS 'action_name'
       FROM Actions A 
-        INNER JOIN Monsters M ON M.monster_id = A.monster_id
-      WHERE M.monster_id = ${id}
+        INNER JOIN 
+          ${this.monstersTable} M 
+          ON M.${this.monster_id} = A.${this.monster_id}
+      WHERE M.${this.monster_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -840,10 +885,10 @@ export default class Query
   {
     const query: string = `
       SELECT
-        A.${this.action_id},
-        A.${this.action_name},
+        A.${this.action_id} AS 'action_id',
+        A.${this.action_name} AS 'action_name',
         M.${this.monster_name} AS '${this.monster_name}',
-        A.${this.description}
+        A.${this.description} AS 'description'
       FROM ${this.actionsTable} A
       INNER JOIN ${this.monstersTable} M ON M.${this.monster_id} = A.${this.monster_id}
       ORDER BY A.${this.action_id} ASC
@@ -1043,7 +1088,7 @@ export default class Query
   public static async getAllItemNames(connection: PoolConnection) : Promise<IItemName[]>
   {
     const query: string = `
-    SELECT DISTINCT ${this.item_name}
+    SELECT DISTINCT ${this.item_name} AS 'item_name'
     FROM ${this.itemsTable}
     ORDER BY ${this.item_name} ASC
     `;
@@ -1073,10 +1118,14 @@ export default class Query
   public static async getAllItemLocationNamesById(connection: PoolConnection, id: number) : Promise<ILocationName[]>
   {
     const query: string = `
-    SELECT ${this.location_name}
+    SELECT ${this.location_name} AS 'location_name'
     FROM ${this.locations_itemsTable}
-    INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsItemsTable}.location_id
-    INNER JOIN ${this.itemsTable} ON ${this.itemsTable}.item_id = ${this.locationsItemsTable}.item_id
+    INNER JOIN 
+      ${this.locationsTable} 
+      ON ${this.locationsTable}.${this.location_id} = ${this.locationsItemsTable}.${this.location_id}
+    INNER JOIN 
+      ${this.itemsTable} 
+      ON ${this.itemsTable}.${this.item_id} = ${this.locationsItemsTable}.${this.item_id}
     WHERE ${this.itemsTable}.${this.item_id} = ${id}
     `;
 
@@ -1115,7 +1164,7 @@ export default class Query
       ${this.weight}
     )
     VALUE (
-      ${value.item_name}, 
+      ${connection.escape(value.item_name)},
       ${value.value}, 
       ${value.weight}
     )
@@ -1145,12 +1194,12 @@ export default class Query
   public static async updateItemById(connection: PoolConnection, value: Item) : Promise<any>
   {
     const query: string = `
-    UPDATE ${this.itemsTable}
-    SET 
-    ${this.item_name} = '${value.item_name}', 
-    ${this.value} = ${value.value}, 
-    ${this.weight} = ${value.weight}
-    WHERE ${this.item_id} = ${value.item_id};
+      UPDATE ${this.itemsTable}
+      SET 
+        ${this.item_name} = '${value.item_name}', 
+        ${this.value} = ${value.value}, 
+        ${this.weight} = ${value.weight}
+      WHERE ${this.item_id} = ${value.item_id};
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1174,9 +1223,9 @@ export default class Query
   public static async deleteItemById(connection: PoolConnection, id: number) : Promise<any>
   {
     const query: string = `
-    DELETE 
-    FROM ${this.itemsTable} 
-    WHERE ${this.item_id} = ${id}
+      DELETE 
+      FROM ${this.itemsTable} 
+      WHERE ${this.item_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1214,12 +1263,17 @@ export default class Query
   {
     const query: string = `
     SELECT 
-      location_name,
-      monster_name
+      ${this.location_monster_id} AS 'location_monster_id',
+      ${this.location_name} AS 'location_name',
+      ${this.monster_name} AS 'monster_name'
 
     FROM ${this.locationsMonstersTable} 
-      INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsMonstersTable}.location_id
-      INNER JOIN ${this.monstersTable} ON ${this.monstersTable}.monster_id = ${this.locationsMonstersTable}.monster_id;
+    INNER JOIN 
+      ${this.locationsTable} 
+      ON ${this.locationsTable}.${this.location_id} = ${this.locationsMonstersTable}.${this.location_id}
+    INNER JOIN 
+      ${this.monstersTable} 
+      ON ${this.monstersTable}.${this.monster_id} = ${this.locationsMonstersTable}.${this.monster_id};
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1250,13 +1304,17 @@ export default class Query
   {
     const query: string = `
     SELECT 
-      location_monster_id,
-      location_name,
-      monster_name
+      ${this.location_monster_id} AS 'location_monster_id',
+      ${this.location_name} AS 'location_name',
+      ${this.monster_name} AS 'monster_name'
     FROM ${this.locationsMonstersTable}
-    INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsMonstersTable}.location_id
-    INNER JOIN ${this.monstersTable} ON ${this.monstersTable}.monster_id = ${this.locationsMonstersTable}.monster_id
-    WHERE ${this.locationsMonstersTable}.location_monster_id = ${id}
+    INNER JOIN 
+      ${this.locationsTable} 
+      ON ${this.locationsTable}.${this.location_id} = ${this.locationsMonstersTable}.${this.location_id}
+    INNER JOIN 
+      ${this.monstersTable} 
+      ON ${this.monstersTable}.${this.monster_id} = ${this.locationsMonstersTable}.${this.monster_id}
+    WHERE ${this.locationsMonstersTable}.${this.location_monster_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1291,17 +1349,20 @@ export default class Query
   public static async addLocationMonster(connection: PoolConnection, value: LocationMonster) : Promise<any>
   {
     const query: string = `
-    INSERT INTO Locations_Monsters (location_id, monster_id)
+    INSERT INTO ${this.locationsMonstersTable} (
+        ${this.location_id}, 
+        ${this.monster_id}
+      )
       VALUES (
         (
-          SELECT location_id 
-          FROM Locations
-          WHERE location_name = ?
+          SELECT ${this.location_id} AS 'location_id'
+          FROM ${this.locationsTable}
+          WHERE ${this.location_name} = ${connection.escape(value.location_name)}
         ),
         (
-          SELECT monster_id 
-          FROM Monsters 
-          WHERE monster_name = ?
+          SELECT ${this.monster_id} AS 'monster_id'
+          FROM ${this.monstersTable}
+          WHERE ${this.monster_name} = ${connection.escape(value.monster_name)}
         )
       )
     `
@@ -1334,18 +1395,21 @@ export default class Query
   {
     const query: string = `
     UPDATE ${this.locationsMonstersTable}
-      SET 
-        location_id = (
-          SELECT location_id
-          FROM ${this.locationsTable}
-          WHERE location_name = ?
-        ),
-        monster_id = (
-          SELECT monster_id
-          FROM ${this.monstersTable}
-          WHERE monster_name = ?
-        )
-      WHERE location_monster_id = ?`;
+    SET 
+      ${this.location_id} = 
+      (
+        SELECT ${this.location_id} AS 'location_id'
+        FROM ${this.locationsTable}
+        WHERE ${this.location_name} = ${connection.escape(value.location_name)} 
+      ),
+      ${this.monster_id} = 
+      (
+        SELECT ${this.monster_id} AS 'monster_id'
+        FROM ${this.monstersTable}
+        WHERE ${this.monster_name} = ${connection.escape(value.monster_name)}
+      )
+      WHERE ${this.location_monster_id} = ${value.location_monster_id}
+    `;
 
     log.debug(`Executing Query: ${query}`);
 
@@ -1368,9 +1432,9 @@ export default class Query
   public static async deleteLocationMonsterById(connection: PoolConnection, id: number) : Promise<any>
   {
     const query: string = `
-    DELETE
-    FROM ${this.locationsMonstersTable}
-    WHERE ${this.location_monster_id} = ?
+      DELETE
+      FROM ${this.locationsMonstersTable}
+      WHERE ${this.location_monster_id} = ${id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1409,13 +1473,16 @@ export default class Query
   {
     const query: string = `
     SELECT 
-      location_item_id,
-      location_name,
-      item_name
-
+      ${this.location_item_id} AS 'location_item_id',
+      ${this.location_name} AS 'location_name',
+      ${this.item_name} AS 'item_name'
     FROM ${this.locationsItemsTable} 
-      INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsItemsTable}.location_id
-        INNER JOIN ${this.itemsTable} ON ${this.itemsTable}.item_id = ${this.locationsItemsTable}.item_id
+    INNER JOIN 
+      ${this.locationsTable} 
+      ON ${this.locationsTable}.${this.location_id} = ${this.locationsItemsTable}.${this.location_id}
+    INNER JOIN 
+      ${this.itemsTable} 
+      ON ${this.itemsTable}.${this.item_id} = ${this.locationsItemsTable}.${this.item_id}
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1445,15 +1512,18 @@ export default class Query
   {
     const query: string = `
     SELECT 
-      location_item_id,
-      location_name,
-      item_name
-
+      ${this.location_item_id} AS 'location_item_id',
+      ${this.location_name} AS 'location_name',
+      ${this.item_name} AS 'item_name'
     FROM ${this.locationsItemsTable} 
-      INNER JOIN ${this.locationsTable} ON ${this.locationsTable}.location_id = ${this.locationsItemsTable}.location_id
-        INNER JOIN ${this.itemsTable} ON ${this.itemsTable}.item_id = ${this.locationsItemsTable}.item_id
+    INNER JOIN 
+      ${this.locationsTable} 
+      ON ${this.locationsTable}.${this.location_id} = ${this.locationsItemsTable}.${this.location_id}
+    INNER JOIN 
+      ${this.itemsTable} 
+      ON ${this.itemsTable}.${this.item_id} = ${this.locationsItemsTable}.${this.item_id}
     WHERE 
-      ${this.locationsItemsTable}.location_item_id = ${id} 
+      ${this.locationsItemsTable}.${this.location_item_id} = ${id} 
     `;
 
     log.debug(`Executing Query: ${query}`);
@@ -1487,17 +1557,20 @@ export default class Query
   */
   public static async addLocationItem(connection: PoolConnection, value: LocationItem): Promise<any> {
     const query: string = `
-      INSERT INTO Locations_Items (location_id, item_id)
+      INSERT INTO ${this.locationsItemsTable} (
+        ${this.location_id}, 
+        ${this.item_id}
+      )
       VALUES (
         (
-          SELECT location_id 
-          FROM Locations
-          WHERE location_name = ?
+          SELECT ${this.location_id} AS 'location_id'
+          FROM ${this.locationsTable}
+          WHERE ${this.location_name} = ${connection.escape(value.location_name)}
         ),
         (
-          SELECT item_id 
-          FROM Items 
-          WHERE item_name = ?
+          SELECT ${this.item_id} AS 'item_id'
+          FROM ${this.itemsTable} 
+          WHERE ${this.item_name} = ${connection.escape(value.item_name)}
         )
       )
     `;
@@ -1531,17 +1604,19 @@ export default class Query
     const query: string = `
       UPDATE ${this.locationsItemsTable}
       SET 
-        location_id = (
-          SELECT location_id
+        ${this.location_id} = 
+        (
+          SELECT ${this.location_id} AS 'location_id'
           FROM ${this.locationsTable}
-          WHERE location_name = ?
+          WHERE ${this.location_name} = ${connection.escape(value.location_name)}
         ),
-        item_id = (
-          SELECT item_id
+        ${this.item_id} = 
+        (
+          SELECT ${this.item_id} AS 'item_id'
           FROM ${this.itemsTable}
-          WHERE item_name = ?
+          WHERE ${this.item_name} = ${connection.escape(value.item_name)}
         )
-      WHERE location_item_id = ?`;
+      WHERE ${this.location_item_id} = ${value.location_item_id}`;
   
     try {
       const [result] = await connection.execute(query, [value.location_name, value.item_name, value.location_item_id]);
@@ -1567,7 +1642,8 @@ export default class Query
     const query: string = `
       DELETE
       FROM ${this.locationsItemsTable}
-      WHERE ${this.location_item_id} = ?`;
+      WHERE ${this.location_item_id} = ${id}
+    `;
   
     try {
       // Execute query w/ ID as a param

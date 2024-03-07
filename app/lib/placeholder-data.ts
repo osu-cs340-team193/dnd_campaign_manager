@@ -491,13 +491,13 @@ export const monsterNames: MonsterName[] =
 export const campaignTitles: CampaignTitle[] =
 [
   {
-    campaign_title: 'A Deep and Creeping Darkness'
+    title: 'A Deep and Creeping Darkness'
   },
   {
-    campaign_title: 'The Price of Beauty'
+    title: 'The Price of Beauty'
   },
   {
-    campaign_title: 'The Joy of Extradimensional Spaces'
+    title: 'The Joy of Extradimensional Spaces'
   },
 ];
 

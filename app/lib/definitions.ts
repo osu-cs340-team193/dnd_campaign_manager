@@ -36,12 +36,12 @@ export interface ICampaign extends RowDataPacket
 
 export type CampaignTitle =
 {
-  campaign_title: string;
+  title: string;
 };
 
 export interface ICampaignTitle extends RowDataPacket
 {
-  campaign_title: string;
+  title: string;
 };
 
 export type DungeonMaster =

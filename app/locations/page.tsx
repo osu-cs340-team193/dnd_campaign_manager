@@ -55,7 +55,7 @@ export default async function Page()
           locations={locationRows}
         />
         <AddButton 
-          pageRoot=''
+          pageRoot='locations'
         />
       </Flex>
     </Container>

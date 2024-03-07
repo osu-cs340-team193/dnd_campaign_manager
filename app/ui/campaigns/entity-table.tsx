@@ -41,7 +41,7 @@ export default function EntityTable({ campaigns }: { campaigns: Campaign[] })
             campaigns?.map((campaign) => (
               <Table.Tr key={campaign.campaign_id}>
                 <Table.Td>{campaign.campaign_id}</Table.Td>
-                <Table.Td>{campaign.title }</Table.Td>
+                <Table.Td>{campaign.title}</Table.Td>
                 <Table.Td>{campaign.start_date ? campaign.start_date : ''}</Table.Td>
                 <Table.Td>{campaign.end_date ? campaign.end_date : ''}</Table.Td>
                 <Table.Td>{campaign.dungeon_master}</Table.Td>

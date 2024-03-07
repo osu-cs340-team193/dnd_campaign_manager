@@ -91,7 +91,7 @@ export default function Form(
               id='campaign_name'
               name='campaign_name'
               label='Campaign Name'
-              data={ campaignTitles.map((campaignTitle) => campaignTitle.campaign_title) }
+              data={ campaignTitles.map((campaignTitle) => campaignTitle.title) }
               radius='md'
               aria-label='Campaign Name'
               variant='filled'
