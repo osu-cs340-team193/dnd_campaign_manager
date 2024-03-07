@@ -37,7 +37,7 @@ export default async function Page()
           locationsMonsters={locationsMonsters}
         />
         <AddButton 
-          pageRoot='locations-items'
+          pageRoot='locations-monsters'
         />
       </Flex>
     </Container>
