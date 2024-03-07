@@ -234,7 +234,9 @@ Action: User clicks submit button on Locations/{id}/edit page.
 -- Update a location
 UPDATE Locations 
 SET 
-    campaign_id = :campaign_id_from_Campaigns_Dropdown, 
+    campaign_id = (SELECT campaign_id 
+	          FROM campaignsTable 
+	          WHERE title = :valueCampaignName), 
     location_name = :location_name_Input, 
     location_description = :location_description_Input
 WHERE location_id = :location_id_from_table;
