@@ -259,6 +259,9 @@ export const MonsterFormSchema = z.object({
     .trim()
     .min(2, {
       message: 'Monster name should be at least 2 characters long'
+    })
+    .max(255, {
+      message: 'Monster name can\'t be longer than 255 characters'
     }),
 
   armor_class: z
@@ -284,6 +287,9 @@ export const MonsterFormSchema = z.object({
     .trim()
     .min(2, {
       message: 'Monster type should be at least 2 characters long'
+    })
+    .max(255, {
+      message: 'Monster type can\'t be longer than 255 characters'
     })
     .refine((value) => 
       /^[a-zA-Z\s]*$/.test(value), {
@@ -352,10 +358,23 @@ export type ActionFormState =
 // Defines what a valid action form submission looks like. POST API endpoints
 // for the action entity then use this for form validation.
 export const ActionFormSchema = z.object({
-  id: z.any(),
-  monster_name: z.any(),
-  action_name: z.any(),
-  description: z.any(),
+  id: z.number(),
+
+  monster_name: z.string(),
+
+  action_name: z
+    .string({
+      required_error: 'Please enter a valid monster name',
+    })
+    .trim()
+    .min(2, {
+      message: 'Action name should be at least 2 characters long'
+    })
+    .max(255, {
+      message: 'Action name can\'t be longer than 255 characters'
+    }),
+
+  description: z.string(),
 });
 
 // Since the user won't submit ID with the form, we can omit it from the validation step.

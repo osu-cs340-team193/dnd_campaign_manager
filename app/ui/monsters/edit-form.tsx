@@ -2,7 +2,7 @@
 
 import { updateMonsterById } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
-import { MonsterType, Monster } from '@/app/lib/definitions';
+import { MonsterType, Monster, MonsterFormSchema } from '@/app/lib/definitions';
 import { useRouter } from 'next/navigation';
 import 
 { 
@@ -14,6 +14,10 @@ import
   TextInput, 
   Button 
 } from '@mantine/core';
+import { zodResolver } from 'mantine-form-zod-resolver';
+import { z } from 'zod';
+import { useForm } from '@mantine/form';
+
 
 // Edit form view for monster entity
 // TODO: Implement client-side form validation
@@ -41,6 +45,13 @@ export default function Form(
   const [state, dispatch] = useFormState(updateMonsterWithId, initialState);
 
   const router = useRouter();
+
+  const form = useForm({
+    initialValues: {
+
+    },
+    validate: zodResolver(MonsterFormSchema)
+  });
 
   return (
     <Container
