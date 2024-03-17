@@ -5,8 +5,9 @@ import { updateCampaignById } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { Autocomplete, Container, Fieldset, Flex, Button, TextInput } from '@mantine/core';
-import { DatePickerInput } from '@mantine/dates';
 import { Campaign, DungeonMaster } from '@/app/lib/definitions';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 // Citation for the following function:
 // Date: 02/18/2024
@@ -25,11 +26,11 @@ export default function Form({ campaign, dungeonMasters }: { campaign: Campaign,
 
   const router = useRouter();
 
-  // State hooks for date inputs to handle null values gracefully
+  // State hooks for date inputs to handle null values 
   const [startDate, setStartDate] = useState<Date | null>(campaign.start_date ? new Date(campaign.start_date) : null);
   const [endDate, setEndDate] = useState<Date | null>(campaign.end_date ? new Date(campaign.end_date) : null);
 
-  // UseEffect to update state if campaign prop changes, useful for dynamic updates or re-initializations
+  // UseEffect to update state if campaign prop changes
   useEffect(() => {
     setStartDate(campaign.start_date ? new Date(campaign.start_date) : null);
     setEndDate(campaign.end_date ? new Date(campaign.end_date) : null);
@@ -54,27 +55,29 @@ export default function Form({ campaign, dungeonMasters }: { campaign: Campaign,
               autoFocus
               error={state.errors?.title ? state.errors.title?.join('\n') : ''}
             />
-            <DatePickerInput
+            <label htmlFor="date-picker" style={{ fontSize: '13.5px', fontWeight: 550 }}>
+              Start Date <span style={{ color: 'red' }}>*</span>
+            </label>
+            <DatePicker
               id='start_date'
               name='start_date'
-              label='Start Date'
-              value={startDate}
-              onChange={setStartDate}
-              radius='md'
+              selected={startDate}
+              onChange={date => setStartDate(date)}
+              placeholderText='Input Start Date Here'
               aria-label='Start Date'
-              variant='filled'
-              error={state.errors?.start_date ? state.errors.start_date?.join('\n') : ''}
+              required
             />
-            <DatePickerInput
+              <label 
+              htmlFor="date-picker" style={{ fontSize: '13.5px', fontWeight: 550 }}>End Date
+              </label>            
+              <DatePicker
               id='end_date'
               name='end_date'
-              label='End Date'
-              value={endDate}
-              onChange={setEndDate}
-              radius='md'
+              selected={endDate}
+              onChange={date => setEndDate(date)}
+              isClearable={true}
+              placeholderText='Input End Date Here'
               aria-label='End Date'
-              variant='filled'
-              error={state.errors?.end_date ? state.errors.end_date?.join('\n') : ''}
             />
             <Autocomplete
               id='dungeon_master'
