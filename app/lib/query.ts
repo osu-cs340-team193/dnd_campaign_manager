@@ -182,28 +182,18 @@ export default class Query
   */
   public static async addCampaign(connection: PoolConnection, value: Campaign) : Promise<any>
   {
-    let startDate: string | null = null;
-    let endDate: string | null = null;
-  
-    // Only convert if value.start_date is not null.
-    if (value.start_date !== null) {
-      startDate = new Date(value.start_date).toISOString().split('T')[0];
-    }
-  
-    // Only convert if value.end_date is not null.
-    if (value.end_date !== null) {
-      endDate = new Date(value.end_date).toISOString().split('T')[0];
-    }
+    let startDate: string | null = value.start_date && value.start_date.trim() !== '' ? new Date(value.start_date).toISOString().split('T')[0] : null;
+    let endDate: string | null = value.end_date && value.end_date.trim() !== '' ? new Date(value.end_date).toISOString().split('T')[0] : null;
 
     const query: string = `
-      INSERT INTO ${this.campaignsTable} (
-        ${this.title},
-        ${this.start_date},
-        ${this.end_date},
-        ${this.dungeon_master}
-      )
-      VALUES (?, ?, ?, ?)
-      `;
+        INSERT INTO ${this.campaignsTable} (
+            ${this.title},
+            ${this.start_date},
+            ${this.end_date},
+            ${this.dungeon_master}
+        )
+        VALUES (?, ?, ?, ?)
+    `;
 
     const params = [value.title, startDate, endDate, value.dungeon_master];    
 
@@ -231,8 +221,9 @@ export default class Query
   */
   public static async updateCampaignById(connection: PoolConnection, value: Campaign): Promise<any> {
     // Convert datetime strings to date-only strings if  they are't null
-    let startDate: string | null = value.start_date !== null ? new Date(value.start_date).toISOString().split('T')[0] : null;
-    let endDate: string | null = value.end_date !== null ? new Date(value.end_date).toISOString().split('T')[0] : null;
+    let startDate: string | null = value.start_date ? new Date(value.start_date).toISOString().split('T')[0] : null;
+    let endDate: string | null = value.end_date ? new Date(value.end_date).toISOString().split('T')[0] : null;
+
   
     const query: string = `
       UPDATE ${this.campaignsTable}

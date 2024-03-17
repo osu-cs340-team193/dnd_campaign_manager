@@ -1,6 +1,7 @@
 'use client';
 
 import { createCampaign } from '@/app/lib/actions';
+import { useState, useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import 
@@ -12,8 +13,9 @@ import
   Button, 
   TextInput 
 } from '@mantine/core';
-import { DatePickerInput } from '@mantine/dates';
-import { DungeonMaster } from '@/app/lib/definitions';
+import { Campaign, DungeonMaster } from '@/app/lib/definitions';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 // Create form view for campaign entity
 // TODO: Implement client-side form validation
@@ -26,8 +28,7 @@ import { DungeonMaster } from '@/app/lib/definitions';
 // Code Version: N/A
 // Source URL: https://nextjs.org/learn/dashboard-app/mutating-data
 // Description: Form state management and action binding borrowed from source.
-export default function Form({ dungeonMasters }: { dungeonMasters : DungeonMaster[] })
-{
+export default function Form({ campaign, dungeonMasters }: { campaign?: Campaign, dungeonMasters: DungeonMaster[] }) {
   // Form initially has no errors
   const initialState = { message: null, errors: {}};
 
@@ -36,6 +37,19 @@ export default function Form({ dungeonMasters }: { dungeonMasters : DungeonMaste
   const [state, dispatch] = useFormState(createCampaign, initialState);
 
   const router = useRouter();
+
+  // State hooks for date inputs to handle null values 
+  const [startDate, setStartDate] = useState<Date | null>(campaign?.start_date ? new Date(campaign.start_date) : null);
+  const [endDate, setEndDate] = useState<Date | null>(campaign?.end_date ? new Date(campaign.end_date) : null);
+
+  // UseEffect to update state if campaign prop changes
+  useEffect(() => {
+    if (campaign) {
+      setStartDate(campaign.start_date ? new Date(campaign.start_date) : null);
+      setEndDate(campaign.end_date ? new Date(campaign.end_date) : null);
+    }
+  }, [campaign?.start_date, campaign?.end_date]);
+
 
   return (
     <Container
@@ -71,35 +85,29 @@ export default function Form({ dungeonMasters }: { dungeonMasters : DungeonMaste
                 : ''
               }
             />
-            <DatePickerInput
+            <label htmlFor="date-picker" style={{ fontSize: '13.5px', fontWeight: 550 }}>
+              Start Date <span style={{ color: 'red' }}>*</span>
+            </label>
+            <DatePicker
               id='start_date'
               name='start_date'
-              label='Start Date'
-              radius='md'
+              selected={startDate}
+              onChange={date => setStartDate(date)}
+              placeholderText='Input Start Date Here'
               aria-label='Start Date'
-              variant='filled'
-              withAsterisk
-              error=
-              {
-                state.errors?.start_date ?  
-                state.errors.start_date?.join('\n') 
-                : ''
-              }
+              required
             />
-            <DatePickerInput
+              <label 
+              htmlFor="date-picker" style={{ fontSize: '13.5px', fontWeight: 550 }}>End Date
+              </label>            
+              <DatePicker
               id='end_date'
               name='end_date'
-              label='End Date'
-              radius='md'
+              selected={endDate}
+              onChange={date => setEndDate(date)}
+              isClearable={true}
+              placeholderText='Input End Date Here'
               aria-label='End Date'
-              variant='filled'
-              withAsterisk
-              error=
-              {
-                state.errors?.end_date ?  
-                state.errors.end_date?.join('\n') 
-                : ''
-              }
             />
             <Autocomplete
               id='dungeon_master'
@@ -137,6 +145,7 @@ export default function Form({ dungeonMasters }: { dungeonMasters : DungeonMaste
                 variant='outline'
                 color='green'
                 radius='md'
+                onClick={() => router.push('/campaigns')}
               >
                 Submit
               </Button>

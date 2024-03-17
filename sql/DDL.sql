@@ -17,7 +17,7 @@ Create Campaigns table
 CREATE TABLE Campaigns (
   campaign_id int(11) NOT NULL AUTO_INCREMENT UNIQUE,
   title varchar(255) NOT NULL,
-  start_date date,
+  start_date date NOT NULL,
   end_date date,
   dungeon_master varchar(255) NOT NULL,
   PRIMARY KEY (campaign_id)
