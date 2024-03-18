@@ -3,11 +3,14 @@
 import { useState, useEffect } from 'react';
 import { updateCampaignById } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
+import { useForm } from '@mantine/form';
 import { useRouter } from 'next/navigation';
 import { Autocomplete, Container, Fieldset, Flex, Button, TextInput } from '@mantine/core';
-import { Campaign, DungeonMaster } from '@/app/lib/definitions';
+import { Campaign, CampaignFormSchema, DungeonMaster } from '@/app/lib/definitions';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { zodResolver } from 'mantine-form-zod-resolver';
+import { z } from 'zod';
 
 // Citation for the following function:
 // Date: 02/18/2024
@@ -25,6 +28,13 @@ export default function Form({ campaign, dungeonMasters }: { campaign: Campaign,
   const [state, dispatch] = useFormState(updateCampaignWithId, initialState);
 
   const router = useRouter();
+
+  const form =useForm({
+    initialValues: {
+
+    },
+    validate: zodResolver(CampaignFormSchema)
+  })
 
   // State hooks for date inputs to handle null values 
   const [startDate, setStartDate] = useState<Date | null>(campaign.start_date ? new Date(campaign.start_date) : null);
@@ -96,7 +106,7 @@ export default function Form({ campaign, dungeonMasters }: { campaign: Campaign,
               <Button variant='outline' color='red' radius='md' onClick={() => router.push('/campaigns')}>
                 Cancel
               </Button>
-              <Button type="submit" variant='outline' color='green' radius='md' onClick={() => router.push('/campaigns')}>
+              <Button type="submit" variant='outline' color='green' radius='md' >
                 Submit
               </Button>
             </Flex>
