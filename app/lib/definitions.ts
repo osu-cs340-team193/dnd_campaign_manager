@@ -393,7 +393,7 @@ export const ActionFormSchema = z.object({
 
   action_name: z
     .string({
-      required_error: 'Please enter a valid monster name',
+      required_error: 'Please enter a valid action name',
     })
     .trim()
     .min(2, {
