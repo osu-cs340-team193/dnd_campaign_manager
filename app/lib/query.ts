@@ -311,6 +311,7 @@ export default class Query
   {
     const query: string = `
       SELECT 
+        ${this.title} AS 'campaign_name',
         ${this.location_id} AS 'location_id', 
         ${this.location_name} AS 'location_name', 
         ${this.title} AS 'title', 
