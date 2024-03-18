@@ -415,7 +415,7 @@ SELECT
     M.monster_name AS 'monster_name', 
     A.description
 FROM Actions A
-INNER JOIN Monsters M ON Monsters.monster_id = Actions.monster_id;
+LEFT JOIN Monsters M ON Monsters.monster_id = Actions.monster_id;
 
 /*************************************
 Action: User clicks edit button for a given action in the Actions table.
@@ -427,9 +427,8 @@ SELECT
     M.monster_name AS 'monster_name', 
     A.description
 FROM Actions A
-INNER JOIN Monsters M ON Monsters.monster_id = Actions.monster_id
+LEFT JOIN Monsters M ON Monsters.monster_id = Actions.monster_id
 WHERE action_id = :action_id_selected_when_clicking_edit_button;
-
 
 -- Get all available Monsters to populate a dropdown for selecting action's associated monster 
 SELECT monster_name

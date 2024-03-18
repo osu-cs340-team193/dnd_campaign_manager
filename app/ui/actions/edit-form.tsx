@@ -90,9 +90,8 @@ export default function Form({ action, monsterNames }: { action: Action, monster
               variant='filled'
               checkIconPosition='right'
               searchable
-              withAsterisk
+              unselectable='on'
               // TODO: Should the monster name be required or optional?
-              required
               error=
               {
                 state.errors?.monster_name ?  

@@ -67,7 +67,7 @@ CREATE TABLE Actions (
   action_name varchar(255) NOT NULL,
   description text,
   PRIMARY KEY (action_id),
-  CONSTRAINT Actions_fk_1 FOREIGN KEY (monster_id) REFERENCES Monsters(monster_id) ON DELETE CASCADE
+  CONSTRAINT Actions_fk_1 FOREIGN KEY (monster_id) REFERENCES Monsters(monster_id) ON DELETE SET NULL
 );
 
 /*

@@ -881,7 +881,7 @@ export default class Query
         M.${this.monster_name} AS '${this.monster_name}',
         A.${this.description} AS 'description'
       FROM ${this.actionsTable} A
-      INNER JOIN ${this.monstersTable} M ON M.${this.monster_id} = A.${this.monster_id}
+      LEFT JOIN ${this.monstersTable} M ON M.${this.monster_id} = A.${this.monster_id}
       ORDER BY A.${this.action_id} ASC
     `;
 
@@ -907,7 +907,7 @@ export default class Query
         M.${this.monster_name} AS '${this.monster_name}',
         A.${this.description}
       FROM ${this.actionsTable} A
-      INNER JOIN ${this.monstersTable} M ON M.${this.monster_id} = A.${this.monster_id}
+      LEFT JOIN ${this.monstersTable} M ON M.${this.monster_id} = A.${this.monster_id}
       WHERE ${this.action_id} = ${id}
     `;
 

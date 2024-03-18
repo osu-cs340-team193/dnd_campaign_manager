@@ -19,7 +19,6 @@ import
 } from '@/app/lib/definitions';
 
 // Create form view for action entity
-// TODO: Implement client-side form validation
 
 // Citation for the following function:
 // Date: 02/18/2024
@@ -84,8 +83,7 @@ export default function Form({ monsterNames }: { monsterNames: MonsterName[] })
               aria-label='Monster Name'
               variant='filled'
               checkIconPosition='right'
-              withAsterisk
-              required
+              unselectable='on'
               error=
               {
                 state.errors?.monster_name ?  
