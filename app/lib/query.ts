@@ -180,6 +180,16 @@ export default class Query
     :dungeon_master_value
   )
   */
+
+// Citation for prepared statements/parameterization methodology used in numerous queries:
+// Date: 3/1/2024
+// Title: Adapted from [MySQL Prepared Statements]
+// Type: Online guide
+// Author: W3 Schools
+// Code Version: N/A
+// Source URL: https://www.w3schools.com/php/php_mysql_prepared_statements.asp
+// Description: To better manage input with several of the more complicated queries, prepared statements and parameterization were used. 
+
   public static async addCampaign(connection: PoolConnection, value: Campaign) : Promise<any>
   {
     let startDate: string | null = value.start_date && value.start_date.trim() !== '' ? new Date(value.start_date).toISOString().split('T')[0] : null;
