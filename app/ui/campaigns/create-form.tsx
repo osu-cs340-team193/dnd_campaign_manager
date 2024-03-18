@@ -29,7 +29,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 // Source URL: https://nextjs.org/learn/dashboard-app/mutating-data
 // Description: Form state management and action binding borrowed from source.
 export default function Form({ campaign, dungeonMasters }: { campaign?: Campaign, dungeonMasters: DungeonMaster[] }) {
-  // Form initially has no errors
   const initialState = { message: null, errors: {}};
 
   // Action to be called when form is submitted
@@ -38,7 +37,7 @@ export default function Form({ campaign, dungeonMasters }: { campaign?: Campaign
 
   const router = useRouter();
 
-  // State hooks for date inputs to handle null values 
+  // Manage null date values 
   const [startDate, setStartDate] = useState<Date | null>(campaign?.start_date ? new Date(campaign.start_date) : null);
   const [endDate, setEndDate] = useState<Date | null>(campaign?.end_date ? new Date(campaign.end_date) : null);
 
@@ -145,7 +144,6 @@ export default function Form({ campaign, dungeonMasters }: { campaign?: Campaign
                 variant='outline'
                 color='green'
                 radius='md'
-                onClick={() => router.push('/campaigns')}
               >
                 Submit
               </Button>

@@ -75,12 +75,41 @@ export type CampaignFormState =
 // Description: Variable structure adapted from source.
 // Defines what a valid campaign form submission looks like. POST API endpoints
 // for the campaign entity then use this for form validation.
+
 export const CampaignFormSchema = z.object({
-  id: z.any(),
-  title: z.any(),
-  start_date: z.any(),
-  end_date: z.any(),
-  dungeon_master: z.any(),
+  id: z.number(), 
+
+  title: z
+    .string({
+      required_error: 'Please enter a valid title'
+    })
+    .trim()
+    .min(2, {
+      message: 'Title should be at least 2 character long'
+    })
+    .max(255, {
+      message: 'Title can\'t be longer than 255 characters'
+    }),
+
+  start_date: z
+    .string({
+      required_error: 'Please enter a valid start date'
+    }),
+
+  end_date: z
+    .any(),
+
+  dungeon_master: z
+    .string({
+      required_error: 'Please enter a valid dungeon master name'
+    })
+    .trim()
+    .min(2, {
+      message: 'Dungeon master name should be at least 2 characters long'
+    })
+    .max(255, {
+      message: 'Dungeon master name can\'t be longer than 255 characters'
+    })
 });
 
 // Since the user won't submit ID with the form, we can omit it from the validation step.
